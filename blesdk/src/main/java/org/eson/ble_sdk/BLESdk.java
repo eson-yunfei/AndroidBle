@@ -1,5 +1,7 @@
 package org.eson.ble_sdk;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
 import org.eson.ble_sdk.check.BLECheck;
@@ -10,7 +12,7 @@ import java.util.UUID;
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
- * @说明：蓝牙工具类的总入口
+ * @说明： 蓝牙工具类的总入口
  */
 
 public class BLESdk {
@@ -33,6 +35,7 @@ public class BLESdk {
 
 		initUUID(service, desc, write, notify);
 
+		AndroidBLE.init(context);
 		BLECheck.init();
 		BLEScanner.init();
 
@@ -45,5 +48,12 @@ public class BLESdk {
 		BLE_UUID.UUID_NOTIFY = notify;
 	}
 
+	public BluetoothManager getBluetoothManager() {
+		return AndroidBLE.get().getBluetoothManager();
+	}
+
+	public BluetoothAdapter getBluetoothAdapter() {
+		return AndroidBLE.get().getBluetoothAdapter();
+	}
 
 }
