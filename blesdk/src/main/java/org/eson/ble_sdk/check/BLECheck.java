@@ -3,7 +3,6 @@ package org.eson.ble_sdk.check;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,9 +21,9 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class BLECheck {
 
 
-	private BluetoothManager bluetoothManager;
+//	private BluetoothManager bluetoothManager;
 
-	private BLECheckListener bleCheckListener;
+//	private BLECheckListener bleCheckListener;
 
 	private BluetoothAdapter bluetoothAdapter;
 
