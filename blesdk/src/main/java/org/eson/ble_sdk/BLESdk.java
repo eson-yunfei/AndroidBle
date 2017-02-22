@@ -31,7 +31,7 @@ public class BLESdk {
 		return instance;
 	}
 
-	public void init(Context context, UUID service, UUID desc, UUID[] write, UUID[] notify) {
+	public static void init(Context context, UUID service, UUID desc, UUID[] write, UUID[] notify) {
 
 		initUUID(service, desc, write, notify);
 
@@ -41,7 +41,7 @@ public class BLESdk {
 
 	}
 
-	private void initUUID(UUID service, UUID desc, UUID[] write, UUID[] notify) {
+	private static void initUUID(UUID service, UUID desc, UUID[] write, UUID[] notify) {
 		BLE_UUID.UUID_SERVICE = service;
 		BLE_UUID.UUID_DESC = desc;
 		BLE_UUID.UUID_WRITE = write;
