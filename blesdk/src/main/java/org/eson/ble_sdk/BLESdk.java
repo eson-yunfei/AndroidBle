@@ -1,5 +1,12 @@
 package org.eson.ble_sdk;
 
+import android.content.Context;
+
+import org.eson.ble_sdk.check.BLECheck;
+import org.eson.ble_sdk.scan.BLEScanner;
+
+import java.util.UUID;
+
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
@@ -21,4 +28,22 @@ public class BLESdk {
 		}
 		return instance;
 	}
+
+	public void init(Context context, UUID service, UUID desc, UUID[] write, UUID[] notify) {
+
+		initUUID(service, desc, write, notify);
+
+		BLECheck.init();
+		BLEScanner.init();
+
+	}
+
+	private void initUUID(UUID service, UUID desc, UUID[] write, UUID[] notify) {
+		BLE_UUID.UUID_SERVICE = service;
+		BLE_UUID.UUID_DESC = desc;
+		BLE_UUID.UUID_WRITE = write;
+		BLE_UUID.UUID_NOTIFY = notify;
+	}
+
+
 }
