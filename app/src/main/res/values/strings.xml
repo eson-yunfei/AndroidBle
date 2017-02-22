@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LiteBle</string>
+    <string name="action_settings">设置</string>
 </resources>
