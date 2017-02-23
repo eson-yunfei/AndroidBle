@@ -35,4 +35,19 @@ public class BLEDevice {
 	public void setRssi(int rssi) {
 		this.rssi = rssi;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		BLEDevice device = null;
+		if(obj instanceof BLEDevice){
+			device = (BLEDevice) obj;
+			if(device.mac.equals(this.mac)){
+				return true;
+			}else {
+				return false;
+			}
+		}else {
+			return false;
+		}
+	}
 }
