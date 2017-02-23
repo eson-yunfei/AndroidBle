@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.eson.ble_sdk.bean.BLEDevice;
 import org.eson.ble_sdk.check.BLECheck;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //				}
 //				loadingDialog.show();
 
-				BLEDevice device = deviceList.get(i);
+//				BLEDevice device = deviceList.get(i);
 				//TODO  连接蓝牙设备
 
 			}
