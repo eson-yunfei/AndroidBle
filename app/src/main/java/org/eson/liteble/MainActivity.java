@@ -18,7 +18,6 @@ import org.eson.ble_sdk.scan.BLEScanListener;
 import org.eson.ble_sdk.scan.BLEScanner;
 import org.eson.liteble.activity.SettingActivity;
 import org.eson.liteble.adapter.ScanBLEAdapter;
-import org.eson.liteble.bean.BleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 	private Button searchBtn;
 	private ListView mListView;
 
-	private List<BleItem> deviceList = new ArrayList<>();
+	private List<BLEDevice> deviceList = new ArrayList<>();
 	private ScanBLEAdapter scanBLEAdapter;
 
 	@Override
@@ -44,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
 	private void initView(){
 
-		for (int i = 0; i < 5; i++) {
-			BleItem bleItem = new BleItem();
+		/*for (int i = 0; i < 5; i++) {
+			BLEDevice bleItem = new BLEDevice();
 			bleItem.setAddress("test mac");
 			bleItem.setName("name");
 			bleItem.setRssi((int) (Math.random()*100));
 			deviceList.add(bleItem);
-		}
+		}*/
 		//设置列表
 		scanBLEAdapter = new ScanBLEAdapter(this, deviceList);
 		mListView.setAdapter(scanBLEAdapter);
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 //				}
 //				loadingDialog.show();
 
-				BleItem device = deviceList.get(i);
+				BLEDevice device = deviceList.get(i);
 				//TODO  连接蓝牙设备
 
 			}
@@ -109,6 +108,20 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	public void addScanBLE(final BLEDevice bleDevice) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(!deviceList.contains(bleDevice)){
+					deviceList.add(bleDevice);
+				}
+				scanBLEAdapter.setDataList(deviceList);
+				scanBLEAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+
 	private void searchDevice(){
 		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
 			@Override
@@ -118,8 +131,10 @@ public class MainActivity extends AppCompatActivity {
 
 			@Override
 			public void onScanning(BLEDevice device) {
+				addScanBLE(device);
 				LogUtil.e("扫描结果："+device.getMac()+"name:"+device.getName());
 			}
+
 
 			@Override
 			public void onScannerStop() {

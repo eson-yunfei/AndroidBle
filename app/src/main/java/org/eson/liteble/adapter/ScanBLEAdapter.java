@@ -5,9 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.eson.ble_sdk.bean.BLEDevice;
 import org.eson.liteble.LogUtil;
 import org.eson.liteble.R;
-import org.eson.liteble.bean.BleItem;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ import java.util.List;
  * @chang time
  * @class describe
  */
-public class ScanBLEAdapter extends MyBaseAdapter<BleItem> {
+public class ScanBLEAdapter extends MyBaseAdapter<BLEDevice> {
 
-    public ScanBLEAdapter(Context context, List<BleItem> dataList) {
+    public ScanBLEAdapter(Context context, List<BLEDevice> dataList) {
         super(context, dataList);
     }
 
@@ -37,11 +37,11 @@ public class ScanBLEAdapter extends MyBaseAdapter<BleItem> {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        BleItem device = dataList.get(position);
+        BLEDevice device = dataList.get(position);
         String name = device.getName();
         LogUtil.d("信号:"+device.getRssi());
         LogUtil.e("name = " + name);
-        String mac = device.getAddress();
+        String mac = device.getMac();
         viewHolder.deviceRssi.setText("信号强度："+device.getRssi());
         viewHolder.deviceName.setText(name);
         viewHolder.deviceMac.setText(mac);
