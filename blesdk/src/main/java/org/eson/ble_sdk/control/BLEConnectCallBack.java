@@ -1,34 +1,18 @@
 package org.eson.ble_sdk.control;
 
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattDescriptor;
-
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
  * @说明：
  */
 
-public class BLEConnectCallBack extends BluetoothGattCallback {
+public interface BLEConnectCallBack {
 
-	@Override
-	public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-		super.onConnectionStateChange(gatt, status, newState);
-	}
+	void onConnecting();
 
-	@Override
-	public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-		super.onServicesDiscovered(gatt, status);
-	}
+	void onConnected();
 
-	@Override
-	public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-		super.onDescriptorRead(gatt, descriptor, status);
-	}
+	void onDisConnecting();
 
-	@Override
-	public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-		super.onDescriptorWrite(gatt, descriptor, status);
-	}
+	void onDisConnected();
 }
