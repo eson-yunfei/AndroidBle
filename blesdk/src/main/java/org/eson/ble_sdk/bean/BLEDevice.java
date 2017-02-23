@@ -1,7 +1,5 @@
 package org.eson.ble_sdk.bean;
 
-import android.util.Log;
-
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
@@ -44,10 +42,8 @@ public class BLEDevice {
 		if(obj instanceof BLEDevice){
 			device = (BLEDevice) obj;
 			if(device.mac.equals(this.mac)){
-				Log.e("equals","相同");
 				return true;
 			}else {
-				Log.e("equals","不相同");
 				return false;
 			}
 		}else {
