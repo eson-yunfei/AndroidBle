@@ -1,6 +1,7 @@
 package org.eson.liteble;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.eson.ble_sdk.bean.BLEDevice;
 import org.eson.ble_sdk.check.BLECheck;
@@ -18,17 +20,16 @@ import org.eson.ble_sdk.scan.BLEScanListener;
 import org.eson.ble_sdk.scan.BLEScanner;
 import org.eson.liteble.activity.SettingActivity;
 import org.eson.liteble.adapter.ScanBLEAdapter;
-import org.eson.liteble.bean.BleItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
 	private Button searchBtn;
 	private ListView mListView;
-
-	private List<BleItem> deviceList = new ArrayList<>();
+	private Button checkBtn;
+	private List<BLEDevice> deviceList = new ArrayList<>();
 	private ScanBLEAdapter scanBLEAdapter;
 
 	@Override
@@ -39,18 +40,12 @@ public class MainActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 		searchBtn = (Button) findViewById(R.id.start_search);
 		mListView = (ListView) findViewById(R.id.listview);
+		checkBtn = (Button) findViewById(R.id.checkBle);
 		initView();
+		initViewListener();
 	}
 
 	private void initView(){
-
-		for (int i = 0; i < 5; i++) {
-			BleItem bleItem = new BleItem();
-			bleItem.setAddress("test mac");
-			bleItem.setName("name");
-			bleItem.setRssi((int) (Math.random()*100));
-			deviceList.add(bleItem);
-		}
 		//设置列表
 		scanBLEAdapter = new ScanBLEAdapter(this, deviceList);
 		mListView.setAdapter(scanBLEAdapter);
@@ -64,15 +59,19 @@ public class MainActivity extends AppCompatActivity {
 //				}
 //				loadingDialog.show();
 
-				BleItem device = deviceList.get(i);
+				BLEDevice device = deviceList.get(i);
 				//TODO  连接蓝牙设备
 
 			}
 		});
-		scanBleDevice();
 	}
 
-	private void scanBleDevice(){
+	private void initViewListener(){
+		searchBtn.setOnClickListener(this);
+		checkBtn.setOnClickListener(this);
+	}
+
+	private void checkBleEnable(){
 		BLECheck.get().checkBleState(this, new BLECheckListener() {
 			@Override
 			public void noBluetoothPermission() {
@@ -92,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
 			@Override
 			public void bleStateOK() {
-				LogUtil.e("开始扫描");
-				searchDevice();
+				final Drawable yes = getResources().getDrawable(R.mipmap.icon_ok);
+				checkBtn.setCompoundDrawablesWithIntrinsicBounds(null,null,yes,null);
 			}
 		});
 	}
@@ -109,6 +108,20 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	public void addScanBLE(final BLEDevice bleDevice) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(!deviceList.contains(bleDevice)){
+					deviceList.add(bleDevice);
+				}
+				scanBLEAdapter.setDataList(deviceList);
+				scanBLEAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+
 	private void searchDevice(){
 		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
 			@Override
@@ -118,8 +131,9 @@ public class MainActivity extends AppCompatActivity {
 
 			@Override
 			public void onScanning(BLEDevice device) {
-				LogUtil.e("扫描结果："+device.getMac()+"name:"+device.getName());
+				addScanBLE(device);
 			}
+
 
 			@Override
 			public void onScannerStop() {
@@ -162,4 +176,17 @@ public class MainActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()){
+			case R.id.checkBle:
+				checkBleEnable();
+				break;
+
+			case R.id.start_search:
+				LogUtil.e("开始扫描");
+				searchDevice();
+				break;
+		}
+	}
 }
