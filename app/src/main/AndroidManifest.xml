@@ -23,7 +23,8 @@
         </activity>
         <activity android:name=".activity.SettingActivity"
                   android:theme="@style/AppTheme.NoActionBar"/>
-
+        <activity android:name=".activity.BleDetailActivity"
+                  android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

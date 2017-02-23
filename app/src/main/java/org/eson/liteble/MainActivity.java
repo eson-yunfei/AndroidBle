@@ -1,5 +1,6 @@
 package org.eson.liteble;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,8 +16,11 @@ import android.widget.ListView;
 import org.eson.ble_sdk.bean.BLEDevice;
 import org.eson.ble_sdk.check.BLECheck;
 import org.eson.ble_sdk.check.BLECheckListener;
+import org.eson.ble_sdk.control.BLEConnectCallBack;
+import org.eson.ble_sdk.control.BLEControl;
 import org.eson.ble_sdk.scan.BLEScanListener;
 import org.eson.ble_sdk.scan.BLEScanner;
+import org.eson.liteble.activity.BleDetailActivity;
 import org.eson.liteble.activity.SettingActivity;
 import org.eson.liteble.adapter.ScanBLEAdapter;
 
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private Button checkBtn;
 	private List<BLEDevice> deviceList = new ArrayList<>();
 	private ScanBLEAdapter scanBLEAdapter;
+	private ProgressDialog m_pDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +56,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+			public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
 
-//				if (loadingDialog.isShowing()) {
-//					return;
-//				}
-//				loadingDialog.show();
+				showProgress();
 
-//				BLEDevice device = deviceList.get(i);
-				//TODO  连接蓝牙设备
+				final BLEDevice device = deviceList.get(i);
+				BLEControl.get().connectToDevice(MainActivity.this, device.getMac(), false, new BLEConnectCallBack() {
+					@Override
+					public void onConnecting() {
+
+					}
+
+					@Override
+					public void onConnected() {
+						hideProgress();
+						//TODO 此项放至连接结束后调用
+						BLEControl.get().getBluetoothGatt().discoverServices();
+						Intent intent = new Intent(MainActivity.this, BleDetailActivity.class);
+
+						intent.putExtra("macAddr",device.getMac());
+						intent.putExtra("name",device.getName());
+						startActivity(intent);
+
+					}
+
+					@Override
+					public void onDisConnecting() {
+
+					}
+
+					@Override
+					public void onDisConnected() {
+
+					}
+				});
 
 			}
 		});
 	}
+
+
 
 	private void initViewListener(){
 		searchBtn.setOnClickListener(this);
@@ -79,13 +111,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			}
 
 			@Override
-			public void notSupportBle() {
-
-			}
+			public void notSupportBle() {}
 
 			@Override
 			public void bleClosing() {
-				BLECheck.get().openBle();
+				BLECheck.get().openBle(MainActivity.this,0x02);
 			}
 
 			@Override
@@ -99,10 +129,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		LogUtil.e("onActivityResult"+requestCode+";;;;"+resultCode);
 		if(requestCode == 0x01){
 			if(resultCode == RESULT_OK){
-				LogUtil.e("开始扫描");
-				searchDevice();
+				//LogUtil.e("开始扫描");
+				//searchDevice();
+			}
+		}else if(requestCode == 0x02){
+			if(resultCode == RESULT_OK){
+				final Drawable yes = getResources().getDrawable(R.mipmap.icon_ok);
+				checkBtn.setCompoundDrawablesWithIntrinsicBounds(null,null,yes,null);
 			}
 		}
 	}
@@ -125,25 +161,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
 			@Override
 			public void onScannerStart() {
-
+				showProgress();
 			}
 
 			@Override
 			public void onScanning(BLEDevice device) {
+				hideProgress();
 				addScanBLE(device);
 			}
 
 
 			@Override
 			public void onScannerStop() {
-
+				hideProgress();
 			}
 
 			@Override
 			public void onScannerError() {
-
+				hideProgress();
 			}
 		});
+	}
+
+
+	public void showProgress() {
+		if (m_pDialog == null) {
+			m_pDialog = new ProgressDialog(this);
+			m_pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			m_pDialog.setMessage("请稍等。。。");
+			m_pDialog.setIndeterminate(false);
+			m_pDialog.setCancelable(true);
+		}
+		if (m_pDialog.isShowing()) {
+			return;
+		}
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				m_pDialog.show();
+			}
+		});
+
+	}
+
+	public void hideProgress() {
+
+		if (m_pDialog == null) {
+			return;
+		}
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				m_pDialog.dismiss();
+			}
+		});
+
 	}
 
 	private void startToSetting(){

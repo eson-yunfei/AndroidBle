@@ -85,6 +85,6 @@ public class BLEControl extends BLEBaseControl {
 	}
 
 	public BluetoothGatt getBluetoothGatt() {
-		return bluetoothGatt;
+		return BLEConnection.get().getBlueToothGatt();
 	}
 }
