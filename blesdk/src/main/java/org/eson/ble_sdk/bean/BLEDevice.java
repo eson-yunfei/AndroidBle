@@ -1,5 +1,7 @@
 package org.eson.ble_sdk.bean;
 
+import android.util.Log;
+
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
@@ -34,5 +36,22 @@ public class BLEDevice {
 
 	public void setRssi(int rssi) {
 		this.rssi = rssi;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		BLEDevice device = null;
+		if(obj instanceof BLEDevice){
+			device = (BLEDevice) obj;
+			if(device.mac.equals(this.mac)){
+				Log.e("equals","相同");
+				return true;
+			}else {
+				Log.e("equals","不相同");
+				return false;
+			}
+		}else {
+			return false;
+		}
 	}
 }
