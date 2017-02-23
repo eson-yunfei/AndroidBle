@@ -11,6 +11,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.eson.ble_sdk.bean.BLEDevice;
+import org.eson.ble_sdk.check.BLECheck;
+import org.eson.ble_sdk.check.BLECheckListener;
+import org.eson.ble_sdk.scan.BLEScanListener;
+import org.eson.ble_sdk.scan.BLEScanner;
 import org.eson.liteble.activity.SettingActivity;
 import org.eson.liteble.adapter.ScanBLEAdapter;
 import org.eson.liteble.bean.BleItem;
@@ -61,6 +66,68 @@ public class MainActivity extends AppCompatActivity {
 
 				BleItem device = deviceList.get(i);
 				//TODO  连接蓝牙设备
+
+			}
+		});
+		scanBleDevice();
+	}
+
+	private void scanBleDevice(){
+		BLECheck.get().checkBleState(this, new BLECheckListener() {
+			@Override
+			public void noBluetoothPermission() {
+				//没有蓝牙权限，申请
+				BLECheck.get().requestBlePermission(MainActivity.this,"",0x01);
+			}
+
+			@Override
+			public void notSupportBle() {
+
+			}
+
+			@Override
+			public void bleClosing() {
+				BLECheck.get().openBle();
+			}
+
+			@Override
+			public void bleStateOK() {
+				LogUtil.e("开始扫描");
+				searchDevice();
+			}
+		});
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 0x01){
+			if(resultCode == RESULT_OK){
+				LogUtil.e("开始扫描");
+				searchDevice();
+			}
+		}
+	}
+
+	private void searchDevice(){
+		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
+			@Override
+			public void onScannerStart() {
+
+			}
+
+			@Override
+			public void onScanning(BLEDevice device) {
+				LogUtil.e("扫描结果："+device.getMac()+"name:"+device.getName());
+			}
+
+			@Override
+			public void onScannerStop() {
+
+			}
+
+			@Override
+			public void onScannerError() {
 
 			}
 		});
