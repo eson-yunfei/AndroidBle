@@ -1,10 +1,12 @@
 package org.eson.ble_sdk.control;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 import android.text.TextUtils;
 
 import org.eson.ble_sdk.BLESdk;
+import org.eson.ble_sdk.util.BLELog;
 
 /**
  * @作者 xiaoyunfei
@@ -60,8 +62,13 @@ class BLEConnection extends BLEBaseControl {
 		}
 
 		bluetoothGatt = device.connectGatt(context, isAutoConnect, gattCallback);
+		BLELog.e("connectionDevice"+bluetoothGatt.getServices().size());
 		bluetoothGatt.connect();
 
+	}
+
+	public BluetoothGatt getBlueToothGatt(){
+		return bluetoothGatt;
 	}
 
 	/**
