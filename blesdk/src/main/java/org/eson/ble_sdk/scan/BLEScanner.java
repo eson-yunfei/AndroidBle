@@ -72,8 +72,10 @@ public class BLEScanner {
 		if (timeOut == -1) {
 			//无限扫描
 		} else {
-			if (timeOut != 0) {
+			if (timeOut == 0) {
 				//
+				scanTime = 10000;
+			} else {
 				scanTime = timeOut;
 			}
 
@@ -115,10 +117,9 @@ public class BLEScanner {
 		@Override
 		public void run() {
 
-			stopScannerTimer();
-
 			callBackScanStop();
 
+			stopScan();
 		}
 	};
 

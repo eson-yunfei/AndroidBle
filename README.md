@@ -12,7 +12,7 @@
 三、蓝牙权限、状态等检测
 
 
-            BLECheck.get().checkBleState(context, new BLECheckListener() {
+        BLECheck.get().checkBleState(context, new BLECheckListener() {
 			@Override
 			public void noBluetoothPermission() {
                 //未获取蓝牙权限,申请权限
