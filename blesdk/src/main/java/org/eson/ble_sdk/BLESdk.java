@@ -5,7 +5,9 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
 import org.eson.ble_sdk.check.BLECheck;
+import org.eson.ble_sdk.control.BLEControl;
 import org.eson.ble_sdk.scan.BLEScanner;
+import org.eson.ble_sdk.util.BLELog;
 
 import java.util.UUID;
 
@@ -31,14 +33,25 @@ public class BLESdk {
 		return instance;
 	}
 
+	/**
+	 * 初始化SDK
+	 *
+	 * @param context
+	 * @param service
+	 * @param desc
+	 * @param write
+	 * @param notify
+	 */
 	public static void init(Context context, UUID service, UUID desc, UUID[] write, UUID[] notify) {
 
 		initUUID(service, desc, write, notify);
 
-		AndroidBLE.init(context);
-		BLECheck.init();
-		BLEScanner.init();
+		AndroidBLE.init(context);                //初始化 BluetoothManager,BluetoothAdapter.
+		BLECheck.init();                    //初始化蓝牙检测类
+		BLEScanner.init();                    //初始化蓝牙扫描类
+		BLEControl.init();                    //	初始化蓝牙控制类
 
+		BLELog.i("BLESdk init ok");
 	}
 
 	private static void initUUID(UUID service, UUID desc, UUID[] write, UUID[] notify) {

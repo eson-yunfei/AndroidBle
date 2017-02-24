@@ -49,6 +49,18 @@ class BLEDataTransport extends BLEBaseControl {
 
 	}
 
+	public void readData(UUID serviceUuid, UUID characteristicUuid) {
+		BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
+		if (service == null) {
+			return;
+		}
+		BluetoothGattCharacteristic characteristic = service.getCharacteristic(characteristicUuid);
+		if (characteristic == null) {
+			return;
+		}
+		bluetoothGatt.readCharacteristic(characteristic);
+	}
+
 	public void enableNotify(UUID serviceUuid, UUID characteristicUuid, UUID descriptorUuid, BLEDataTransCallBack bleDataTransCallBack) {
 
 		if (bluetoothGatt == null) {

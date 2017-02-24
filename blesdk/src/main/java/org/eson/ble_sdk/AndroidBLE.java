@@ -4,10 +4,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
+import org.eson.ble_sdk.util.BLELog;
+
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
- * @说明：
+ * @说明： 私有文件，提供BluetoothManager  ，BluetoothAdapter
  */
 
 class AndroidBLE {
@@ -26,9 +28,11 @@ class AndroidBLE {
 		if (androidBLE == null) {
 			androidBLE = new AndroidBLE(context);
 		}
+		BLELog.i("AndroidBLE init ok");
 	}
 
 	public static AndroidBLE get() {
+
 		return androidBLE;
 	}
 
@@ -43,6 +47,7 @@ class AndroidBLE {
 	public BluetoothAdapter getBluetoothAdapter() {
 		getBluetoothManager();
 		if (bluetoothManager == null) {
+			BLELog.e("AndroidBLE.java------->>>bluetoothManager is null");
 			return null;
 		}
 		if (bluetoothAdapter == null) {

@@ -3,6 +3,8 @@ package org.eson.ble_sdk.control;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 
+import org.eson.ble_sdk.util.BLELog;
+
 import java.util.UUID;
 
 /**
@@ -24,6 +26,8 @@ public class BLEControl extends BLEBaseControl {
 		if (bleControl == null) {
 			bleControl = new BLEControl();
 		}
+
+		BLELog.i("BLEControl init ok");
 	}
 
 	public static BLEControl get() {

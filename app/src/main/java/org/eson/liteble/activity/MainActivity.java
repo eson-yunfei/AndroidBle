@@ -1,4 +1,4 @@
-package org.eson.liteble;
+package org.eson.liteble.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,9 +20,9 @@ import org.eson.ble_sdk.control.BLEConnectCallBack;
 import org.eson.ble_sdk.control.BLEControl;
 import org.eson.ble_sdk.scan.BLEScanListener;
 import org.eson.ble_sdk.scan.BLEScanner;
-import org.eson.liteble.activity.BleDetailActivity;
-import org.eson.liteble.activity.SettingActivity;
+import org.eson.liteble.R;
 import org.eson.liteble.adapter.ScanBLEAdapter;
+import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;

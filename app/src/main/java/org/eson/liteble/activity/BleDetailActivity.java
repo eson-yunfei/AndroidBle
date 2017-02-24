@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import org.eson.ble_sdk.control.BLEControl;
-import org.eson.liteble.LogUtil;
+import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.R;
 
 import java.util.ArrayList;

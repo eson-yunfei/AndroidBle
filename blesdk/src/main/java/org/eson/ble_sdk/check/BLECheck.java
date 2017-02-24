@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import org.eson.ble_sdk.BLESdk;
+import org.eson.ble_sdk.util.BLELog;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -20,26 +21,25 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class BLECheck {
 
-
-//	private BluetoothManager bluetoothManager;
-
-//	private BLECheckListener bleCheckListener;
-
 	private BluetoothAdapter bluetoothAdapter;
 
 	private BLECheck() {
 	}
 
-	private static BLECheck bleCheck;
+	private static BLECheck bleCheck = null;
 
 	public static void init() {
 		if (bleCheck == null) {
 			bleCheck = new BLECheck();
 		}
+
+		BLELog.i("BLECheck init ok");
 	}
 
 	public static BLECheck get() {
-		init();
+		if (bleCheck == null) {
+			init();
+		}
 		return bleCheck;
 	}
 
@@ -66,7 +66,7 @@ public class BLECheck {
 		}
 
 		//蓝牙是否打开
-		if (!bleEnable()) {
+		if (!isBleEnable()) {
 			checkListener.bleClosing();
 			return;
 		}
@@ -80,10 +80,11 @@ public class BLECheck {
 	 *
 	 * @return
 	 */
-	private boolean bleEnable() {
+	private boolean isBleEnable() {
 
 		bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
 		if (bluetoothAdapter == null) {
+			BLELog.i("BleCheck  isBleEnable() bluetoothAdapter is null");
 			return false;
 		}
 
@@ -131,7 +132,7 @@ public class BLECheck {
 	}
 
 	/**
-	 * 打开蓝牙
+	 * 打开蓝牙,软件内打开，不需要跳转的系统界面
 	 */
 	public void openBle() {
 		if (bluetoothAdapter == null) {
@@ -141,7 +142,7 @@ public class BLECheck {
 	}
 
 	/**
-	 * 打开蓝牙
+	 * 跳转到系统界面，打开蓝牙
 	 *
 	 * @param activity
 	 * @param requestCode

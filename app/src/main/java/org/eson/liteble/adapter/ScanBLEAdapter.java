@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.eson.ble_sdk.bean.BLEDevice;
-import org.eson.liteble.LogUtil;
+import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.R;
 
 import java.util.List;

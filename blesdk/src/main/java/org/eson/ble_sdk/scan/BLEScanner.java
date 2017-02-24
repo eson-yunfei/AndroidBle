@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import org.eson.ble_sdk.BLESdk;
 import org.eson.ble_sdk.bean.BLEDevice;
+import org.eson.ble_sdk.util.BLELog;
 
 import java.util.UUID;
 
@@ -35,6 +36,7 @@ public class BLEScanner {
 		if (bleScanner == null) {
 			bleScanner = new BLEScanner();
 		}
+		BLELog.i("BLEScanner init ok");
 	}
 
 	public static BLEScanner get() {

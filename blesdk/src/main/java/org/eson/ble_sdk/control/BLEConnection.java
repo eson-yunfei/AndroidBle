@@ -79,6 +79,7 @@ class BLEConnection extends BLEBaseControl {
 			return;
 		}
 		bluetoothGatt.disconnect();
+		bluetoothGatt = null;
 	}
 
 
