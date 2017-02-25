@@ -59,3 +59,38 @@
                     //扫描出错
     			}
     		});
+
+
+ 五、蓝牙连接
+
+
+
+        BLEControl.get().enableNotify(serviceUuid, characteristicUuid,
+        descriptorUui, new BLEConnectCallBack() {
+                            @Override
+                        	public void onConnecting() {
+
+                        		sendBleState(BLEConstant.State.STATE_CONNECTING);
+                        	}
+
+                        	@Override
+                        	public void onConnected() {
+                        		sendBleState(BLEConstant.State.STATE_CONNECTED);
+                        	}
+
+                        	@Override
+                        	public void onDisConnecting() {
+                        		sendBleState(BLEConstant.State.STATE_DIS_CONNECTING);
+                        	}
+
+                        	@Override
+                        	public void onDisConnected() {
+                        		sendBleState(BLEConstant.State.STATE_DIS_CONNECTED);
+                        	}
+
+                        	@Override
+                        	public void onBleServerEnable() {
+                        		sendBleState(BLEConstant.State.STATE_DISCOVER_SERVER);
+
+                        	}
+                        });
