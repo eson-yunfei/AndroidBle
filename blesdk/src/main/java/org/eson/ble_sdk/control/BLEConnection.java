@@ -16,6 +16,8 @@ import org.eson.ble_sdk.util.BLELog;
 
 class BLEConnection extends BLEBaseControl {
 
+	private BLEConnectCallBack bleConnectCallBack;
+
 	private BLEConnection() {
 
 	}
@@ -43,15 +45,12 @@ class BLEConnection extends BLEBaseControl {
 			return;
 		}
 
-		if (connectCallBack != null) {
-			connectCallBackList.add(connectCallBack);
-		}
-
 		if (bluetoothGatt != null) {
 			bluetoothGatt.connect();
 			return;
 		}
 
+		bleConnectCallBack = connectCallBack;
 		if (bluetoothAdapter == null) {
 			bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
 		}
@@ -62,12 +61,12 @@ class BLEConnection extends BLEBaseControl {
 		}
 
 		bluetoothGatt = device.connectGatt(context, isAutoConnect, gattCallback);
-		BLELog.e("connectionDevice"+bluetoothGatt.getServices().size());
+		BLELog.e("connectionDevice" + bluetoothGatt.getServices().size());
 		bluetoothGatt.connect();
 
 	}
 
-	public BluetoothGatt getBlueToothGatt(){
+	public BluetoothGatt getBlueToothGatt() {
 		return bluetoothGatt;
 	}
 
@@ -87,75 +86,58 @@ class BLEConnection extends BLEBaseControl {
 	public void onConnecting() {
 		super.onConnecting();
 
-		if (connectCallBackList.size() == 0) {
+		if (bleConnectCallBack == null) {
 			return;
 		}
 
-		for (BLEConnectCallBack connectCallBack : connectCallBackList) {
-			connectCallBack.onConnecting();
-		}
+		bleConnectCallBack.onConnecting();
+		BLELog.i("BLEConnection --->> onConnecting()");
 	}
 
 	@Override
 	public void onConnected() {
 		super.onConnected();
-		if (connectCallBackList.size() == 0) {
+		if (bleConnectCallBack == null) {
 			return;
 		}
 
-		for (BLEConnectCallBack connectCallBack : connectCallBackList) {
-			connectCallBack.onConnected();
-		}
+		bleConnectCallBack.onConnected();
+		BLELog.i("BLEConnection --->> onConnected()");
+		bluetoothGatt.discoverServices();
+
 	}
 
 	@Override
 	public void onDisConnecting() {
 		super.onDisConnecting();
-		if (connectCallBackList.size() == 0) {
+		if (bleConnectCallBack == null) {
 			return;
 		}
 
-		for (BLEConnectCallBack connectCallBack : connectCallBackList) {
-			connectCallBack.onDisConnecting();
-		}
+		bleConnectCallBack.onDisConnecting();
+		BLELog.i("BLEConnection --->> onDisConnecting()");
 	}
 
 	@Override
 	public void onDisConnected() {
 		super.onDisConnected();
-		if (connectCallBackList.size() == 0) {
+
+		if (bleConnectCallBack == null) {
 			return;
 		}
 
-		for (BLEConnectCallBack connectCallBack : connectCallBackList) {
-			connectCallBack.onDisConnected();
-		}
-	}
-
-
-	@Override
-	public void removeConnectCallBack(BLEConnectCallBack connectCallBack) {
-		super.removeConnectCallBack(connectCallBack);
-
-
-		if (connectCallBack == null || connectCallBackList.size() == 0) {
-			return;
-		}
-
-		for (int i = 0; i < connectCallBackList.size(); i++) {
-
-			if (connectCallBackList.contains(connectCallBack)) {
-				connectCallBackList.remove(connectCallBack);
-			}
-		}
+		bleConnectCallBack.onDisConnected();
+		BLELog.i("BLEConnection --->> onDisConnected()");
 	}
 
 	@Override
-	public void cleanConnectCallBack() {
-		super.cleanConnectCallBack();
-		if (connectCallBackList.size() == 0) {
+	public void onBleServerEnable() {
+		super.onBleServerEnable();
+		if (bleConnectCallBack == null) {
 			return;
 		}
-		connectCallBackList.clear();
+
+		bleConnectCallBack.onBleServerEnable();
+		BLELog.i("BLEConnection --->> onBleServerEnable()");
 	}
 }

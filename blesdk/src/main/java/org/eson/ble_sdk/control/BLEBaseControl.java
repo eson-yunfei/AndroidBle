@@ -20,7 +20,6 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 	protected BluetoothAdapter bluetoothAdapter = null;
 	protected BluetoothGatt bluetoothGatt;
 
-	protected List<BLEConnectCallBack> connectCallBackList = new ArrayList<>();
 	protected List<BLEDataTransCallBack> dataSendCallBacks = new ArrayList<>();
 	protected List<BLEDataTransCallBack> dataNotifyCallBacks = new ArrayList<>();
 
@@ -54,6 +53,8 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 		@Override
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			super.onServicesDiscovered(gatt, status);
+
+			onBleServerEnable();
 		}
 
 		@Override
@@ -84,14 +85,6 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 	};
 
 
-	/**
-	 * @param connectCallBack
-	 */
-	public void removeConnectCallBack(BLEConnectCallBack connectCallBack) {
-
-		BLEConnection.get().removeConnectCallBack(connectCallBack);
-	}
-
 	public void removeDataSendCallback(BLEDataTransCallBack dataTransCallBack) {
 		BLEDataTransport.get().removeDataSendCallback(dataTransCallBack);
 
@@ -102,11 +95,6 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 
 	}
 
-
-	public void cleanConnectCallBack() {
-
-		BLEConnection.get().cleanConnectCallBack();
-	}
 
 	public void cleanDataSendCallback() {
 
@@ -154,6 +142,11 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 
 	@Override
 	public void onDisConnected() {
+
+	}
+
+	@Override
+	public void onBleServerEnable() {
 
 	}
 }

@@ -15,4 +15,6 @@ public interface BLEConnectCallBack {
 	void onDisConnecting();
 
 	void onDisConnected();
+
+	void onBleServerEnable();
 }

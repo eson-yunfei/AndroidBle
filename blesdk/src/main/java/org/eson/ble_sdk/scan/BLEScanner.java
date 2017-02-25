@@ -40,7 +40,9 @@ public class BLEScanner {
 	}
 
 	public static BLEScanner get() {
-		init();
+		if (bleScanner == null) {
+			init();
+		}
 		return bleScanner;
 	}
 
@@ -48,8 +50,8 @@ public class BLEScanner {
 	 * 开始扫描
 	 *
 	 * @param timeOut         ：扫描超时设置
-	 * @param nameFilter      :名称过滤
-	 * @param uuidFilter      :uuID过滤
+	 * @param nameFilter      :名称过滤  ，只显示指定名称的设备
+	 * @param uuidFilter      :uuID过滤	，只显示指定UUID的设备
 	 * @param bleScanListener ：扫描回调
 	 */
 	public void startScan(int timeOut, String[] nameFilter, UUID[] uuidFilter, BLEScanListener bleScanListener) {
@@ -157,7 +159,7 @@ public class BLEScanner {
 			if (TextUtils.isEmpty(name)) {
 				return;
 			}
-			if (containName(name)) {
+			if (!containName(name)) {
 				return;
 			}
 
@@ -185,7 +187,7 @@ public class BLEScanner {
 		boolean isContain = false;
 
 		if (nameFilter == null || nameFilter.length == 0) {
-			return false;
+			return true;
 		}
 
 		for (int i = 0; i < nameFilter.length; i++) {
