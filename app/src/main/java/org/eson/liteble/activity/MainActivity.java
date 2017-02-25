@@ -85,35 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				selectDevice = deviceList.get(i);
 
 				BleService.get().connectionDevice(MainActivity.this, selectDevice.getMac());
-//				BLEControl.get().connectToDevice(MainActivity.this, device.getMac(), false, new BLEConnectCallBack() {
-//					@Override
-//					public void onConnecting() {
-//
-//					}
-//
-//					@Override
-//					public void onConnected() {
-//						hideProgress();
-//						//TODO 此项放至连接结束后调用
-//						BLEControl.get().getBluetoothGatt().discoverServices();
-//						Intent intent = new Intent(MainActivity.this, BleDetailActivity.class);
-//
-//						intent.putExtra("macAddr", device.getMac());
-//						intent.putExtra("name", device.getName());
-//						startActivity(intent);
-//
-//					}
-//
-//					@Override
-//					public void onDisConnecting() {
-//
-//					}
-//
-//					@Override
-//					public void onDisConnected() {
-//
-//					}
-//				});
 
 			}
 		});
@@ -151,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		LogUtil.e("onActivityResult" + requestCode + ";;;;" + resultCode);
 		if (requestCode == 0x01) {
 			if (resultCode == RESULT_OK) {
-				//LogUtil.e("开始扫描");
-				//searchDevice();
 			}
 		} else if (requestCode == 0x02) {
 			if (resultCode == RESULT_OK) {
@@ -176,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 
+	/**
+	 * 扫描蓝牙设备
+	 */
 	private void searchDevice() {
 		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
 			@Override

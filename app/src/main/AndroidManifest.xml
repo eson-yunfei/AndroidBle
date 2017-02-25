@@ -28,6 +28,10 @@
             android:name=".activity.BleDetailActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity
+            android:name=".activity.CharacteristicActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <service android:name=".service.BleService">
 
         </service>

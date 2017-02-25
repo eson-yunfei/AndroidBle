@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
@@ -42,6 +43,9 @@ public class BleDetailActivity extends AppCompatActivity {
 	private final String LIST_NAME = "NAME";
 	private final String LIST_UUID = "UUID";
 
+	private List<HashMap<String, String>> gattServiceData = new ArrayList<>();
+	private List<List<HashMap<String, String>>> gattCharacteristicData = new ArrayList<>();
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,7 +68,34 @@ public class BleDetailActivity extends AppCompatActivity {
 //		expandList.setAdapter();
 
 
+		expandList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 
+
+				goToCharacteristicDetail(groupPosition, childPosition);
+				return false;
+			}
+		});
+
+	}
+
+	private void goToCharacteristicDetail(int groupPosition, int childPosition) {
+		HashMap<String, String> serviceMap = gattServiceData.get(groupPosition);
+		HashMap<String, String> characterMap = gattCharacteristicData.get(groupPosition).get(childPosition);
+
+		String serviceUUID = serviceMap.get(LIST_UUID);
+		String characterUUID = characterMap.get(LIST_UUID);
+
+
+		Intent intent = new Intent(BleDetailActivity.this, CharacteristicActivity.class);
+
+		intent.putExtra("serviceUUID", serviceUUID);
+		intent.putExtra("characterUUID", characterUUID);
+
+		startActivity(intent);
+
+//		ToastUtil.showShort(BleDetailActivity.this, "UUID:" + uuid);
 	}
 
 	private void getMessage() {
@@ -81,9 +112,6 @@ public class BleDetailActivity extends AppCompatActivity {
 		if (serviceArrayList == null || serviceArrayList.size() == 0) {
 			return;
 		}
-
-
-		List<HashMap<String, String>> gattServiceData = new ArrayList<>();
 
 
 		for (BluetoothGattService bluetoothGattService : serviceArrayList) {
@@ -108,7 +136,7 @@ public class BleDetailActivity extends AppCompatActivity {
 			return;
 		}
 
-		List<List<HashMap<String, String>>> gattCharacteristicData = new ArrayList<>();
+
 		for (HashMap<String, String> map : gattServiceData) {
 
 			List<HashMap<String, String>> gattCharacteristicList = new ArrayList<>();
@@ -158,38 +186,6 @@ public class BleDetailActivity extends AppCompatActivity {
 		);
 
 		expandList.setAdapter(gattServiceAdapter);
-//		StringBuilder builder = new StringBuilder();
-//
-//		serviceArrayList = (ArrayList<BluetoothGattService>) gatt.getServices();
-//		LogUtil.e("Gatt getServices size" + serviceArrayList.size());
-//		for (int i = 0; i < serviceArrayList.size(); i++) {
-//
-//			BluetoothGattService service = serviceArrayList.get(i);
-//			UUID uuid = service.getUuid();
-//			builder.append("服务UUID:").append(uuid.toString());    //服务的UUID
-//			List<BluetoothGattCharacteristic> bluetoothGattCharacteristics = service.getCharacteristics();
-//			LogUtil.e("Gatt  BluetoothGattCharacteristic size:" + bluetoothGattCharacteristics.size());
-//			for (int i1 = 0; i1 < bluetoothGattCharacteristics.size(); i1++) {
-//				StringBuilder builder1 = new StringBuilder();
-//				BluetoothGattCharacteristic characteristic = bluetoothGattCharacteristics.get(i1);
-//				UUID uuid1 = characteristic.getUuid();//特性的UUID
-//				builder1.append(uuid1.toString() + "支持");
-//				int properties = characteristic.getProperties();    //用于区分特性用途（读、写、通知）
-//				if ((properties & PROPERTY_READ) != 0) {
-//					builder1.append("读");
-//				}
-//				if ((properties & PROPERTY_WRITE) != 0) {
-//					builder1.append("写");
-//				}
-//				if ((properties & PROPERTY_NOTIFY) != 0) {
-//					builder1.append("通知");
-//				}
-//				LogUtil.e(builder1.toString());
-//			}
-//			textView.setText(builder.toString());
-
-
-//		}
 	}
 
 	@Override
