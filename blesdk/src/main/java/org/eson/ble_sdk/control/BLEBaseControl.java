@@ -6,8 +6,11 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
 
+import org.eson.ble_sdk.util.BLELog;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @作者 xiaoyunfei
@@ -62,6 +65,7 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 			super.onCharacteristicRead(gatt, characteristic, status);
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 
+				BLELog.d("-->>onCharacteristicRead()");
 			}
 		}
 
@@ -71,6 +75,7 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				//发送成功
+				BLELog.d("-->>onCharacteristicWrite()");
 			}
 		}
 
@@ -78,9 +83,17 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 			super.onCharacteristicChanged(gatt, characteristic);
 
-			byte[] notice = characteristic.getValue();
+			BLELog.d("-->>onCharacteristicChanged()");
+			if (characteristic == null) {
+				return;
+			}
+			UUID uuid = characteristic.getUuid();
+			BLELog.d("uuid-->>" + uuid.toString());
 
-			onNotify(notice);
+
+			byte[] noticeValue = characteristic.getValue();
+//			BLEByteUtil.printHex(noticeValue);
+			onNotify(noticeValue);
 		}
 	};
 
@@ -137,7 +150,7 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 
 	@Override
 	public void onNotify(byte[] data) {
-
+		BLEDataTransport.get().onNotify(data);
 	}
 
 	@Override

@@ -48,5 +48,7 @@ public class MyApplication extends Application {
 
 		Intent bleServer = new Intent(mContext, BleService.class);
 		startService(bleServer);
+
+
 	}
 }

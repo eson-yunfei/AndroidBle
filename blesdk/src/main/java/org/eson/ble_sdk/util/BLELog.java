@@ -28,7 +28,6 @@ public class BLELog {
 	}
 
 	/**
-	 *
 	 * @param msg
 	 */
 	public static void e(String msg) {
@@ -36,7 +35,6 @@ public class BLELog {
 	}
 
 	/**
-	 *
 	 * @param msg
 	 */
 	public static void d(String msg) {
@@ -44,7 +42,6 @@ public class BLELog {
 	}
 
 	/**
-	 *
 	 * @param msg
 	 */
 	public static void i(String msg) {
@@ -52,7 +49,6 @@ public class BLELog {
 	}
 
 	/**
-	 *
 	 * @param msg
 	 */
 	public static void w(String msg) {
@@ -60,8 +56,8 @@ public class BLELog {
 	}
 
 	/**
-	 *
 	 * @param msg
+	 *
 	 * @return
 	 */
 	private static String getFormatString(String msg) {

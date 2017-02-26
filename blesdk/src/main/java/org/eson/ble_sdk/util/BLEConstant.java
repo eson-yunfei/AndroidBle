@@ -10,6 +10,7 @@ public class BLEConstant {
 
 	public static final class Type {
 		public static final String TYPE_STATE = "ble_state";
+		public static final String TYPE_NOTICE = "ble_notice";
 	}
 
 	public static final class State {

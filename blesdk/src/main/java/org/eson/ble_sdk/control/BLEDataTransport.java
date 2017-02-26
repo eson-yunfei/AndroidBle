@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 
+import org.eson.ble_sdk.util.BLELog;
+
 import java.util.UUID;
 
 /**
@@ -23,13 +25,16 @@ class BLEDataTransport extends BLEBaseControl {
 	public static BLEDataTransport get() {
 		if (bleDataTransport == null) {
 			bleDataTransport = new BLEDataTransport();
+
 		}
 		return bleDataTransport;
 	}
 
 
 	public void sendData(UUID serviceUuid, UUID characteristicUuid, byte[] data, BLEDataTransCallBack bleDataTransCallBack) {
-
+		if (bluetoothGatt == null) {
+			bluetoothGatt = BLEControl.get().getBluetoothGatt();
+		}
 		if (bluetoothGatt == null) {
 			return;
 		}
@@ -50,6 +55,12 @@ class BLEDataTransport extends BLEBaseControl {
 	}
 
 	public void readData(UUID serviceUuid, UUID characteristicUuid) {
+		if (bluetoothGatt == null) {
+			bluetoothGatt = BLEControl.get().getBluetoothGatt();
+		}
+		if (bluetoothGatt == null) {
+			return;
+		}
 		BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
 		if (service == null) {
 			return;
@@ -62,6 +73,10 @@ class BLEDataTransport extends BLEBaseControl {
 	}
 
 	public void enableNotify(UUID serviceUuid, UUID characteristicUuid, UUID descriptorUuid, BLEDataTransCallBack bleDataTransCallBack) {
+
+		if (bluetoothGatt == null) {
+			bluetoothGatt = BLEControl.get().getBluetoothGatt();
+		}
 
 		if (bluetoothGatt == null) {
 			return;
@@ -86,8 +101,23 @@ class BLEDataTransport extends BLEBaseControl {
 		descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 		bluetoothGatt.writeDescriptor(descriptor);
 
+		BLELog.i("enableNotify-->>" + characteristicUuid.toString());
 	}
 
+
+	@Override
+	public void onNotify(byte[] data) {
+//		super.onNotify(data);
+		if (dataNotifyCallBacks.size() == 0) {
+			return;
+		}
+
+
+		for (BLEDataTransCallBack dataNotifyCallBack : dataNotifyCallBacks) {
+
+			dataNotifyCallBack.onNotify(data);
+		}
+	}
 
 	@Override
 	public void removeDataSendCallback(BLEDataTransCallBack dataTransCallBack) {

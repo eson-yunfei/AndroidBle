@@ -23,45 +23,45 @@ import java.util.List;
  */
 public class ScanBLEAdapter extends MyBaseAdapter<BLEDevice> {
 
-    public ScanBLEAdapter(Context context, List<BLEDevice> dataList) {
-        super(context, dataList);
-    }
+	public ScanBLEAdapter(Context context, List<BLEDevice> dataList) {
+		super(context, dataList);
+	}
 
-    @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        ViewHolder viewHolder;
-        if (view == null) {
-            view = inflater.inflate(R.layout.item_scan_device, null);
-            viewHolder = new ViewHolder(view);
-            view.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) view.getTag();
-        }
-        BLEDevice device = dataList.get(position);
-        String name = device.getName();
-        LogUtil.d("信号:"+device.getRssi());
-        LogUtil.e("name = " + name);
-        String mac = device.getMac();
-        viewHolder.deviceRssi.setText("信号强度："+device.getRssi());
-        viewHolder.deviceName.setText(name);
-        viewHolder.deviceMac.setText(mac);
+	@Override
+	public View getView(int position, View view, ViewGroup viewGroup) {
+		ViewHolder viewHolder;
+		if (view == null) {
+			view = inflater.inflate(R.layout.item_scan_device, null);
+			viewHolder = new ViewHolder(view);
+			view.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) view.getTag();
+		}
+		BLEDevice device = dataList.get(position);
+		String name = device.getName();
+		LogUtil.d("信号:" + device.getRssi());
+		LogUtil.e("name = " + name);
+		String mac = device.getMac();
+		viewHolder.deviceRssi.setText("信号强度：" + device.getRssi());
+		viewHolder.deviceName.setText(name);
+		viewHolder.deviceMac.setText(mac);
 
-        return view;
-    }
+		return view;
+	}
 
-    class ViewHolder{
-        View rootView;
+	class ViewHolder {
+		View rootView;
 
-        TextView deviceName;
-        TextView deviceMac;
-        TextView deviceRssi;
+		TextView deviceName;
+		TextView deviceMac;
+		TextView deviceRssi;
 
-        ViewHolder(View rootView) {
+		ViewHolder(View rootView) {
 
-            this.rootView = rootView;
-            this.deviceName = findView(rootView, R.id.deviceName);
-            this.deviceMac = findView(rootView, R.id.deviceMac);
-            this.deviceRssi = findView(rootView, R.id.deviceRssi);
-        }
-    }
+			this.rootView = rootView;
+			this.deviceName = findView(rootView, R.id.deviceName);
+			this.deviceMac = findView(rootView, R.id.deviceMac);
+			this.deviceRssi = findView(rootView, R.id.deviceRssi);
+		}
+	}
 }

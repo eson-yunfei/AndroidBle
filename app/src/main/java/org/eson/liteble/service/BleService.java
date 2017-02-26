@@ -10,8 +10,10 @@ import android.support.annotation.Nullable;
 import org.eson.ble_sdk.control.BLEConnectCallBack;
 import org.eson.ble_sdk.control.BLEControl;
 import org.eson.ble_sdk.control.BLEDataTransCallBack;
+import org.eson.ble_sdk.util.BLEByteUtil;
 import org.eson.ble_sdk.util.BLEConstant;
 import org.eson.liteble.RxBus;
+import org.eson.liteble.util.LogUtil;
 
 import java.util.UUID;
 
@@ -100,6 +102,15 @@ public class BleService extends Service {
 
 		@Override
 		public void onNotify(byte[] data) {
+
+//			Bundle bundle = new Bundle();
+//			bundle.putInt(BLEConstant.Type.TYPE_STATE, state);
+//			RxBus.getInstance().send(bundle);
+
+//			BLEByteUtil.printHex(data);
+			LogUtil.e("onNotify()--->>"+BLEByteUtil.getHexString(data));
+//			ToastUtil.showShort(MyApplication.getContext(), BLEByteUtil.getHexString(data));
+
 
 		}
 	};

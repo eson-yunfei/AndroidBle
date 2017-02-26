@@ -39,14 +39,14 @@ public class BLEDevice {
 	@Override
 	public boolean equals(Object obj) {
 		BLEDevice device = null;
-		if(obj instanceof BLEDevice){
+		if (obj instanceof BLEDevice) {
 			device = (BLEDevice) obj;
-			if(device.mac.equals(this.mac)){
+			if (device.mac.equals(this.mac)) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
-		}else {
+		} else {
 			return false;
 		}
 	}

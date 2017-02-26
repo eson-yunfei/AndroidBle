@@ -29,8 +29,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
-            android:name=".activity.CharacteristicActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:name=".activity.CharacteristicActivity"/>
 
         <service android:name=".service.BleService">
 

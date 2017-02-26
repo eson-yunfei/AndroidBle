@@ -20,37 +20,37 @@ import java.util.List;
  * @class describe
  */
 public abstract class MyBaseAdapter<T> extends BaseAdapter {
-    protected Context context;
-    protected List<T> dataList;
-    protected LayoutInflater inflater;
-    protected Resources resources;
+	protected Context context;
+	protected List<T> dataList;
+	protected LayoutInflater inflater;
+	protected Resources resources;
 
-    public MyBaseAdapter(Context context, List<T> dataList) {
-        this.context = context;
-        this.dataList = dataList;
-        this.inflater = LayoutInflater.from(context);
-        this.resources = context.getResources();
-    }
+	public MyBaseAdapter(Context context, List<T> dataList) {
+		this.context = context;
+		this.dataList = dataList;
+		this.inflater = LayoutInflater.from(context);
+		this.resources = context.getResources();
+	}
 
-    public void setDataList(List<T> dataList) {
-        this.dataList = dataList;
-    }
+	public void setDataList(List<T> dataList) {
+		this.dataList = dataList;
+	}
 
-    public int getCount() {
-        return this.dataList == null?0:this.dataList.size();
-    }
+	public int getCount() {
+		return this.dataList == null ? 0 : this.dataList.size();
+	}
 
-    public T getItem(int i) {
-        return this.dataList == null?null:this.dataList.get(i);
-    }
+	public T getItem(int i) {
+		return this.dataList == null ? null : this.dataList.get(i);
+	}
 
-    public long getItemId(int i) {
-        return (long)i;
-    }
+	public long getItemId(int i) {
+		return (long) i;
+	}
 
-    public abstract View getView(int var1, View var2, ViewGroup var3);
+	public abstract View getView(int var1, View var2, ViewGroup var3);
 
-    protected <T extends View> T findView(View rootView, int viewID) {
-        return (T) rootView.findViewById(viewID);
-    }
+	protected <T extends View> T findView(View rootView, int viewID) {
+		return (T) rootView.findViewById(viewID);
+	}
 }

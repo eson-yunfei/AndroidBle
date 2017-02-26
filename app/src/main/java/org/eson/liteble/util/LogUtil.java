@@ -15,29 +15,29 @@ import android.util.Log;
 
 
 public class LogUtil {
-    private static String TAG = "AndroidBle";
+	private static String TAG = "AndroidBle";
 
-    public LogUtil() {
-    }
+	public LogUtil() {
+	}
 
-    public static void e(String msg) {
-        Log.e(TAG, getFormatText(msg));
-    }
+	public static void e(String msg) {
+		Log.e(TAG, getFormatText(msg));
+	}
 
-    public static void e(String tag, String msg) {
-        Log.e(tag, getFormatText(msg));
-    }
+	public static void e(String tag, String msg) {
+		Log.e(tag, getFormatText(msg));
+	}
 
-    public static void d(String msg) {
-        Log.d(TAG, getFormatText(msg));
-    }
+	public static void d(String msg) {
+		Log.d(TAG, getFormatText(msg));
+	}
 
-    public static void i(String msg) {
-        Log.i(TAG, getFormatText(msg));
-    }
+	public static void i(String msg) {
+		Log.i(TAG, getFormatText(msg));
+	}
 
-    private static String getFormatText(String msg) {
-        return "{ " + msg + " }";
-    }
+	private static String getFormatText(String msg) {
+		return "{ " + msg + " }";
+	}
 }
 

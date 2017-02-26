@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:text="搜索设备"
         />
+
     <ListView
         android:id="@+id/listview"
         android:layout_width="match_parent"

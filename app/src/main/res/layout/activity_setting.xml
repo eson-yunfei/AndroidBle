@@ -4,51 +4,56 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <TextView
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="搜索超时时长："
-                />
-            <EditText
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="单位：s"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
-                />
-        </RelativeLayout>
-
-        <CheckBox
-            android:id="@+id/name_checkBox"
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="仅显示以下蓝牙名称的设备"
+            android:text="搜索超时时长："
             />
-        <LinearLayout
-            android:id="@+id/name_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-        </LinearLayout>
-        <CheckBox
+
+        <EditText
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="仅显示包含以下UUID的设备"
+            android:hint="单位：s"
+
             />
-        <LinearLayout
-            android:id="@+id/uuid_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-        </LinearLayout>
+    </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/name_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="仅显示以下蓝牙名称的设备"
+        />
+
+    <LinearLayout
+        android:id="@+id/name_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    </LinearLayout>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="仅显示包含以下UUID的设备"
+        />
+
+    <LinearLayout
+        android:id="@+id/uuid_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    </LinearLayout>
 
 </LinearLayout>

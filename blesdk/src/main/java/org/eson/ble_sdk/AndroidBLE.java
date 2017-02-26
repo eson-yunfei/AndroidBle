@@ -54,5 +54,7 @@ class AndroidBLE {
 			bluetoothAdapter = bluetoothManager.getAdapter();
 		}
 		return bluetoothAdapter;
+
+
 	}
 }

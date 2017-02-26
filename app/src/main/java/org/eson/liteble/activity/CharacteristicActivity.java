@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.eson.ble_sdk.control.BLEControl;
 import org.eson.liteble.R;
+import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class CharacteristicActivity extends AppCompatActivity {
 
 	private String serviceUUID;
 	private String characterUUID;
-
+	private List<String> descriptors = new ArrayList<>();
 
 	private int btnType = 0;
 
@@ -66,9 +67,20 @@ public class CharacteristicActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 
+				if (btnType == 0) {
+
+
+				} else {
+					enableNotice();
+				}
 			}
 		});
 
+	}
+
+	private void enableNotice() {
+		BleService.get().enableNotify(UUID.fromString(serviceUUID),
+				UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)));
 	}
 
 	private void setData(Bundle bundle) {
@@ -112,9 +124,9 @@ public class CharacteristicActivity extends AppCompatActivity {
 			return;
 		}
 
-		List<String> descriptors = new ArrayList<>();
+
 		for (BluetoothGattDescriptor bluetoothGattDescriptor : descriptorList) {
-			LogUtil.e("descriptor-->>"+bluetoothGattDescriptor.getUuid().toString());
+			LogUtil.e("descriptor-->>" + bluetoothGattDescriptor.getUuid().toString());
 			descriptors.add(bluetoothGattDescriptor.getUuid().toString());
 		}
 
