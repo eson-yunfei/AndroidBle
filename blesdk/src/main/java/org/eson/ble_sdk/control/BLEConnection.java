@@ -59,7 +59,6 @@ class BLEConnection extends BLEBaseControl {
 		if (device == null) {
 			return;
 		}
-
 		bluetoothGatt = device.connectGatt(context, isAutoConnect, gattCallback);
 		BLELog.e("connectionDevice" + bluetoothGatt.getServices().size());
 		bluetoothGatt.connect();

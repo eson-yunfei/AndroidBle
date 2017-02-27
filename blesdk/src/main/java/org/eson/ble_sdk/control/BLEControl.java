@@ -88,7 +88,13 @@ public class BLEControl extends BLEBaseControl {
 
 	}
 
+	public void disableNotify(UUID serviceUuid, UUID characteristicUuid, UUID descriptorUuid, BLEDataTransCallBack bleDataTransCallBack) {
+		BLEDataTransport.get().disableNotify(serviceUuid, characteristicUuid, descriptorUuid, bleDataTransCallBack);
+	}
+
 	public BluetoothGatt getBluetoothGatt() {
 		return BLEConnection.get().getBlueToothGatt();
 	}
+
+
 }

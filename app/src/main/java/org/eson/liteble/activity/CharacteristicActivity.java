@@ -46,6 +46,7 @@ public class CharacteristicActivity extends BaseBleActivity {
 
 	private ArrayAdapter<String> dataListAdapter;
 	private int btnType = 0;
+	private boolean isListenerNotice = false;
 
 	@Override
 	protected int getRootLayout() {
@@ -85,6 +86,7 @@ public class CharacteristicActivity extends BaseBleActivity {
 			intent.putExtra("characterUUID", characterUUID);
 			startActivity(intent);
 		} else {
+
 			enableNotice();
 		}
 	}
@@ -113,8 +115,15 @@ public class CharacteristicActivity extends BaseBleActivity {
 	 * 启动通知服务
 	 */
 	private void enableNotice() {
+
+		isListenerNotice = !isListenerNotice;
+		String text = isListenerNotice ? "取消监听" : "监听通知";
+//		if (isListenerNotice){
+//			btn.setText("");
+//		}
+		btn.setText(text);
 		BleService.get().enableNotify(UUID.fromString(serviceUUID),
-				UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)));
+				UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)), isListenerNotice);
 	}
 
 	/**

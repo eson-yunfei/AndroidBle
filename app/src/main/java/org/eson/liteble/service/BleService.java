@@ -53,8 +53,12 @@ public class BleService extends Service {
 	}
 
 	public void enableNotify(UUID serviceUuid, UUID characteristicUuid,
-							 UUID descriptorUui) {
-		BLEControl.get().enableNotify(serviceUuid, characteristicUuid, descriptorUui, bleDataTransCallBack);
+							 UUID descriptorUui, boolean isListenerNotice) {
+		if (isListenerNotice) {
+			BLEControl.get().enableNotify(serviceUuid, characteristicUuid, descriptorUui, bleDataTransCallBack);
+		}else {
+			BLEControl.get().disableNotify(serviceUuid, characteristicUuid, descriptorUui, bleDataTransCallBack);
+		}
 	}
 
 
