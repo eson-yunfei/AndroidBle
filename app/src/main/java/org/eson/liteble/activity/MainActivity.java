@@ -1,6 +1,7 @@
 package org.eson.liteble.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import org.eson.liteble.RxBus;
 import org.eson.liteble.adapter.ScanBLEAdapter;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.LogUtil;
+import org.eson.liteble.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ import io.reactivex.functions.Function;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+	private Context mContext;
 	private Button searchBtn;
 	private ListView mListView;
 	private Button checkBtn;
@@ -43,11 +46,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private BLEDevice selectDevice = null;
 
+	private boolean isCanIntent = true;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		mContext = this;
 		initView();
 		initViewListener();
 	}
@@ -55,7 +60,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	@Override
 	protected void onResume() {
 		super.onResume();
+		isCanIntent = true;
 		subBleState();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		isCanIntent = false;
 	}
 
 	private void initView() {
@@ -80,9 +92,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
 
-				showProgress();
-
 				selectDevice = deviceList.get(i);
+
+				showProgress("正在连接设备：" + selectDevice.getName());
+
 
 				BLEScanner.get().stopScan();
 				BleService.get().connectionDevice(MainActivity.this, selectDevice.getMac());
@@ -137,9 +150,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			@Override
 			public void run() {
 				if (!deviceList.contains(bleDevice)) {
-					deviceList.add(bleDevice);
+					deviceList.add(0, bleDevice);
 				}
-				scanBLEAdapter.setDataList(deviceList);
+//				scanBLEAdapter.setDataList(deviceList);
 				scanBLEAdapter.notifyDataSetChanged();
 			}
 		});
@@ -153,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
 			@Override
 			public void onScannerStart() {
-				showProgress();
+				showProgress("搜索设备中。。。。");
 			}
 
 			@Override
@@ -166,21 +179,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			@Override
 			public void onScannerStop() {
 				hideProgress();
+				ToastUtil.showShort(mContext, "扫描结束");
 			}
 
 			@Override
 			public void onScannerError() {
 				hideProgress();
+				ToastUtil.showShort(mContext, "扫描出现异常");
 			}
 		});
 	}
 
 
-	public void showProgress() {
+	/**
+	 * 显示等待框
+	 *
+	 * @param msg
+	 */
+	public void showProgress(String msg) {
 		if (m_pDialog == null) {
 			m_pDialog = new ProgressDialog(this);
 			m_pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			m_pDialog.setMessage("请稍等。。。");
 			m_pDialog.setIndeterminate(false);
 			m_pDialog.setCancelable(true);
 		}
@@ -188,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			return;
 		}
 
+		m_pDialog.setMessage(msg);
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
@@ -277,9 +297,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 					return;
 				}
 
+				if (!isCanIntent) {
+					return;
+				}
 				int state = value.getInt(BLEConstant.Type.TYPE_STATE, 0);
 				switch (state) {
 					case BLEConstant.State.STATE_CONNECTED:
+
 						break;
 					case BLEConstant.State.STATE_CONNECTING:
 						break;
@@ -289,8 +313,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 						break;
 					case BLEConstant.State.STATE_DISCOVER_SERVER:
 						startToNext();
-
-
 						break;
 				}
 
@@ -309,6 +331,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		});
 	}
 
+	/**
+	 * 跳转的想起界面
+	 */
 	private void startToNext() {
 
 		runOnUiThread(new Runnable() {
@@ -316,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			public void run() {
 
 				hideProgress();
+				ToastUtil.showShort(mContext, "连接成功");
 				Intent intent = new Intent(MainActivity.this, BleDetailActivity.class);
 //
 				intent.putExtra("macAddr", selectDevice.getMac());

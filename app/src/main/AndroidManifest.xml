@@ -26,13 +26,14 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.BleDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="BleDetail "/>
         <activity
             android:name=".activity.SendDataActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="SendData"/>
 
         <activity
-            android:name=".activity.CharacteristicActivity"/>
+            android:name=".activity.CharacteristicActivity"
+            android:label="Characteristic"/>
 
         <service android:name=".service.BleService">
 
