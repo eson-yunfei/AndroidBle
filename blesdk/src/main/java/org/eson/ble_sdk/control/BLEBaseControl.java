@@ -62,7 +62,11 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 			super.onCharacteristicRead(gatt, characteristic, status);
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 
-				BLELog.d("-->>onCharacteristicRead()");
+				BLELog.d("-->>onCharRead()");
+				UUID uuid = characteristic.getUuid();
+
+				byte[] readValue = characteristic.getValue();
+				onCharRead(uuid.toString(), readValue);
 			}
 		}
 
@@ -72,10 +76,13 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				//发送成功
-				BLELog.d("-->>onCharacteristicWrite()");
+				BLELog.d("-->>onCharWrite()");
 				UUID uuid = characteristic.getUuid();
-				BLELog.d("uuid-->>" + uuid.toString());
+
 				byte[] writeValue = characteristic.getValue();
+
+				onCharWrite(uuid.toString(), writeValue);
+				BLELog.d("uuid-->>" + uuid.toString());
 				BLEByteUtil.printHex(writeValue);
 			}
 		}
@@ -92,34 +99,11 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 			UUID uuid = characteristic.getUuid();
 			BLELog.d("uuid-->>" + uuid.toString());
 
-
 			byte[] noticeValue = characteristic.getValue();
-//			BLEByteUtil.printHex(noticeValue);
-			onNotify(noticeValue);
+			onNotify(uuid.toString(), noticeValue);
 		}
 	};
 
-
-	public void removeDataSendCallback(BLEDataTransCallBack dataTransCallBack) {
-		BLEDataTransport.get().removeDataSendCallback(dataTransCallBack);
-
-	}
-
-	public void removeDataNotifyCallback(BLEDataTransCallBack dataTransCallBack) {
-		BLEDataTransport.get().removeDataNotifyCallback(dataTransCallBack);
-
-	}
-
-
-	public void cleanDataSendCallback() {
-
-		BLEDataTransport.get().cleanDataSendCallback();
-	}
-
-	public void cleanDataNotifyCallback() {
-
-		BLEDataTransport.get().cleanDataNotifyCallback();
-	}
 
 	///
 	@Override
@@ -130,8 +114,8 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 	}
 
 	@Override
-	public void onCharacteristicRead() {
-
+	public void onCharRead(String uuid, byte[] data) {
+		BLEDataTransport.get().onCharRead(uuid, data);
 	}
 
 	@Override
@@ -140,19 +124,18 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 	}
 
 	@Override
-	public void onCharacteristicWrite() {
-
+	public void onCharWrite(String uuid, byte[] data) {
+		BLEDataTransport.get().onCharWrite(uuid, data);
 	}
 
 	@Override
 	public void onDisConnecting() {
 
-
 	}
 
 	@Override
-	public void onNotify(byte[] data) {
-		BLEDataTransport.get().onNotify(data);
+	public void onNotify(String uuid, byte[] data) {
+		BLEDataTransport.get().onNotify(uuid, data);
 	}
 
 	@Override

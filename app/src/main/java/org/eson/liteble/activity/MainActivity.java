@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 				selectDevice = deviceList.get(i);
 
+				BLEScanner.get().stopScan();
 				BleService.get().connectionDevice(MainActivity.this, selectDevice.getMac());
 
 			}

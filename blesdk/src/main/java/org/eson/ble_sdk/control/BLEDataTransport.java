@@ -38,6 +38,10 @@ class BLEDataTransport extends BLEBaseControl {
 		if (bluetoothGatt == null) {
 			return;
 		}
+
+		//TODO 判断蓝牙连接状态
+
+		//
 		if (bleDataTransCallBack != null && dataTransCallBack == null) {
 			dataTransCallBack = bleDataTransCallBack;
 		}
@@ -61,6 +65,8 @@ class BLEDataTransport extends BLEBaseControl {
 		if (bluetoothGatt == null) {
 			return;
 		}
+		//TODO 判断蓝牙连接状态
+
 		BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
 		if (service == null) {
 			return;
@@ -81,6 +87,8 @@ class BLEDataTransport extends BLEBaseControl {
 		if (bluetoothGatt == null) {
 			return;
 		}
+
+		//TODO 判断蓝牙连接状态
 
 		if (bleDataTransCallBack != null && dataTransCallBack == null) {
 			dataTransCallBack = bleDataTransCallBack;
@@ -104,11 +112,24 @@ class BLEDataTransport extends BLEBaseControl {
 		BLELog.i("enableNotify-->>" + characteristicUuid.toString());
 	}
 
+	@Override
+	public void onCharWrite(String uuid, byte[] data) {
+		if (dataTransCallBack != null) {
+			dataTransCallBack.onCharWrite(uuid, data);
+		}
+	}
 
 	@Override
-	public void onNotify(byte[] data) {
+	public void onCharRead(String uuid, byte[] data) {
 		if (dataTransCallBack != null) {
-			dataTransCallBack.onNotify(data);
+			dataTransCallBack.onCharRead(uuid, data);
+		}
+	}
+
+	@Override
+	public void onNotify(String uuid, byte[] data) {
+		if (dataTransCallBack != null) {
+			dataTransCallBack.onNotify(uuid, data);
 		}
 	}
 

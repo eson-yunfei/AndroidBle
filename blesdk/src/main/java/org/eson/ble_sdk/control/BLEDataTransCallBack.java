@@ -8,9 +8,9 @@ package org.eson.ble_sdk.control;
 
 public interface BLEDataTransCallBack {
 
-	void onCharacteristicRead();
+	void onCharRead(String uuid, byte[] data);
 
-	void onCharacteristicWrite();
+	void onCharWrite(String uuid, byte[] data);
 
-	void onNotify(byte[] data);
+	void onNotify(String uuid, byte[] data);
 }

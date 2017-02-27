@@ -95,17 +95,17 @@ public class BleService extends Service {
 
 	BLEDataTransCallBack bleDataTransCallBack = new BLEDataTransCallBack() {
 		@Override
-		public void onCharacteristicRead() {
+		public void onCharRead(String uuid, byte[] data) {
 
 		}
 
 		@Override
-		public void onCharacteristicWrite() {
+		public void onCharWrite(String uuid, byte[] data) {
 
 		}
 
 		@Override
-		public void onNotify(byte[] data) {
+		public void onNotify(String uuid, byte[] data) {
 
 //			Bundle bundle = new Bundle();
 //			bundle.putInt(BLEConstant.Type.TYPE_STATE, state);
