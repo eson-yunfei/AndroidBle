@@ -38,8 +38,8 @@ class BLEDataTransport extends BLEBaseControl {
 		if (bluetoothGatt == null) {
 			return;
 		}
-		if (bleDataTransCallBack != null) {
-			dataSendCallBacks.add(bleDataTransCallBack);
+		if (bleDataTransCallBack != null && dataTransCallBack == null) {
+			dataTransCallBack = bleDataTransCallBack;
 		}
 		BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
 		if (service == null) {
@@ -82,8 +82,8 @@ class BLEDataTransport extends BLEBaseControl {
 			return;
 		}
 
-		if (bleDataTransCallBack != null) {
-			dataNotifyCallBacks.add(bleDataTransCallBack);
+		if (bleDataTransCallBack != null && dataTransCallBack == null) {
+			dataTransCallBack = bleDataTransCallBack;
 		}
 		BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
 		if (service == null) {
@@ -107,64 +107,9 @@ class BLEDataTransport extends BLEBaseControl {
 
 	@Override
 	public void onNotify(byte[] data) {
-//		super.onNotify(data);
-		if (dataNotifyCallBacks.size() == 0) {
-			return;
-		}
-
-
-		for (BLEDataTransCallBack dataNotifyCallBack : dataNotifyCallBacks) {
-
-			dataNotifyCallBack.onNotify(data);
+		if (dataTransCallBack != null) {
+			dataTransCallBack.onNotify(data);
 		}
 	}
 
-	@Override
-	public void removeDataSendCallback(BLEDataTransCallBack dataTransCallBack) {
-		super.removeDataSendCallback(dataTransCallBack);
-		if (dataTransCallBack == null || dataSendCallBacks.size() == 0) {
-			return;
-		}
-
-		for (int i = 0; i < dataSendCallBacks.size(); i++) {
-			if (dataSendCallBacks.contains(dataTransCallBack)) {
-				dataSendCallBacks.remove(dataTransCallBack);
-			}
-		}
-	}
-
-	@Override
-	public void removeDataNotifyCallback(BLEDataTransCallBack dataTransCallBack) {
-		super.removeDataNotifyCallback(dataTransCallBack);
-
-		if (dataTransCallBack == null || dataNotifyCallBacks.size() == 0) {
-			return;
-		}
-
-		for (int i = 0; i < dataNotifyCallBacks.size(); i++) {
-			if (dataNotifyCallBacks.contains(dataTransCallBack)) {
-				dataNotifyCallBacks.remove(dataTransCallBack);
-			}
-		}
-
-	}
-
-	@Override
-	public void cleanDataSendCallback() {
-		super.cleanDataSendCallback();
-		if (dataSendCallBacks.size() == 0) {
-			return;
-		}
-		dataSendCallBacks.clear();
-	}
-
-	@Override
-	public void cleanDataNotifyCallback() {
-		super.cleanDataNotifyCallback();
-
-		if (dataNotifyCallBacks.size() == 0) {
-			return;
-		}
-		dataNotifyCallBacks.clear();
-	}
 }

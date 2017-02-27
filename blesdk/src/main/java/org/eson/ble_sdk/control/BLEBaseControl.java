@@ -6,10 +6,9 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
 
+import org.eson.ble_sdk.util.BLEByteUtil;
 import org.eson.ble_sdk.util.BLELog;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,9 +22,7 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 	protected BluetoothAdapter bluetoothAdapter = null;
 	protected BluetoothGatt bluetoothGatt;
 
-	protected List<BLEDataTransCallBack> dataSendCallBacks = new ArrayList<>();
-	protected List<BLEDataTransCallBack> dataNotifyCallBacks = new ArrayList<>();
-
+	protected BLEDataTransCallBack dataTransCallBack = null;
 
 	public BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
 		@Override
@@ -76,8 +73,13 @@ class BLEBaseControl implements BLEConnectCallBack, BLEDataTransCallBack {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				//发送成功
 				BLELog.d("-->>onCharacteristicWrite()");
+				UUID uuid = characteristic.getUuid();
+				BLELog.d("uuid-->>" + uuid.toString());
+				byte[] writeValue = characteristic.getValue();
+				BLEByteUtil.printHex(writeValue);
 			}
 		}
+
 
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {

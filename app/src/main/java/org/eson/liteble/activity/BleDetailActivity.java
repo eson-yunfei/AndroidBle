@@ -191,8 +191,10 @@ public class BleDetailActivity extends AppCompatActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+		BLEControl.get().disConnect();
 		this.finish();
 	}
+
 
 	@Override
 	protected void onDestroy() {

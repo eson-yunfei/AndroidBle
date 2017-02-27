@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -69,7 +70,12 @@ public class CharacteristicActivity extends AppCompatActivity {
 
 				if (btnType == 0) {
 
+					Intent intent = new Intent(CharacteristicActivity.this, SendDataActivity.class);
 
+					intent.putExtra("serviceUUID", serviceUUID);
+					intent.putExtra("characterUUID", characterUUID);
+
+					startActivity(intent);
 				} else {
 					enableNotice();
 				}
@@ -90,6 +96,9 @@ public class CharacteristicActivity extends AppCompatActivity {
 		uuid_text.setText(characterUUID);
 
 		BluetoothGatt bluetoothGatt = BLEControl.get().getBluetoothGatt();
+		if (bluetoothGatt == null){
+			return;
+		}
 		BluetoothGattService service = bluetoothGatt
 				.getService(UUID.fromString(serviceUUID));
 		BluetoothGattCharacteristic characteristic = service
@@ -134,5 +143,7 @@ public class CharacteristicActivity extends AppCompatActivity {
 				android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
 		dataListView.setAdapter(arrayAdapter);
 	}
+
+
 
 }
