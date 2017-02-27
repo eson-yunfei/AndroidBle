@@ -1,11 +1,17 @@
 package org.eson.liteble;
 
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import org.eson.ble_sdk.BLESdk;
 import org.eson.liteble.service.BleService;
+import org.eson.liteble.util.LogUtil;
+
+import java.util.List;
 
 /**
  * @name AndroidBle
@@ -23,14 +29,7 @@ public class MyApplication extends Application {
 	private static MyApplication instance;
 
 
-	public MyApplication getInstance() {
-//        if(instance==null){
-//            synchronized (MyApplication.class){
-//                if (instance==null){
-//                    instance = new MyApplication();
-//                }
-//            }
-//        }
+	public static MyApplication getInstance() {
 		return instance;
 	}
 
@@ -51,4 +50,33 @@ public class MyApplication extends Application {
 
 
 	}
+
+
+	/**
+	 * 判断某个界面是否在前台
+	 * 需添加权限
+	 * <uses-permission android:name="android.permission.GET_TASKS"/>
+	 *
+	 * @param className 某个界面名称
+	 */
+	public boolean isForeground(String className) {
+		if (mContext == null || TextUtils.isEmpty(className)) {
+			return false;
+		}
+
+		ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
+		if (list == null || list.size() == 0) {
+			return false;
+
+		}
+		ComponentName cpn = list.get(0).topActivity;
+		String currentName = cpn.getClassName();
+		LogUtil.e("currentName--->>" + currentName);
+		if (className.equals(currentName)) {
+			return true;
+		}
+		return false;
+	}
+
 }

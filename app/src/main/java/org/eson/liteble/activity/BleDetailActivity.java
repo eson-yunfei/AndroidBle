@@ -6,8 +6,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -16,20 +14,14 @@ import android.widget.TextView;
 
 import org.eson.ble_sdk.control.BLEControl;
 import org.eson.ble_sdk.util.BLEConstant;
+import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
-import org.eson.liteble.RxBus;
 import org.eson.liteble.service.BleService;
-import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
@@ -43,9 +35,9 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
  * @time 2017/2/23 15:34
  * @change
  * @chang time
- * @class describe
+ * @class describe  蓝牙详细信息界面
  */
-public class BleDetailActivity extends AppCompatActivity {
+public class BleDetailActivity extends BaseBleActivity {
 
 	private TextView textView;
 	private TextView name;
@@ -66,134 +58,26 @@ public class BleDetailActivity extends AppCompatActivity {
 	private ProgressDialog m_pDialog;
 
 	@Override
-	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_detail);
-
-		initViews();
-
-		Intent intent = getIntent();
-		mac = intent.getStringExtra("macAddr");
-		String devName = intent.getStringExtra("name");
-		name.setText(devName);
-		getMessage();
-
-		initSateListener();
+	protected int getRootLayout() {
+		return R.layout.activity_detail;
 	}
 
-	/**
-	 * 显示等待框
-	 *
-	 * @param msg
-	 */
-	private void showProgress(String msg) {
-		if (m_pDialog == null) {
-			m_pDialog = new ProgressDialog(this);
-			m_pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			m_pDialog.setIndeterminate(false);
-			m_pDialog.setCancelable(true);
-		}
-		if (m_pDialog.isShowing()) {
-			return;
-		}
-
-		m_pDialog.setMessage(msg);
-		m_pDialog.show();
-
-	}
-
-	private void disProgress() {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (m_pDialog == null) {
-					return;
-				}
-				m_pDialog.dismiss();
-			}
-		});
-	}
-
-	private CompositeDisposable compositeDisposable;
-
-	private void initSateListener() {
-
-		if (compositeDisposable == null) {
-			compositeDisposable = new CompositeDisposable();
-			RxBus.getInstance().toObserverable()
-					.map(new Function<Object, Bundle>() {
-						@Override
-						public Bundle apply(Object o) throws Exception {
-							return (Bundle) o;
-						}
-					}).subscribe(new Observer<Bundle>() {
-				@Override
-				public void onSubscribe(Disposable d) {
-					compositeDisposable.add(d);
-				}
-
-				@Override
-				public void onNext(Bundle value) {
-
-					boolean containsKey = value.containsKey(BLEConstant.Type.TYPE_STATE);
-					LogUtil.e("subBleState onNext " + containsKey);
-
-					if (!containsKey) {
-						return;
-					}
-
-					disProgress();
-					int state = value.getInt(BLEConstant.Type.TYPE_STATE, 0);
-					switch (state) {
-
-						case BLEConstant.State.STATE_DIS_CONNECTED:
-							isConnect = false;
-							runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									disConnect.setText("重新连接设备");
-								}
-							});
-							break;
-						case BLEConstant.State.STATE_DISCOVER_SERVER:
-							isConnect = true;
-							runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									disConnect.setText("断开连接");
-									getMessage();
-								}
-							});
-							break;
-					}
-				}
-
-				@Override
-				public void onError(Throwable e) {
-
-				}
-
-				@Override
-				public void onComplete() {
-
-				}
-			});
-		}
-	}
-
-
-	private void initViews() {
+	@Override
+	protected void initView() {
+		super.initView();
 		textView = (TextView) findViewById(R.id.text);
 		name = (TextView) findViewById(R.id.name);
 		disConnect = (Button) findViewById(R.id.disconnect);
-
 		expandList = (ExpandableListView) findViewById(R.id.expandList);
+	}
+
+	@Override
+	protected void initViewListener() {
+		super.initViewListener();
 
 		expandList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
-
 				goToCharacteristicDetail(groupPosition, childPosition);
 				return false;
 			}
@@ -218,6 +102,98 @@ public class BleDetailActivity extends AppCompatActivity {
 		});
 	}
 
+	@Override
+	protected void process(Bundle savedInstanceState) {
+		super.process(savedInstanceState);
+		Intent intent = getIntent();
+		mac = intent.getStringExtra("macAddr");
+		String devName = intent.getStringExtra("name");
+		name.setText(devName);
+		getMessage();
+
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		BLEControl.get().disConnect();
+		this.finish();
+	}
+
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+	//***************************************************************************************************//
+	//***************************************************************************************************//
+
+
+	@Override
+	protected void changeBleData(String uuid, String buffer) {
+
+		if (!MyApplication.getInstance().isForeground(BleDetailActivity.class.getName())) {
+			return;
+		}
+		super.changeBleData(uuid, buffer);
+	}
+
+	@Override
+	protected void changerBleState(int state) {
+		super.changerBleState(state);
+		disProgress();
+		switch (state) {
+
+			case BLEConstant.State.STATE_DIS_CONNECTED:
+				isConnect = false;
+				disConnect.setText("重新连接设备");
+
+				break;
+			case BLEConstant.State.STATE_DISCOVER_SERVER:
+				isConnect = true;
+				disConnect.setText("断开连接");
+				getMessage();
+				break;
+		}
+
+	}
+
+
+	//***************************************************************************************************//
+	//***************************************************************************************************//
+
+	/**
+	 * 显示等待框
+	 *
+	 * @param msg
+	 */
+	private void showProgress(String msg) {
+		if (m_pDialog == null) {
+			m_pDialog = new ProgressDialog(this);
+			m_pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			m_pDialog.setIndeterminate(false);
+			m_pDialog.setCancelable(true);
+		}
+		if (m_pDialog.isShowing()) {
+			return;
+		}
+
+		m_pDialog.setMessage(msg);
+		m_pDialog.show();
+
+	}
+
+	private void disProgress() {
+		if (m_pDialog == null) {
+			return;
+		}
+		m_pDialog.dismiss();
+	}
+
+	//***************************************************************************************************//
+	//***************************************************************************************************//
+
 	/**
 	 * 跳转的特性的详情界面
 	 *
@@ -231,14 +207,14 @@ public class BleDetailActivity extends AppCompatActivity {
 		String serviceUUID = serviceMap.get(LIST_UUID);
 		String characterUUID = characterMap.get(LIST_UUID);
 
-
 		Intent intent = new Intent(BleDetailActivity.this, CharacteristicActivity.class);
-
 		intent.putExtra("serviceUUID", serviceUUID);
 		intent.putExtra("characterUUID", characterUUID);
-
 		startActivity(intent);
 	}
+
+	//***************************************************************************************************//
+	//***************************************************************************************************//
 
 	/**
 	 * 获取设备的服务和特性详情
@@ -321,35 +297,16 @@ public class BleDetailActivity extends AppCompatActivity {
 		if (gattServiceAdapter == null) {
 			gattServiceAdapter = new SimpleExpandableListAdapter(
 					this,
-					gattServiceData,
-					android.R.layout.simple_expandable_list_item_2,
+					gattServiceData, R.layout.item_two_line,
 					new String[]{LIST_UUID, LIST_NAME},
-					new int[]{android.R.id.text1, android.R.id.text2},
-					gattCharacteristicData,
-					android.R.layout.simple_expandable_list_item_2,
+					new int[]{R.id.text1, R.id.text2},
+					gattCharacteristicData, R.layout.item_two_line,
 					new String[]{LIST_UUID, LIST_NAME,},
-					new int[]{android.R.id.text1, android.R.id.text2}
+					new int[]{R.id.text1, R.id.text2}
 			);
 			expandList.setAdapter(gattServiceAdapter);
 		}
 		gattServiceAdapter.notifyDataSetChanged();
 	}
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-//		BLEControl.get().disConnect();
-		this.finish();
-	}
-
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
-			compositeDisposable.clear();
-		}
-		BLEControl.get().disConnect();
-	}
 }

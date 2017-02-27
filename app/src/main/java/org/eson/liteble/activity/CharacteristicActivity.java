@@ -6,8 +6,6 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,65 +28,100 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/25
- * @说明：
+ * @说明： 蓝牙服务的特性详情页面
  */
 
-public class CharacteristicActivity extends AppCompatActivity {
+public class CharacteristicActivity extends BaseBleActivity {
 
 	private TextView uuid_text;
 	private TextView properties_text;
 	private Button btn;
+	private ListView descListView;
 	private ListView dataListView;
 
 	private String serviceUUID;
 	private String characterUUID;
 	private List<String> descriptors = new ArrayList<>();
+	private List<String> dataList = new ArrayList<>();
 
+	private ArrayAdapter<String> dataListAdapter;
 	private int btnType = 0;
 
 	@Override
-	protected void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_characteristic);
+	protected int getRootLayout() {
+		return R.layout.activity_characteristic;
+	}
 
-		initViews();
+	@Override
+	protected void initView() {
+		super.initView();
+		uuid_text = findView(R.id.uuid_text);
+		properties_text = findView(R.id.properties_text);
+		btn = findView(R.id.btn);
+		descListView = findView(R.id.desc_listView);
+		dataListView = findView(R.id.data_listView);
+	}
+
+	@Override
+	protected void initViewListener() {
+		super.initViewListener();
+		btn.setOnClickListener(this);
+	}
+
+	@Override
+	protected void process(Bundle savedInstanceState) {
+		super.process(savedInstanceState);
 		Bundle bundle = getIntent().getExtras();
 		setData(bundle);
+	}
 
+	@Override
+	public void onClick(View v) {
+		super.onClick(v);
+		if (btnType == 0) {
+
+			Intent intent = new Intent(CharacteristicActivity.this, SendDataActivity.class);
+			intent.putExtra("serviceUUID", serviceUUID);
+			intent.putExtra("characterUUID", characterUUID);
+			startActivity(intent);
+		} else {
+			enableNotice();
+		}
+	}
+
+	//***************************************************************************************************//
+	//***************************************************************************************************//
+
+	@Override
+	protected void changeBleData(String uuid, String buffer) {
+		dataList.add(0, buffer);
+		if (dataListAdapter == null) {
+			dataListAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
+					android.R.layout.simple_list_item_1, android.R.id.text1, dataList);
+			dataListView.setAdapter(dataListAdapter);
+		} else {
+			dataListAdapter.notifyDataSetChanged();
+		}
 	}
 
 
-	private void initViews() {
-		uuid_text = (TextView) findViewById(R.id.uuid_text);
-		properties_text = (TextView) findViewById(R.id.properties_text);
-		btn = (Button) findViewById(R.id.btn);
-		dataListView = (ListView) findViewById(R.id.data_listView);
+	//***************************************************************************************************//
+	//***************************************************************************************************//
 
-		btn.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
 
-				if (btnType == 0) {
-
-					Intent intent = new Intent(CharacteristicActivity.this, SendDataActivity.class);
-
-					intent.putExtra("serviceUUID", serviceUUID);
-					intent.putExtra("characterUUID", characterUUID);
-
-					startActivity(intent);
-				} else {
-					enableNotice();
-				}
-			}
-		});
-
-	}
-
+	/**
+	 * 启动通知服务
+	 */
 	private void enableNotice() {
 		BleService.get().enableNotify(UUID.fromString(serviceUUID),
 				UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)));
 	}
 
+	/**
+	 * 发送数据
+	 *
+	 * @param bundle
+	 */
 	private void setData(Bundle bundle) {
 		serviceUUID = bundle.getString("serviceUUID");
 		characterUUID = bundle.getString("characterUUID");
@@ -96,7 +129,7 @@ public class CharacteristicActivity extends AppCompatActivity {
 		uuid_text.setText(characterUUID);
 
 		BluetoothGatt bluetoothGatt = BLEControl.get().getBluetoothGatt();
-		if (bluetoothGatt == null){
+		if (bluetoothGatt == null) {
 			return;
 		}
 		BluetoothGattService service = bluetoothGatt
@@ -141,9 +174,8 @@ public class CharacteristicActivity extends AppCompatActivity {
 
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CharacteristicActivity.this,
 				android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
-		dataListView.setAdapter(arrayAdapter);
+		descListView.setAdapter(arrayAdapter);
 	}
-
 
 
 }

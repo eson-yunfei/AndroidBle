@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.eson.liteble">
 
+    <uses-permission android:name="android.permission.GET_TASKS"/>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"

@@ -22,4 +22,8 @@ public class BLEConstant {
 
 	}
 
+	public static final class BLEData{
+		public static final String DATA_UUID = "data_uuid";
+		public static final String DATA_VALUE = "data_value";
+	}
 }

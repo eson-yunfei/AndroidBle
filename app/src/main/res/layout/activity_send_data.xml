@@ -4,6 +4,13 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/fab_margin"
+        android:text="输入要发送的数据，格式：01 ab ff; "
+        android:textSize="@dimen/text_size"/>
+
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
@@ -16,6 +23,6 @@
         android:id="@+id/sendBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="发送"
+        android:text="send"
         android:textSize="@dimen/text_size"/>
 </LinearLayout>
