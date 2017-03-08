@@ -9,6 +9,8 @@ import org.eson.ble_sdk.BLESdk;
 import org.eson.ble_sdk.bean.BLEDevice;
 import org.eson.ble_sdk.util.BLELog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -56,7 +58,9 @@ public class BLEScanner {
 	 */
 	public void startScan(int timeOut, String[] nameFilter, UUID[] uuidFilter, BLEScanListener bleScanListener) {
 
+		deviceMac.clear();
 
+		stopScan();
 		this.nameFilter = nameFilter;
 		this.bleScanListener = bleScanListener;
 		if (bluetoothAdapter == null) {
@@ -147,6 +151,7 @@ public class BLEScanner {
 		}
 	}
 
+	private List<String> deviceMac = new ArrayList<>();
 	/**
 	 *
 	 */
@@ -163,6 +168,14 @@ public class BLEScanner {
 				return;
 			}
 
+			String mac = device.getAddress();
+
+			if (isAddDevice(mac)) {
+				return;
+			}
+
+			deviceMac.add(mac);
+
 			bleDevice = new BLEDevice();
 			bleDevice.setName(name);
 			bleDevice.setMac(device.getAddress());
@@ -174,6 +187,30 @@ public class BLEScanner {
 
 		}
 	};
+
+	/**
+	 * 是否已加入的列表中
+	 *
+	 * @param mac
+	 *
+	 * @return
+	 */
+	private boolean isAddDevice(String mac) {
+		boolean isAdd = false;
+		if (deviceMac == null || deviceMac.size() == 0) {
+
+			return isAdd;
+		}
+		for (String s : deviceMac) {
+
+			if (s.endsWith(mac)) {
+				isAdd = true;
+				break;
+			}
+		}
+
+		return isAdd;
+	}
 
 
 	/**

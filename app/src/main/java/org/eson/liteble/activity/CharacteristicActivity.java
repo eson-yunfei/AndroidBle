@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.eson.ble_sdk.control.BLEControl;
+import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.LogUtil;
@@ -95,7 +96,7 @@ public class CharacteristicActivity extends BaseBleActivity {
 	//***************************************************************************************************//
 
 	@Override
-	protected void changeBleData(String uuid, String buffer) {
+	protected void changeBleData(String uuid, String buffer, String deviceAddress) {
 		dataList.add(0, buffer);
 		if (dataListAdapter == null) {
 			dataListAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
@@ -118,11 +119,9 @@ public class CharacteristicActivity extends BaseBleActivity {
 
 		isListenerNotice = !isListenerNotice;
 		String text = isListenerNotice ? "取消监听" : "监听通知";
-//		if (isListenerNotice){
-//			btn.setText("");
-//		}
 		btn.setText(text);
-		BleService.get().enableNotify(UUID.fromString(serviceUUID),
+		BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
+				UUID.fromString(serviceUUID),
 				UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)), isListenerNotice);
 	}
 
@@ -137,7 +136,7 @@ public class CharacteristicActivity extends BaseBleActivity {
 
 		uuid_text.setText(characterUUID);
 
-		BluetoothGatt bluetoothGatt = BLEControl.get().getBluetoothGatt();
+		BluetoothGatt bluetoothGatt = BLEControl.get().getBluetoothGatt(MyApplication.getInstance().getCurrentShowDevice());
 		if (bluetoothGatt == null) {
 			return;
 		}

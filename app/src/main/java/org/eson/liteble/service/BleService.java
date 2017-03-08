@@ -7,12 +7,16 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import org.eson.ble_sdk.control.BLEConnectCallBack;
+import org.eson.ble_sdk.bean.BLECharacter;
+import org.eson.ble_sdk.bean.BLEUuid;
 import org.eson.ble_sdk.control.BLEControl;
-import org.eson.ble_sdk.control.BLEDataTransCallBack;
-import org.eson.ble_sdk.util.BLEByteUtil;
+import org.eson.ble_sdk.control.listener.BLEConnectionListener;
+import org.eson.ble_sdk.control.listener.BLEStateChangeListener;
+import org.eson.ble_sdk.control.listener.BLETransportListener;
 import org.eson.ble_sdk.util.BLEConstant;
+import org.eson.liteble.MyApplication;
 import org.eson.liteble.RxBus;
+import org.eson.liteble.bean.BleDataBean;
 
 import java.util.UUID;
 
@@ -26,9 +30,6 @@ public class BleService extends Service {
 
 	private static BleService bleService = null;
 
-//	private BleService() {
-//		super();
-//	}
 
 	@Nullable
 	@Override
@@ -41,6 +42,9 @@ public class BleService extends Service {
 		super.onCreate();
 		bleService = this;
 
+		BLEControl.get().setBleConnectListener(bleConnectionListener);
+		BLEControl.get().setBleStateChangedListener(stateChangeListener);
+		BLEControl.get().setBleTransportListener(transportListener);
 	}
 
 	public static BleService get() {
@@ -49,87 +53,127 @@ public class BleService extends Service {
 
 	public void connectionDevice(Context context, String bleMac) {
 
-		BLEControl.get().connectToDevice(context, bleMac, false, bleConnectCallBack);
+		BLEControl.get().connectDevice(context, bleMac);
 	}
 
-	public void enableNotify(UUID serviceUuid, UUID characteristicUuid,
+	/**
+	 * 启用通知
+	 *
+	 * @param connectDevice
+	 * @param serviceUuid
+	 * @param characteristicUuid
+	 * @param descriptorUui
+	 * @param isListenerNotice
+	 */
+	public void enableNotify(String connectDevice, UUID serviceUuid, UUID characteristicUuid,
 							 UUID descriptorUui, boolean isListenerNotice) {
-		if (isListenerNotice) {
-			BLEControl.get().enableNotify(serviceUuid, characteristicUuid, descriptorUui, bleDataTransCallBack);
-		}else {
-			BLEControl.get().disableNotify(serviceUuid, characteristicUuid, descriptorUui, bleDataTransCallBack);
-		}
+
+		BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+				.setAddress(connectDevice)
+				.setDescriptorUUID(descriptorUui)
+				.setEnable(isListenerNotice).builder();
+
+		BLEControl.get().enableNotify(bleUuid);
 	}
 
 
+	/**
+	 * 数据的发送
+	 *
+	 * @param serviceUuid
+	 * @param characteristicUuid
+	 * @param bytes
+	 */
 	public void sendData(UUID serviceUuid, UUID characteristicUuid, byte[] bytes) {
-		BLEControl.get().sendData(serviceUuid, characteristicUuid, bytes, bleDataTransCallBack);
+		BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+				.setAddress(MyApplication.getInstance().getCurrentShowDevice())
+				.setDataBuffer(bytes).builder();
+
+		BLEControl.get().sendData(bleUuid);
 	}
 
-	BLEConnectCallBack bleConnectCallBack = new BLEConnectCallBack() {
-		@Override
-		public void onConnecting() {
 
-			sendBleState(BLEConstant.State.STATE_CONNECTING);
+	BLEConnectionListener bleConnectionListener = new BLEConnectionListener() {
+		@Override
+		public void onConnectError(String address, int errorCode) {
+			sendBleState(BLEConstant.Connection.STATE_CONNECT_FAILED, address);
+
 		}
 
 		@Override
-		public void onConnected() {
-			sendBleState(BLEConstant.State.STATE_CONNECTED);
+		public void onConnectSuccess(String address) {
+
+			//更新当前连接的具体的某一个设备
+			MyApplication.getInstance().setCurrentShowDevice(address);
+			//添加到已连接的设备列表
+//			App.getInstance().addToConnectList(address);
+			sendBleState(BLEConstant.Connection.STATE_CONNECT_SUCCEED, address);
+
 		}
 
 		@Override
-		public void onDisConnecting() {
-			sendBleState(BLEConstant.State.STATE_DIS_CONNECTING);
-		}
-
-		@Override
-		public void onDisConnected() {
-			sendBleState(BLEConstant.State.STATE_DIS_CONNECTED);
-		}
-
-		@Override
-		public void onBleServerEnable() {
-			sendBleState(BLEConstant.State.STATE_DISCOVER_SERVER);
-
+		public void onConnected(String address) {
+			MyApplication.getInstance().setCurrentShowDevice(address);
+			sendBleState(BLEConstant.Connection.STATE_CONNECT_CONNECTED, address);
 		}
 	};
 
 
-	BLEDataTransCallBack bleDataTransCallBack = new BLEDataTransCallBack() {
+	BLEStateChangeListener stateChangeListener = new BLEStateChangeListener() {
 		@Override
-		public void onCharRead(String uuid, byte[] data) {
+		public void onStateConnected(String address) {
 
 		}
 
 		@Override
-		public void onCharWrite(String uuid, byte[] data) {
+		public void onStateConnecting(String address) {
 
 		}
 
 		@Override
-		public void onNotify(String uuid, byte[] data) {
+		public void onStateDisConnecting(String address) {
+
+		}
+
+		@Override
+		public void onStateDisConnected(String address) {
+			sendBleState(BLEConstant.State.STATE_DIS_CONNECTED,address);
+		}
+	};
+
+	BLETransportListener transportListener = new BLETransportListener() {
+		@Override
+		public void onCharacterRead(BLECharacter bleCharacter) {
+
+		}
+
+		@Override
+		public void onCharacterWrite(BLECharacter bleCharacter) {
+
+		}
+
+		@Override
+		public void onCharacterNotify(BLECharacter bleCharacter) {
+
 
 			Bundle bundle = new Bundle();
-			bundle.putInt(BLEConstant.Type.TYPE_NOTICE, 0);
-			bundle.putString(BLEConstant.BLEData.DATA_UUID, uuid);
-			bundle.putString(BLEConstant.BLEData.DATA_VALUE, BLEByteUtil.getHexString(data));
+
+
+			BleDataBean dataBean = new BleDataBean(bleCharacter.getDeviceAddress(),
+					bleCharacter.getCharacteristicUUID(), bleCharacter.getDataBuffer());
+			bundle.putSerializable(BLEConstant.Type.TYPE_NOTICE, dataBean);
 			RxBus.getInstance().send(bundle);
-
-//			BLEByteUtil.printHex(data);
-//			LogUtil.e("onNotify()--->>" + BLEByteUtil.getHexString(data));
-//			ToastUtil.showShort(MyApplication.getContext(), BLEByteUtil.getHexString(data));
-
-
 		}
 	};
+
 
 	/**
 	 * 发送蓝牙状态
 	 */
-	private void sendBleState(int state) {
+	private void sendBleState(int state, String name) {
 		Bundle bundle = new Bundle();
 		bundle.putInt(BLEConstant.Type.TYPE_STATE, state);
+		bundle.putString(BLEConstant.Type.TYPE_NAME, name);
 		RxBus.getInstance().send(bundle);
 	}
 }

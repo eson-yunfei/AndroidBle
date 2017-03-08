@@ -28,7 +28,7 @@ public class MyApplication extends Application {
 	private static Context mContext;
 	private static MyApplication instance;
 
-
+	private String currentShowDevice = "";
 	public static MyApplication getInstance() {
 		return instance;
 	}
@@ -42,7 +42,7 @@ public class MyApplication extends Application {
 		super.onCreate();
 		mContext = this;
 		instance = this;
-		//initial BLE sdk
+
 		BLESdk.init(mContext);
 
 		Intent bleServer = new Intent(mContext, BleService.class);
@@ -77,6 +77,15 @@ public class MyApplication extends Application {
 			return true;
 		}
 		return false;
+	}
+
+
+	public String getCurrentShowDevice() {
+		return currentShowDevice;
+	}
+
+	public void setCurrentShowDevice(String currentShowDevice) {
+		this.currentShowDevice = currentShowDevice;
 	}
 
 }

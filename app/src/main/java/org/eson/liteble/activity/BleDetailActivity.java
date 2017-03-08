@@ -88,7 +88,7 @@ public class BleDetailActivity extends BaseBleActivity {
 			public void onClick(View v) {
 				if (isConnect) {
 					showProgress("断开设备。。。");
-					BLEControl.get().disConnect();
+					BLEControl.get().disconnect();
 					gattServiceData.clear();
 					gattCharacteristicData.clear();
 					gattServiceAdapter.notifyDataSetChanged();
@@ -116,7 +116,7 @@ public class BleDetailActivity extends BaseBleActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		BLEControl.get().disConnect();
+		BLEControl.get().disconnect();
 		this.finish();
 	}
 
@@ -131,12 +131,12 @@ public class BleDetailActivity extends BaseBleActivity {
 
 
 	@Override
-	protected void changeBleData(String uuid, String buffer) {
+	protected void changeBleData(String uuid, String buffer, String deviceAddress) {
 
 		if (!MyApplication.getInstance().isForeground(BleDetailActivity.class.getName())) {
 			return;
 		}
-		super.changeBleData(uuid, buffer);
+		super.changeBleData(uuid, buffer, deviceAddress);
 	}
 
 	@Override
@@ -148,9 +148,10 @@ public class BleDetailActivity extends BaseBleActivity {
 			case BLEConstant.State.STATE_DIS_CONNECTED:
 				isConnect = false;
 				disConnect.setText("重新连接设备");
-
+//				getMessage();
 				break;
-			case BLEConstant.State.STATE_DISCOVER_SERVER:
+			case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
+			case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
 				isConnect = true;
 				disConnect.setText("断开连接");
 				getMessage();
@@ -221,7 +222,7 @@ public class BleDetailActivity extends BaseBleActivity {
 	 */
 	private void getMessage() {
 
-		BluetoothGatt gatt = BLEControl.get().getBluetoothGatt();
+		BluetoothGatt gatt = BLEControl.get().getBluetoothGatt(MyApplication.getInstance().getCurrentShowDevice());
 		if (gatt == null) {
 			textView.setText("gatt == null");
 			return;

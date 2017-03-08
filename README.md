@@ -61,36 +61,33 @@
     		});
 
 
- 五、蓝牙连接
+ 五、蓝牙交互
+
+      1、添加时间监听
+
+        BLEControl.get().setBleConnectListener(bleConnectionListener);
+		BLEControl.get().setBleStateChangedListener(stateChangeListener);
+		BLEControl.get().setBleTransportListener(transportListener);
 
 
+      2、设备连接
 
-        BLEControl.get().enableNotify(serviceUuid, characteristicUuid,
-        descriptorUui, new BLEConnectCallBack() {
-                            @Override
-                        	public void onConnecting() {
+        BLEControl.get().connectDevice(context, bleMac);
 
-                        		sendBleState(BLEConstant.State.STATE_CONNECTING);
-                        	}
+      3、启用Notify特性
 
-                        	@Override
-                        	public void onConnected() {
-                        		sendBleState(BLEConstant.State.STATE_CONNECTED);
-                        	}
+        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+        				.setAddress(address)
+        				.setDescriptorUUID(descriptorUui)
+        				.setEnable(isListenerNotice).builder();
 
-                        	@Override
-                        	public void onDisConnecting() {
-                        		sendBleState(BLEConstant.State.STATE_DIS_CONNECTING);
-                        	}
+        BLEControl.get().enableNotify(bleUuid);
 
-                        	@Override
-                        	public void onDisConnected() {
-                        		sendBleState(BLEConstant.State.STATE_DIS_CONNECTED);
-                        	}
 
-                        	@Override
-                        	public void onBleServerEnable() {
-                        		sendBleState(BLEConstant.State.STATE_DISCOVER_SERVER);
+      4、发送数据
 
-                        	}
-                        });
+
+        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+      				.setAddress(address).setDataBuffer(bytes).builder();
+
+        BLEControl.get().sendData(bleUuid);

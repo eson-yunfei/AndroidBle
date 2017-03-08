@@ -84,11 +84,11 @@ public class MainActivity extends BaseBleActivity {
 
 
 	@Override
-	protected void changeBleData(String uuid, String buffer) {
+	protected void changeBleData(String uuid, String buffer, String deviceAddress) {
 		if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
 			return;
 		}
-		super.changeBleData(uuid, buffer);
+		super.changeBleData(uuid, buffer, deviceAddress);
 	}
 
 	@Override
@@ -96,18 +96,16 @@ public class MainActivity extends BaseBleActivity {
 		super.changerBleState(state);
 
 		switch (state) {
-			case BLEConstant.State.STATE_CONNECTED:
-
-				break;
-			case BLEConstant.State.STATE_CONNECTING:
-				break;
-			case BLEConstant.State.STATE_DIS_CONNECTED:
-				break;
-			case BLEConstant.State.STATE_DIS_CONNECTING:
-				break;
-			case BLEConstant.State.STATE_DISCOVER_SERVER:
+			case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
+			case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
 				startToNext();
 				break;
+			case BLEConstant.Connection.STATE_CONNECT_FAILED:
+				hideProgress();
+				ToastUtil.showShort(mContext, "设备连接失败");
+				break;
+
+
 		}
 
 	}

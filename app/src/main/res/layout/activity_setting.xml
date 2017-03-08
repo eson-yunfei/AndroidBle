@@ -1,59 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="60dp"
+        android:padding="6dp">
 
         <TextView
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="搜索超时时长："
-            />
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="搜索设备搜索时长："
+            android:textSize="@dimen/text_size"/>
 
         <EditText
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:hint="单位：s"
-
+            android:textSize="@dimen/text_size"
             />
     </RelativeLayout>
 
-    <CheckBox
-        android:id="@+id/name_checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="仅显示以下蓝牙名称的设备"
-        />
-
-    <LinearLayout
-        android:id="@+id/name_container"
+    <view
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-    </LinearLayout>
+        android:layout_height="0.3dp"
+        android:background="#cccccc"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="仅显示包含以下UUID的设备"
-        />
-
-    <LinearLayout
-        android:id="@+id/uuid_container"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-    </LinearLayout>
+        android:layout_height="60dp"
+        android:padding="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="允许连接多个设备"
+            android:textSize="@dimen/text_size"
+            android:layout_centerVertical="true"/>
+
+        <Switch
+            android:layout_marginRight="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
 
 </LinearLayout>

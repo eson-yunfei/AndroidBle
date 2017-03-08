@@ -2,9 +2,10 @@ package org.eson.liteble.activity;
 
 import android.os.Bundle;
 
+import org.eson.ble_sdk.util.BLEByteUtil;
 import org.eson.ble_sdk.util.BLEConstant;
 import org.eson.liteble.RxBus;
-import org.eson.liteble.util.LogUtil;
+import org.eson.liteble.bean.BleDataBean;
 import org.eson.liteble.util.ToastUtil;
 
 import io.reactivex.Observer;
@@ -65,7 +66,6 @@ public class BaseBleActivity extends BaseActivity {
 			public void onNext(Bundle value) {
 
 				boolean containsBleStateKey = value.containsKey(BLEConstant.Type.TYPE_STATE);
-				LogUtil.e("subBleState onNext " + containsBleStateKey);
 
 				if (containsBleStateKey) {
 					//蓝牙状态改变
@@ -83,13 +83,16 @@ public class BaseBleActivity extends BaseActivity {
 				boolean containBleDataKey = value.containsKey(BLEConstant.Type.TYPE_NOTICE);
 				if (containBleDataKey) {
 					//蓝牙数据返回
-					final String uuid = value.getString(BLEConstant.BLEData.DATA_UUID);
-					final String buffer = value.getString(BLEConstant.BLEData.DATA_VALUE);
+					BleDataBean dataBean = (BleDataBean) value.getSerializable(BLEConstant.Type.TYPE_NOTICE);
+
+					final String uuid = dataBean.getUuid().toString();
+					final String buffer = BLEByteUtil.getHexString(dataBean.getBuffer());
+					final String deviceAddress = dataBean.getDeviceAddress();
 
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							changeBleData(uuid, buffer);
+							changeBleData(uuid, buffer, deviceAddress);
 						}
 					});
 
@@ -110,9 +113,11 @@ public class BaseBleActivity extends BaseActivity {
 
 	}
 
-	protected void changeBleData(String uuid, String buffer) {
+	protected void changeBleData(String uuid, String buffer, String deviceAddress) {
 
-		ToastUtil.showShort(mContext, "uuid:" + uuid + "\ndata:" + buffer);
+		ToastUtil.showShort(mContext, "uuid:"
+				+ uuid + "\ndata:" + buffer
+				+ "\ndeviceAddress:" + deviceAddress);
 	}
 
 	protected void changerBleState(int state) {
