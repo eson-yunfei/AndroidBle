@@ -63,16 +63,25 @@
 
  五、蓝牙交互
 
+
+
       1、添加时间监听
+
+
 
         BLEControl.get().setBleConnectListener(bleConnectionListener);
 		BLEControl.get().setBleStateChangedListener(stateChangeListener);
 		BLEControl.get().setBleTransportListener(transportListener);
 
 
+
+
+
       2、设备连接
 
+
         BLEControl.get().connectDevice(context, bleMac);
+
 
       3、启用Notify特性
 

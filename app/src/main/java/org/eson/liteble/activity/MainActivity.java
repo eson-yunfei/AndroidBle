@@ -241,7 +241,7 @@ public class MainActivity extends BaseBleActivity {
 	 */
 	private void searchDevice() {
 		showProgress("搜索设备中。。。。");
-		BLEScanner.get().startScan(0, null, null, new BLEScanListener() {
+		BLEScanner.get().startScan(MyApplication.getInstance().getConfigShare().getConnectTime(), null, null, new BLEScanListener() {
 			@Override
 			public void onScannerStart() {
 

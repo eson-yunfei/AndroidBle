@@ -19,16 +19,18 @@
             android:textSize="@dimen/text_size"/>
 
         <EditText
+            android:id="@+id/timeOutEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:hint="单位：s"
             android:textSize="@dimen/text_size"
-            />
+            android:inputType="number"
+            android:maxLength="10"/>
     </RelativeLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
         android:background="#cccccc"/>
@@ -41,18 +43,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="允许连接多个设备"
-            android:textSize="@dimen/text_size"
-            android:layout_centerVertical="true"/>
+            android:textSize="@dimen/text_size"/>
 
         <Switch
-            android:layout_marginRight="10dp"
+            android:id="@+id/switchBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"/>
     </RelativeLayout>
-
-
 
 </LinearLayout>
