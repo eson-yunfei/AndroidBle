@@ -1,7 +1,7 @@
 # AndroidBle
 蓝牙
 
-##2017/03/15
+## 2017/03/15
 项目发布到 JitPack
 
 构建方式：
@@ -15,7 +15,8 @@
         	}
 
 
-     在app的 build.gradle 文件中添加：
+
+在app的 build.gradle 文件中添加：
 
 
      dependencies {
@@ -24,7 +25,7 @@
 
 
 
-##2017/02/22
+## 2017/02/22
 一、创建仓库，首次提交项目代码
 
 
@@ -91,38 +92,35 @@
       1、添加时间监听
 
 
-
-        BLEControl.get().setBleConnectListener(bleConnectionListener);
-		BLEControl.get().setBleStateChangedListener(stateChangeListener);
-		BLEControl.get().setBleTransportListener(transportListener);
-
-
+                BLEControl.get().setBleConnectListener(bleConnectionListener);
+		        BLEControl.get().setBleStateChangedListener(stateChangeListener);
+		        BLEControl.get().setBleTransportListener(transportListener);
 
 
 
       2、设备连接
 
 
-        BLEControl.get().connectDevice(context, bleMac);
+                 BLEControl.get().connectDevice(context, bleMac);
 
 
       3、启用Notify特性
 
-        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+                   BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
         				.setAddress(address)
         				.setDescriptorUUID(descriptorUui)
         				.setEnable(isListenerNotice).builder();
 
-        BLEControl.get().enableNotify(bleUuid);
+                    BLEControl.get().enableNotify(bleUuid);
 
 
       4、发送数据
 
 
-        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+                    BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
       				.setAddress(address).setDataBuffer(bytes).builder();
 
-        BLEControl.get().sendData(bleUuid);
+                     BLEControl.get().sendData(bleUuid);
 
 
 
