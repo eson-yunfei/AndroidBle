@@ -5,9 +5,9 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import com.e.ble.util.BLELog;
-import com.e.ble.bean.BLEDevice;
 import com.e.ble.BLESdk;
+import com.e.ble.bean.BLEDevice;
+import com.e.ble.util.BLELog;
 
 import java.util.ArrayList;
 import java.util.List;

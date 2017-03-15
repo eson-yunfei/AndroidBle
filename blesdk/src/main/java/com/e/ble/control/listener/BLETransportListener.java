@@ -1,6 +1,5 @@
 package com.e.ble.control.listener;
 
-
 import com.e.ble.bean.BLECharacter;
 
 /**

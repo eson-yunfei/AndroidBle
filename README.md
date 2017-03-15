@@ -1,6 +1,29 @@
 # AndroidBle
 蓝牙
 
+##2017/03/15
+项目发布到 JitPack
+
+构建方式：
+    在根目录： build.gradle 文件中添加：
+
+        allprojects {
+        		repositories {
+        			...
+        			maven { url 'https://jitpack.io' }
+        		}
+        	}
+
+
+     在app的 build.gradle 文件中添加：
+
+
+     dependencies {
+     	        compile 'com.github.eson-yunfei:AndroidBle:xxxx'
+     	}
+
+
+
 ##2017/02/22
 一、创建仓库，首次提交项目代码
 
@@ -100,3 +123,6 @@
       				.setAddress(address).setDataBuffer(bytes).builder();
 
         BLEControl.get().sendData(bleUuid);
+
+
+

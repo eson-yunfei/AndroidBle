@@ -11,8 +11,8 @@ import com.e.ble.bean.BLECharacter;
 import com.e.ble.control.listener.BLEConnectionListener;
 import com.e.ble.control.listener.BLEReadRssiListener;
 import com.e.ble.control.listener.BLEStateChangeListener;
-import com.e.ble.util.BLELog;
 import com.e.ble.control.listener.BLETransportListener;
+import com.e.ble.util.BLELog;
 
 import java.util.UUID;
 

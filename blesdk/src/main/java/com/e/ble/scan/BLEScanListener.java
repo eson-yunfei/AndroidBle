@@ -1,5 +1,6 @@
 package com.e.ble.scan;
 
+
 import com.e.ble.bean.BLEDevice;
 
 /**

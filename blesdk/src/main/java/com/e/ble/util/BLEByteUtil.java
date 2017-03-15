@@ -8,6 +8,13 @@ package com.e.ble.util;
 
 public class BLEByteUtil {
 
+	/**
+	 * c无符号的值，转换成java-int值
+	 */
+	public static int cbyte2Int(byte byteNum) {
+		return byteNum & 0xff;
+	}
+
 
 	/**
 	 * 十六进制打印数组

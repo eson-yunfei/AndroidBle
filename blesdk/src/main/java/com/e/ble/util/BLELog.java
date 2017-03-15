@@ -83,7 +83,7 @@ public class BLELog {
 		}
 		StackTraceElement e = eles[index];
 
-		return "FileName : " + e.getFileName() + "||" +
+		return "\n"+"FileName : " + e.getFileName() + "||" +
 				"ClassName : " + e.getClassName() + "\n" +
 				"MethodName : " + e.getMethodName() + "||" +
 				"LineNumber : " + e.getLineNumber() + "\n";

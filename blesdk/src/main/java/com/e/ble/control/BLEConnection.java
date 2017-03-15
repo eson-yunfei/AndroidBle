@@ -129,8 +129,8 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 					bluetoothGatt.disconnect();
 					bluetoothGatt.close();
 					bluetoothGatt = null;
-				}
 
+				}
 
 				//把需要连接的设备赋值给 lastConnectMac
 				lastConnectMac = deviceAddress;

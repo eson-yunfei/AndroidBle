@@ -3,14 +3,13 @@ package com.e.ble.control;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 
-import com.e.ble.control.listener.BLEStateChangeListener;
-import com.e.ble.util.BLELog;
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.listener.BLEConnectionListener;
 import com.e.ble.control.listener.BLEReadRssiListener;
+import com.e.ble.control.listener.BLEStateChangeListener;
 import com.e.ble.control.listener.BLETransportListener;
-
+import com.e.ble.util.BLELog;
 
 /**
  * @作者 xiaoyunfei
@@ -142,8 +141,11 @@ public class BLEControl extends BaseControl {
 	}
 
 	/**
+	 * Just for demo test
 	 * 获取 BluetoothGatt
+	 *
 	 * @param deviceAddress
+	 *
 	 * @return
 	 */
 	public BluetoothGatt getBluetoothGatt(String deviceAddress) {
@@ -272,7 +274,7 @@ public class BLEControl extends BaseControl {
 	public void onReadRssi(String address, int rssi) {
 		super.onReadRssi(address, rssi);
 
-		BLELog.e("BLEControl-->> onReadRssi()");
+		BLELog.d("BLEControl-->> onReadRssi()");
 
 		if (bleReadRssiListener == null) {
 			return;
@@ -334,6 +336,5 @@ public class BLEControl extends BaseControl {
 	public void setBleReadRssiListener(BLEReadRssiListener readRssiListener) {
 		bleReadRssiListener = readRssiListener;
 	}
-
 
 }
