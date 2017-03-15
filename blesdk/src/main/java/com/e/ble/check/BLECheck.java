@@ -1,4 +1,4 @@
-package org.eson.ble_sdk.check;
+package com.e.ble.check;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import org.eson.ble_sdk.BLESdk;
-import org.eson.ble_sdk.util.BLELog;
+import com.e.ble.BLESdk;
+import com.e.ble.util.BLELog;
 
 import pub.devrel.easypermissions.EasyPermissions;
 

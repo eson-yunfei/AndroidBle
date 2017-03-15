@@ -1,13 +1,13 @@
-package org.eson.ble_sdk.scan;
+package com.e.ble.scan;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import org.eson.ble_sdk.BLESdk;
-import org.eson.ble_sdk.bean.BLEDevice;
-import org.eson.ble_sdk.util.BLELog;
+import com.e.ble.util.BLELog;
+import com.e.ble.bean.BLEDevice;
+import com.e.ble.BLESdk;
 
 import java.util.ArrayList;
 import java.util.List;

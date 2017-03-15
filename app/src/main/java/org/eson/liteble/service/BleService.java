@@ -7,16 +7,16 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import org.eson.ble_sdk.bean.BLECharacter;
-import org.eson.ble_sdk.bean.BLEUuid;
-import org.eson.ble_sdk.control.BLEControl;
-import org.eson.ble_sdk.control.listener.BLEConnectionListener;
-import org.eson.ble_sdk.control.listener.BLEStateChangeListener;
-import org.eson.ble_sdk.control.listener.BLETransportListener;
-import org.eson.ble_sdk.util.BLEConstant;
+import com.e.ble.bean.BLECharacter;
+import com.e.ble.control.BLEControl;
+import com.e.ble.control.listener.BLEConnectionListener;
+import com.e.ble.control.listener.BLEStateChangeListener;
+import com.e.ble.util.BLEConstant;
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
+import com.e.ble.bean.BLEUuid;
+import com.e.ble.control.listener.BLETransportListener;
 
 import java.util.UUID;
 

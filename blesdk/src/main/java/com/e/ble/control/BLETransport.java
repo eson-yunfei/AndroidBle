@@ -1,4 +1,4 @@
-package org.eson.ble_sdk.control;
+package com.e.ble.control;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,12 +8,12 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 
-import org.eson.ble_sdk.BLESdk;
-import org.eson.ble_sdk.bean.BLECharacter;
-import org.eson.ble_sdk.bean.BLEUuid;
-import org.eson.ble_sdk.control.listener.BLETransportListener;
-import org.eson.ble_sdk.util.BLEByteUtil;
-import org.eson.ble_sdk.util.BLELog;
+import com.e.ble.BLESdk;
+import com.e.ble.bean.BLECharacter;
+import com.e.ble.bean.BLEUuid;
+import com.e.ble.control.listener.BLETransportListener;
+import com.e.ble.util.BLEByteUtil;
+import com.e.ble.util.BLELog;
 
 import java.util.UUID;
 

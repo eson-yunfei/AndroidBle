@@ -2,10 +2,10 @@ package org.eson.liteble.activity;
 
 import android.os.Bundle;
 
-import org.eson.ble_sdk.util.BLEByteUtil;
-import org.eson.ble_sdk.util.BLEConstant;
+import com.e.ble.util.BLEConstant;
 import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
+import com.e.ble.util.BLEByteUtil;
 import org.eson.liteble.util.ToastUtil;
 
 import io.reactivex.Observer;

@@ -1,7 +1,7 @@
-package org.eson.ble_sdk.control.listener;
+package com.e.ble.control.listener;
 
 
-import org.eson.ble_sdk.bean.BLECharacter;
+import com.e.ble.bean.BLECharacter;
 
 /**
  * @作者 xiaoyunfei

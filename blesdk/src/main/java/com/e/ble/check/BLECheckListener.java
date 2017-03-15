@@ -1,4 +1,4 @@
-package org.eson.ble_sdk.check;
+package com.e.ble.check;
 
 /**
  * @作者 xiaoyunfei

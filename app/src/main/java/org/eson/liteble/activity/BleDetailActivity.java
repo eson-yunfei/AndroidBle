@@ -12,10 +12,9 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
-import org.eson.ble_sdk.control.BLEControl;
-import org.eson.ble_sdk.util.BLEConstant;
+import com.e.ble.control.BLEControl;
+import com.e.ble.util.BLEConstant;
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.R;
 import org.eson.liteble.service.BleService;
 
 import java.util.ArrayList;
@@ -59,16 +58,16 @@ public class BleDetailActivity extends BaseBleActivity {
 
 	@Override
 	protected int getRootLayout() {
-		return R.layout.activity_detail;
+		return org.eson.liteble.R.layout.activity_detail;
 	}
 
 	@Override
 	protected void initView() {
 		super.initView();
-		textView = (TextView) findViewById(R.id.text);
-		name = (TextView) findViewById(R.id.name);
-		disConnect = (Button) findViewById(R.id.disconnect);
-		expandList = (ExpandableListView) findViewById(R.id.expandList);
+		textView = (TextView) findViewById(org.eson.liteble.R.id.text);
+		name = (TextView) findViewById(org.eson.liteble.R.id.name);
+		disConnect = (Button) findViewById(org.eson.liteble.R.id.disconnect);
+		expandList = (ExpandableListView) findViewById(org.eson.liteble.R.id.expandList);
 	}
 
 	@Override
@@ -298,12 +297,12 @@ public class BleDetailActivity extends BaseBleActivity {
 		if (gattServiceAdapter == null) {
 			gattServiceAdapter = new SimpleExpandableListAdapter(
 					this,
-					gattServiceData, R.layout.item_two_line,
+					gattServiceData, org.eson.liteble.R.layout.item_two_line,
 					new String[]{LIST_UUID, LIST_NAME},
-					new int[]{R.id.text1, R.id.text2},
-					gattCharacteristicData, R.layout.item_two_line,
+					new int[]{org.eson.liteble.R.id.text1, org.eson.liteble.R.id.text2},
+					gattCharacteristicData, org.eson.liteble.R.layout.item_two_line,
 					new String[]{LIST_UUID, LIST_NAME,},
-					new int[]{R.id.text1, R.id.text2}
+					new int[]{org.eson.liteble.R.id.text1, org.eson.liteble.R.id.text2}
 			);
 			expandList.setAdapter(gattServiceAdapter);
 		}

@@ -1,4 +1,4 @@
-package org.eson.ble_sdk.util;
+package com.e.ble.util;
 
 /**
  * @作者 xiaoyunfei

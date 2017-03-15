@@ -5,9 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.eson.ble_sdk.bean.BLEDevice;
+import com.e.ble.bean.BLEDevice;
 import org.eson.liteble.util.LogUtil;
-import org.eson.liteble.R;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class ScanBLEAdapter extends MyBaseAdapter<BLEDevice> {
 	public View getView(int position, View view, ViewGroup viewGroup) {
 		ViewHolder viewHolder;
 		if (view == null) {
-			view = inflater.inflate(R.layout.item_scan_device, null);
+			view = inflater.inflate(org.eson.liteble.R.layout.item_scan_device, null);
 			viewHolder = new ViewHolder(view);
 			view.setTag(viewHolder);
 		} else {
@@ -59,9 +58,9 @@ public class ScanBLEAdapter extends MyBaseAdapter<BLEDevice> {
 		ViewHolder(View rootView) {
 
 			this.rootView = rootView;
-			this.deviceName = findView(rootView, R.id.deviceName);
-			this.deviceMac = findView(rootView, R.id.deviceMac);
-			this.deviceRssi = findView(rootView, R.id.deviceRssi);
+			this.deviceName = findView(rootView, org.eson.liteble.R.id.deviceName);
+			this.deviceMac = findView(rootView, org.eson.liteble.R.id.deviceMac);
+			this.deviceRssi = findView(rootView, org.eson.liteble.R.id.deviceRssi);
 		}
 	}
 }

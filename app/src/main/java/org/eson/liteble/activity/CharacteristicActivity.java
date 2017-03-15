@@ -12,9 +12,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.eson.ble_sdk.control.BLEControl;
+import com.e.ble.control.BLEControl;
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.R;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.LogUtil;
 
@@ -51,17 +50,17 @@ public class CharacteristicActivity extends BaseBleActivity {
 
 	@Override
 	protected int getRootLayout() {
-		return R.layout.activity_characteristic;
+		return org.eson.liteble.R.layout.activity_characteristic;
 	}
 
 	@Override
 	protected void initView() {
 		super.initView();
-		uuid_text = findView(R.id.uuid_text);
-		properties_text = findView(R.id.properties_text);
-		btn = findView(R.id.btn);
-		descListView = findView(R.id.desc_listView);
-		dataListView = findView(R.id.data_listView);
+		uuid_text = findView(org.eson.liteble.R.id.uuid_text);
+		properties_text = findView(org.eson.liteble.R.id.properties_text);
+		btn = findView(org.eson.liteble.R.id.btn);
+		descListView = findView(org.eson.liteble.R.id.desc_listView);
+		dataListView = findView(org.eson.liteble.R.id.data_listView);
 	}
 
 	@Override

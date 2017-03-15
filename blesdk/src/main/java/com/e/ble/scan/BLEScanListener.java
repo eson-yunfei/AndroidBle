@@ -1,6 +1,6 @@
-package org.eson.ble_sdk.scan;
+package com.e.ble.scan;
 
-import org.eson.ble_sdk.bean.BLEDevice;
+import com.e.ble.bean.BLEDevice;
 
 /**
  * @作者 xiaoyunfei

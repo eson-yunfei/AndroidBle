@@ -1,4 +1,4 @@
-package org.eson.ble_sdk.bean;
+package com.e.ble.bean;
 
 import java.util.UUID;
 

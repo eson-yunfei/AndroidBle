@@ -6,9 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.eson.ble_sdk.util.BLEByteUtil;
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.R;
+import com.e.ble.util.BLEByteUtil;
 import org.eson.liteble.service.BleService;
 
 import java.util.UUID;
@@ -29,14 +28,14 @@ public class SendDataActivity extends BaseBleActivity {
 
 	@Override
 	protected int getRootLayout() {
-		return R.layout.activity_send_data;
+		return org.eson.liteble.R.layout.activity_send_data;
 	}
 
 	@Override
 	protected void initView() {
 		super.initView();
-		editText = findView(R.id.editText);
-		sendBtn = findView(R.id.sendBtn);
+		editText = findView(org.eson.liteble.R.id.editText);
+		sendBtn = findView(org.eson.liteble.R.id.sendBtn);
 	}
 
 	@Override

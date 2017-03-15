@@ -11,8 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
-import org.eson.ble_sdk.BLESdk;
-import org.eson.liteble.R;
+import com.e.ble.BLESdk;
 import org.eson.liteble.share.ConfigShare;
 
 /**
@@ -35,7 +34,7 @@ public class SettingActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_setting);
+		setContentView(org.eson.liteble.R.layout.activity_setting);
 
 		mContext = this;
 		configShare = new ConfigShare(mContext);
@@ -45,8 +44,8 @@ public class SettingActivity extends AppCompatActivity {
 
 	private void initViews() {
 
-		timeOutEdit = (EditText) findViewById(R.id.timeOutEdit);
-		aSwitch = (Switch) findViewById(R.id.switchBtn);
+		timeOutEdit = (EditText) findViewById(org.eson.liteble.R.id.timeOutEdit);
+		aSwitch = (Switch) findViewById(org.eson.liteble.R.id.switchBtn);
 
 
 	}

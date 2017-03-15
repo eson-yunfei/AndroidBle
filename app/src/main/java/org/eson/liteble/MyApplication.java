@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import org.eson.ble_sdk.BLESdk;
+import com.e.ble.BLESdk;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.share.ConfigShare;
 import org.eson.liteble.util.LogUtil;

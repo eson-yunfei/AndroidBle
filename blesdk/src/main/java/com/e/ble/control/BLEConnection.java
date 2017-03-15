@@ -1,4 +1,4 @@
-package org.eson.ble_sdk.control;
+package com.e.ble.control;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,10 +8,10 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.text.TextUtils;
 
-import org.eson.ble_sdk.BLESdk;
-import org.eson.ble_sdk.control.listener.BLEConnectionListener;
-import org.eson.ble_sdk.control.listener.BLEStateChangeListener;
-import org.eson.ble_sdk.util.BLELog;
+import com.e.ble.BLESdk;
+import com.e.ble.control.listener.BLEConnectionListener;
+import com.e.ble.control.listener.BLEStateChangeListener;
+import com.e.ble.util.BLELog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,10 +127,11 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 					//设备为已连接的状态，
 					//断开之前的设备连接
 					bluetoothGatt.disconnect();
-
+					bluetoothGatt.close();
+					bluetoothGatt = null;
 				}
-				bluetoothGatt.close();
-				bluetoothGatt = null;
+
+
 				//把需要连接的设备赋值给 lastConnectMac
 				lastConnectMac = deviceAddress;
 			}

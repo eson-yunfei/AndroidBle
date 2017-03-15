@@ -1,13 +1,13 @@
-package org.eson.ble_sdk;
+package com.e.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
-import org.eson.ble_sdk.check.BLECheck;
-import org.eson.ble_sdk.control.BLEControl;
-import org.eson.ble_sdk.scan.BLEScanner;
-import org.eson.ble_sdk.util.BLELog;
+import com.e.ble.check.BLECheck;
+import com.e.ble.control.BLEControl;
+import com.e.ble.scan.BLEScanner;
+import com.e.ble.util.BLELog;
 
 /**
  * @作者 xiaoyunfei

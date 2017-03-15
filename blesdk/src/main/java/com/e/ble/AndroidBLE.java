@@ -1,10 +1,10 @@
-package org.eson.ble_sdk;
+package com.e.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
-import org.eson.ble_sdk.util.BLELog;
+import com.e.ble.util.BLELog;
 
 /**
  * @作者 xiaoyunfei
