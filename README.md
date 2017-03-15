@@ -1,6 +1,10 @@
 # AndroidBle
 蓝牙
 
+
+[![](https://jitpack.io/v/eson-yunfei/MyTest.svg)](https://jitpack.io/#eson-yunfei/MyTest)
+
+
 ## 2017/03/15
 项目发布到 JitPack
 
