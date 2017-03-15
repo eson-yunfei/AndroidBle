@@ -26,14 +26,14 @@
 
 
 ## 2017/02/22
-一、创建仓库，首次提交项目代码
+### 一、创建仓库，首次提交项目代码
 
 
-二、初始化
+### 二、初始化
 
       BLESdk.init();
 
-三、蓝牙权限、状态等检测
+### 三、蓝牙权限、状态等检测
 
 
         BLECheck.get().checkBleState(context, new BLECheckListener() {
@@ -60,7 +60,7 @@
 			}
 		});
 
-四、蓝牙搜索
+### 四、蓝牙搜索
 
             BLEScanner.get().startScan(0, nameFilter, uuidFilter, new BLEScanListener() {
     			@Override
@@ -85,42 +85,36 @@
     		});
 
 
- 五、蓝牙交互
+### 五、蓝牙交互
+
+#### 1、添加时间监听
+
+             BLEControl.get().setBleConnectListener(bleConnectionListener);
+		     BLEControl.get().setBleStateChangedListener(stateChangeListener);
+		     BLEControl.get().setBleTransportListener(transportListener);
+
+#### 2、设备连接
+
+             BLEControl.get().connectDevice(context, bleMac);
 
 
+#### 3、启用Notify特性
 
-      1、添加时间监听
-
-
-                BLEControl.get().setBleConnectListener(bleConnectionListener);
-		        BLEControl.get().setBleStateChangedListener(stateChangeListener);
-		        BLEControl.get().setBleTransportListener(transportListener);
-
-
-
-      2、设备连接
-
-
-                 BLEControl.get().connectDevice(context, bleMac);
-
-
-      3、启用Notify特性
-
-                   BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+             BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
         				.setAddress(address)
         				.setDescriptorUUID(descriptorUui)
         				.setEnable(isListenerNotice).builder();
 
-                    BLEControl.get().enableNotify(bleUuid);
+             BLEControl.get().enableNotify(bleUuid);
 
 
-      4、发送数据
+#### 4、发送数据
 
 
-                    BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+             BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
       				.setAddress(address).setDataBuffer(bytes).builder();
 
-                     BLEControl.get().sendData(bleUuid);
+             BLEControl.get().sendData(bleUuid);
 
 
 
