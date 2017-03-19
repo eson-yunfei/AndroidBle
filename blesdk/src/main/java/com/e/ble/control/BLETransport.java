@@ -1,12 +1,10 @@
 package com.e.ble.control;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothProfile;
 
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLECharacter;
@@ -18,27 +16,27 @@ import com.e.ble.util.BLELog;
 import java.util.UUID;
 
 /**
+ * |---------------------------------------------------------------------------------------------------------------|
+ *
  * @作者 xiaoyunfei
  * @日期: 2017/3/5
- * @说明：
+ * @说明： BLETransport
+ * <p>
+ * |---------------------------------------------------------------------------------------------------------------|
  */
 
 class BLETransport implements BLETransportListener {
 
 	/**
-	 * |----------------------------------------------------------------------|
-	 * |                                                                      |
-	 * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
-	 * |
-	 * |<p>  实例化
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
-	 * |																	  |
-	 * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
+	 * |---------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |  实例化
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |---------------------------------------------------------------------------------------------------------|
 	 */
 	private static BLETransport bleTransport = null;
 	private BLETransportListener bleTransportListener = null;
@@ -56,21 +54,16 @@ class BLETransport implements BLETransportListener {
 	}
 
 	/**
-	 * |----------------------------------------------------------------------|
-	 * |                                                                      |
-	 * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
-	 * |
-	 * |<p>  API
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
-	 * |																	  |
-	 * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
+	 * |---------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |  API
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |---------------------------------------------------------------------------------------------------------|
 	 */
-
 
 	/**
 	 * 设置回调
@@ -82,40 +75,13 @@ class BLETransport implements BLETransportListener {
 	}
 
 	/**
-	 * 通知的启用和关闭
-	 *
-	 * @param bluetoothGatt
-	 * @param bleUuid
-	 */
-	public void enableNotify(BluetoothGatt bluetoothGatt, BLEUuid bleUuid) {
-
-		if (checkGattEnable(bluetoothGatt)) {
-			return;
-		}
-
-		if (!isConnect(bluetoothGatt, bleUuid.getAddress())) {
-			return;
-		}
-
-		UUID serviceUuid = bleUuid.getServiceUUID();
-		UUID characteristicUuid = bleUuid.getCharacteristicUUID();
-		BluetoothGattCharacteristic characteristic = getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
-		if (characteristic == null) {
-			return;
-		}
-		UUID descriptorUuid = bleUuid.getDescriptorUUID();
-		changeNotifyState(bluetoothGatt, characteristic, descriptorUuid, bleUuid.isEnable());
-		BLELog.e("enableNotify()-->>characteristicUuid:" + characteristicUuid);
-	}
-
-
-	/**
 	 * 发送数据
 	 *
-	 * @param bluetoothGatt
 	 * @param bleUuid
 	 */
-	public void sendDataToDevice(BluetoothGatt bluetoothGatt, BLEUuid bleUuid) {
+	public void sendDataToDevice(BLEUuid bleUuid) {
+
+		BluetoothGatt bluetoothGatt = BLEConnectList.get().getGatt(bleUuid.getAddress());
 		if (checkGattEnable(bluetoothGatt)) {
 			return;
 		}
@@ -138,13 +104,39 @@ class BLETransport implements BLETransportListener {
 	}
 
 	/**
-	 * 读取数据
+	 * 通知的启用和关闭
 	 *
-	 * @param bluetoothGatt
 	 * @param bleUuid
 	 */
-	public void readDeviceData(BluetoothGatt bluetoothGatt, BLEUuid bleUuid) {
+	public void enableNotify(BLEUuid bleUuid) {
+		BluetoothGatt bluetoothGatt = BLEConnectList.get().getGatt(bleUuid.getAddress());
+		if (checkGattEnable(bluetoothGatt)) {
+			return;
+		}
 
+		if (!isConnect(bluetoothGatt, bleUuid.getAddress())) {
+			return;
+		}
+
+		UUID serviceUuid = bleUuid.getServiceUUID();
+		UUID characteristicUuid = bleUuid.getCharacteristicUUID();
+		BluetoothGattCharacteristic characteristic = getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
+		if (characteristic == null) {
+			return;
+		}
+		UUID descriptorUuid = bleUuid.getDescriptorUUID();
+		changeNotifyState(bluetoothGatt, characteristic, descriptorUuid, bleUuid.isEnable());
+		BLELog.e("enableNotify()-->>characteristicUuid:" + characteristicUuid);
+
+	}
+
+	/**
+	 * 读取数据
+	 *
+	 * @param bleUuid
+	 */
+	public void readDeviceData(BLEUuid bleUuid) {
+		BluetoothGatt bluetoothGatt = BLEConnectList.get().getGatt(bleUuid.getAddress());
 		if (checkGattEnable(bluetoothGatt)) {
 			return;
 		}
@@ -161,21 +153,20 @@ class BLETransport implements BLETransportListener {
 		}
 		bluetoothGatt.readCharacteristic(characteristic);
 	}
-/**
- * |----------------------------------------------------------------------|
- * |                                                                      |
- * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
- * |																	  |
- * |----------------------------------------------------------------------|
- * |
- * |<p>  私有方法，
- * |																	  |
- * |----------------------------------------------------------------------|
- * |																	  |
- * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
- * |																	  |
- * |----------------------------------------------------------------------|
- */
+
+
+	/**
+	 * |---------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |  私有方法
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |---------------------------------------------------------------------------------------------------------|
+	 */
+
 	/**
 	 * 检测 bluetoothGatt 是否可用
 	 *
@@ -191,23 +182,7 @@ class BLETransport implements BLETransportListener {
 
 	private boolean isConnect(BluetoothGatt gatt, String deviceAddress) {
 
-		boolean isConnect = false;
-
-		//bluetoothGatt 为null
-		if (gatt == null) {
-			return isConnect;
-		}
-		if (bluetoothAdapter == null) {
-			return isConnect;
-		}
-		BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(deviceAddress);
-
-		int state = BLESdk.get().getBluetoothManager().getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
-		if (state == BluetoothGatt.STATE_CONNECTED) {
-			isConnect = true;
-		}
-
-		return isConnect;
+		return BLEConnection.get().isConnect(gatt, deviceAddress);
 	}
 
 	/**
@@ -250,20 +225,17 @@ class BLETransport implements BLETransportListener {
 		bluetoothGatt.writeDescriptor(descriptor);
 	}
 
+
 	/**
-	 * |----------------------------------------------------------------------|
-	 * |                                                                      |
-	 * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
-	 * |
-	 * |<p>  BLETransportListener 回调
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
-	 * |																	  |
-	 * |++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * |																	  |
-	 * |----------------------------------------------------------------------|
+	 * |---------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |  LETransportListener 回调
+	 * <p>
+	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	 * <p>
+	 * |---------------------------------------------------------------------------------------------------------|
 	 */
 
 	@Override
@@ -288,4 +260,6 @@ class BLETransport implements BLETransportListener {
 			bleTransportListener.onCharacterNotify(bleCharacter);
 		}
 	}
+
+
 }

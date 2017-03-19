@@ -37,4 +37,5 @@ public class BLEConstant {
 		public static final int STATE_CONNECT_CONNECTED = 203;
 	}
 
+
 }

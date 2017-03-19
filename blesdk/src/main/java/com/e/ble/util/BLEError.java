@@ -6,6 +6,10 @@ package com.e.ble.util;
  * @说明：
  */
 
-public class BLEError {
+public interface BLEError {
+
+	int BLE_CLOSE = 0x4001;
+	int BLE_OUT_MAX_CONNECT = 0x4002;
+
 
 }

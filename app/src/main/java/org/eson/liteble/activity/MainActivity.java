@@ -17,6 +17,8 @@ import com.e.ble.check.BLECheckListener;
 import com.e.ble.scan.BLEScanListener;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
+import com.e.ble.util.BLEError;
+
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.adapter.ScanBLEAdapter;
 import org.eson.liteble.service.BleService;
@@ -260,10 +262,16 @@ public class MainActivity extends BaseBleActivity {
 			}
 
 			@Override
-			public void onScannerError() {
+			public void onScannerError(int errorCode) {
 				hideProgress();
-				ToastUtil.showShort(mContext, "扫描出现异常");
+				if (errorCode == BLEError.BLE_CLOSE){
+					ToastUtil.showShort(mContext, "蓝牙未打开，请打开蓝牙后重试");
+				}else {
+					ToastUtil.showShort(mContext, "扫描出现异常");
+				}
 			}
+
+
 		});
 	}
 

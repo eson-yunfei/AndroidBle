@@ -9,4 +9,6 @@ package com.e.ble.control.listener;
 public interface BLEReadRssiListener {
 
 	void onReadRssi(String address, int rssi);
+
+	void onReadRssiError(String address, int errorCode);
 }

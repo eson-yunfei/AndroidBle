@@ -3,7 +3,6 @@ package com.e.ble.control;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 
-import com.e.ble.BLESdk;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.listener.BLEConnectionListener;
 import com.e.ble.control.listener.BLEReadRssiListener;
@@ -12,36 +11,27 @@ import com.e.ble.control.listener.BLETransportListener;
 import com.e.ble.util.BLELog;
 
 /**
+ * |---------------------------------------------------------------------------------------------------------------|
+ *
  * @作者 xiaoyunfei
  * @日期: 2017/3/5
  * @说明： 蓝牙控制类，包括设备的连接、断开、数据发送，回调设置
+ * <p>
+ * |---------------------------------------------------------------------------------------------------------------|
  */
 
 public class BLEControl extends BaseControl {
 
-
+	/**
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * | Sdk  单例模式 初始化
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
+	 */
 	private static BLEControl bleControl = null;
-	private BluetoothGatt bluetoothGatt;
-
 	private BLEReadRssiListener bleReadRssiListener;
 
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|  BLEConnection 单例实现
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 	private BLEControl() {
 	}
 
@@ -59,66 +49,13 @@ public class BLEControl extends BaseControl {
 		return bleControl;
 	}
 
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|  BLEControl 提供给外部访问的 API   设备连接相关
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-
 	/**
-	 * 设备连接
-	 *
-	 * @param context
-	 * @param device
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * | BLEControl 提供给外部访问的 API   设备连接相关
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
 	 */
-	public void connectDevice(Context context, String device) {
-		if (BLESdk.get().isPermitConnectMore()) {
-			//多连设备
-			BLEConnection.get().connectToMoreDevice(context, device, gattCallback);
-		} else {
-			//
-			bluetoothGatt = BLEConnection.get().connectToDevice(context, device, gattCallback);
-		}
-	}
-
-	/**
-	 * 断开设备连接
-	 */
-	public void disconnect() {
-
-		BLEConnection.get().disConnect();
-	}
-
-	/**
-	 * 断开所以设备连接
-	 * 多连时可用
-	 */
-	public void disconnectAll() {
-		BLEConnection.get().disConnectAll();
-	}
-
-	/**
-	 * 断开指定设备连接
-	 * 多连时可用
-	 *
-	 * @param deviceAddress
-	 */
-	public void disconnect(String deviceAddress) {
-		BLEConnection.get().disConnect(deviceAddress);
-	}
-
 
 	/**
 	 * 判断一个设备是否为连接状态
@@ -128,17 +65,47 @@ public class BLEControl extends BaseControl {
 	 * @return
 	 */
 	public boolean isConnect(String deviceAddress) {
-		if (BLESdk.get().isPermitConnectMore()) {
-			BluetoothGatt gatt = BLEConnection.get().getGattByAddress(deviceAddress);
-			if (gatt == null) {
-				return false;
-			} else {
-				return BLEConnection.get().isConnect(gatt, deviceAddress);
-			}
-		} else {
-			return BLEConnection.get().isConnect(deviceAddress);
-		}
+
+		return BLEConnection.get().isConnect(deviceAddress);
 	}
+
+	/**
+	 * 连接到指定的设备
+	 *
+	 * @param context
+	 * @param device
+	 */
+	public void connectDevice(Context context, String device) {
+
+		BLEConnection.get().connectToAddress(context, device, gattCallback);
+	}
+
+	/**
+	 * 断开所以的设备连接
+	 * 多连时可用
+	 */
+	public void disconnectAll() {
+		BLEConnection.get().disConnectAll();
+	}
+
+	/**
+	 * 断开指定设备的连接
+	 *
+	 * @param deviceAddress
+	 */
+	public void disconnect(String deviceAddress) {
+		BLEConnection.get().disConnect(deviceAddress);
+	}
+
+
+	/**
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * | BLEControl 提供给外部访问的 API   设备连接相关
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
+	 */
+
 
 	/**
 	 * Just for demo test
@@ -149,33 +116,16 @@ public class BLEControl extends BaseControl {
 	 * @return
 	 */
 	public BluetoothGatt getBluetoothGatt(String deviceAddress) {
-		if (BLESdk.get().isPermitConnectMore()) {
-			BluetoothGatt gatt = BLEConnection.get().getGattByAddress(deviceAddress);
-			return gatt;
-		} else {
-			return bluetoothGatt;
-		}
+		return BLEConnectList.get().getGatt(deviceAddress);
 	}
 
-
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|  BLEControl 提供给外部访问的 API   设备数据传输相关
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-
+	/**
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |  BLEControl 提供给外部访问的 API   设备数据传输相关
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
+	 */
 
 	/**
 	 * 发送数据
@@ -184,15 +134,7 @@ public class BLEControl extends BaseControl {
 	 */
 	public void sendData(BLEUuid bleUuid) {
 
-		if (BLESdk.get().isPermitConnectMore()) {
-			//多连设备
-
-			BluetoothGatt gatt = BLEConnection.get().getGattByAddress(bleUuid.getAddress());
-			BLETransport.get().sendDataToDevice(gatt, bleUuid);
-		} else {
-			//
-			BLETransport.get().sendDataToDevice(bluetoothGatt, bleUuid);
-		}
+		BLETransport.get().sendDataToDevice(bleUuid);
 	}
 
 	/**
@@ -201,15 +143,7 @@ public class BLEControl extends BaseControl {
 	 * @param bleUuid
 	 */
 	public void enableNotify(BLEUuid bleUuid) {
-		if (BLESdk.get().isPermitConnectMore()) {
-			//多连设备
-
-			BluetoothGatt gatt = BLEConnection.get().getGattByAddress(bleUuid.getAddress());
-			BLETransport.get().enableNotify(gatt, bleUuid);
-		} else {
-			//
-			BLETransport.get().enableNotify(bluetoothGatt, bleUuid);
-		}
+		BLETransport.get().enableNotify(bleUuid);
 	}
 
 	/**
@@ -218,35 +152,17 @@ public class BLEControl extends BaseControl {
 	 * @param bleUuid
 	 */
 	public void readDeviceData(BLEUuid bleUuid) {
-		if (BLESdk.get().isPermitConnectMore()) {
-			//多连设备
-
-			BluetoothGatt gatt = BLEConnection.get().getGattByAddress(bleUuid.getAddress());
-			BLETransport.get().readDeviceData(gatt, bleUuid);
-		} else {
-			//
-			BLETransport.get().readDeviceData(bluetoothGatt, bleUuid);
-		}
+		BLETransport.get().readDeviceData(bleUuid);
 	}
 
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|  BLEControl 提供给外部访问的 API   读取设备的 Rssi 信号值
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 
+	/**
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |  BLEControl 提供给外部访问的 API   读取设备的 Rssi 信号值
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
+	 */
 
 	/**
 	 * 读取设备的 Rssi
@@ -254,25 +170,15 @@ public class BLEControl extends BaseControl {
 	 * @param deviceAddress
 	 */
 	public void readGattRssi(String deviceAddress) {
-		if (BLESdk.get().isPermitConnectMore()) {
-			//多连设备
-			BluetoothGatt gatt = BLEConnection.get().getGattByAddress(deviceAddress);
-			if (!BLEConnection.get().isConnect(gatt, deviceAddress)) {
-				return;
-			}
-			gatt.readRemoteRssi();
-		} else {
-			//
-			if (!BLEConnection.get().isConnect(bluetoothGatt, deviceAddress)) {
-				return;
-			}
-			bluetoothGatt.readRemoteRssi();
-		}
+		BluetoothGatt gatt = BLEConnectList.get().getGatt(deviceAddress);
+
+		gatt.readRemoteRssi();
+
+
 	}
 
 	@Override
 	public void onReadRssi(String address, int rssi) {
-		super.onReadRssi(address, rssi);
 
 		BLELog.d("BLEControl-->> onReadRssi()");
 
@@ -282,25 +188,22 @@ public class BLEControl extends BaseControl {
 		bleReadRssiListener.onReadRssi(address, rssi);
 	}
 
+	@Override
+	public void onReadRssiError(String address, int errorCode) {
+		if (bleReadRssiListener == null) {
+			return;
+		}
+		bleReadRssiListener.onReadRssiError(address, errorCode);
+	}
 
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|  BLEControl 提供给外部访问的 API   设备回调相关
-	//|                                                                      							|
-	//|                                                                      							|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	//|                                                                      							|
-	//|+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
 
+	/**
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |  BLEControl 提供给外部访问的 API   设备回调相关
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
+	 */
 
 	/**
 	 * 设备发送数据，接收数据的回调
@@ -337,4 +240,17 @@ public class BLEControl extends BaseControl {
 		bleReadRssiListener = readRssiListener;
 	}
 
+
+	/**
+	 * |------------------------------------------------------------------------------------------------------|
+	 * <p>
+	 * |  BLEControl 提供给外部访问的 API   设备回调相关
+	 * <p>
+	 * |-----------------------------------------------------------------------------------------------------|
+	 */
+
+	@Override
+	protected void closeGatt() {
+		BLEConnection.get().disConnectAll();
+	}
 }

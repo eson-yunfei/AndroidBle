@@ -38,8 +38,8 @@ public class ScanBLEAdapter extends MyBaseAdapter<BLEDevice> {
 		}
 		BLEDevice device = dataList.get(position);
 		String name = device.getName();
-		LogUtil.d("信号:" + device.getRssi());
-		LogUtil.e("name = " + name);
+//		LogUtil.d("信号:" + device.getRssi());
+//		LogUtil.e("name = " + name);
 		String mac = device.getMac();
 		viewHolder.deviceRssi.setText("信号强度：" + device.getRssi());
 		viewHolder.deviceName.setText(name);

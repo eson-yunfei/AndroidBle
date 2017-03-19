@@ -15,9 +15,13 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 
 /**
+ * |---------------------------------------------------------------------------------------------------------------|
+ *
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
  * @说明： 蓝牙检测工具
+ * <p>
+ * |---------------------------------------------------------------------------------------------------------------|
  */
 
 public class BLECheck {
@@ -81,7 +85,7 @@ public class BLECheck {
 	 *
 	 * @return
 	 */
-	private boolean isBleEnable() {
+	public boolean isBleEnable() {
 
 		bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
 		if (bluetoothAdapter == null) {

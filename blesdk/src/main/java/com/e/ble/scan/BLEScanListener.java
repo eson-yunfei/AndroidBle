@@ -17,5 +17,5 @@ public interface BLEScanListener {
 
 	void onScannerStop();
 
-	void onScannerError();
+	void onScannerError(int errorCode);
 }

@@ -27,17 +27,28 @@
      	        compile 'com.github.eson-yunfei:AndroidBle:xxxx'
      	}
 
+# 更新日期和内容
 
+## 2017/03/19
+### 修改API的调用方式
 
 ## 2017/02/22
-### 一、创建仓库，首次提交项目代码
+### 创建仓库，首次提交项目代码
 
+# API 指南
+### 一、SDK 初始化
 
-### 二、初始化
+        ```
+        //之前版本
+        // BLESdk.init();
+        //3.19 修改之后
+        BLESdk.get().init(mContext);
 
-      BLESdk.init();
+        设置最大连接的设备
+        //BLESdk.get().setMaxConnect(3);
+        ```
 
-### 三、蓝牙权限、状态等检测
+### 二、蓝牙权限、状态等检测
 
 
         BLECheck.get().checkBleState(context, new BLECheckListener() {
@@ -45,6 +56,7 @@
 			public void noBluetoothPermission() {
                 //未获取蓝牙权限,申请权限
                 BLECheck.get().requestBlePermission();
+                //申请成功之后，在进行检测
 			}
 
 			@Override
@@ -56,6 +68,7 @@
 			public void bleClosing() {
                 //蓝牙未开启,开启蓝牙
                 BLECheck.get().openBle();
+                //监听蓝牙打开结果，之后检测
 			}
 
 			@Override
@@ -64,9 +77,16 @@
 			}
 		});
 
-### 四、蓝牙搜索
+### 三、蓝牙搜索
 
-            BLEScanner.get().startScan(0, nameFilter, uuidFilter, new BLEScanListener() {
+            3.19添加两个扫描时长常量：
+
+            public static final int INFINITE = -1;// 无限时长扫描，用户手动调用停止扫描
+            public static final int DEFAULT = 0;//默认时长
+
+            nameFilter ,uuidFilter 可以为 null
+
+            BLEScanner.get().startScan(BLEScanner.DEFAULT, nameFilter, uuidFilter, new BLEScanListener() {
     			@Override
     			public void onScannerStart() {
     				//开始扫描
@@ -89,9 +109,9 @@
     		});
 
 
-### 五、蓝牙交互
+### 四、蓝牙交互
 
-#### 1、添加时间监听
+#### 1、添加事件监听
 
              BLEControl.get().setBleConnectListener(bleConnectionListener);
 		     BLEControl.get().setBleStateChangedListener(stateChangeListener);

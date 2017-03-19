@@ -87,12 +87,13 @@ public class BleDetailActivity extends BaseBleActivity {
 			public void onClick(View v) {
 				if (isConnect) {
 					showProgress("断开设备。。。");
-					BLEControl.get().disconnect();
+					BLEControl.get().disconnect(mac);
 					gattServiceData.clear();
 					gattCharacteristicData.clear();
 					gattServiceAdapter.notifyDataSetChanged();
 
 					isConnect = false;
+					disProgress();
 				} else {
 					showProgress("重新连接设备。。。");
 					BleService.get().connectionDevice(BleDetailActivity.this, mac);
@@ -115,7 +116,7 @@ public class BleDetailActivity extends BaseBleActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		BLEControl.get().disconnect();
+		BLEControl.get().disconnect(mac);
 		this.finish();
 	}
 

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.e.ble.BLESdk;
+
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.share.ConfigShare;
 import org.eson.liteble.util.LogUtil;
@@ -47,7 +48,8 @@ public class MyApplication extends Application {
 		mContext = this;
 		instance = this;
 
-		BLESdk.init(mContext);
+		BLESdk.get().init(mContext);
+		BLESdk.get().setMaxConnect(3);
 		configShare = new ConfigShare(mContext);
 		BLESdk.get().setPermitConnectMore(configShare.isPermitConnectMore());
 		Intent bleServer = new Intent(mContext, BleService.class);

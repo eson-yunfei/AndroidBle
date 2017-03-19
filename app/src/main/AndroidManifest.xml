@@ -39,6 +39,15 @@
         <service android:name=".service.BleService">
 
         </service>
+
+        <receiver android:name="com.e.ble.receiver.BLEStateReceiver">
+
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED">
+
+                </action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
