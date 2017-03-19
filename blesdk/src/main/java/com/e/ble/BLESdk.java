@@ -101,14 +101,6 @@ public class BLESdk {
 		return permitConnectMore;
 	}
 
-	/**
-	 * 获取是否开启多连设备
-	 *
-	 * @param permitConnectMore
-	 */
-//	public void setPermitConnectMore(boolean permitConnectMore) {
-//		this.permitConnectMore = permitConnectMore;
-//	}
 
 	/**
 	 * 设置最大连接数
@@ -116,6 +108,20 @@ public class BLESdk {
 	 * @param maxConnect
 	 */
 	public void setMaxConnect(int maxConnect) {
+
+		if (maxConnect <1){
+			maxConnect = 1;
+		}
+
+		if (maxConnect > 5){
+			maxConnect = 5;
+		}
+		if (maxConnect == 1) {
+			permitConnectMore = false;
+		} else {
+			permitConnectMore = true;
+		}
+
 		this.maxConnect = maxConnect;
 	}
 

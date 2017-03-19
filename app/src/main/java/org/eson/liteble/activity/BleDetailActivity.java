@@ -12,8 +12,10 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+import com.e.ble.BLESdk;
 import com.e.ble.control.BLEControl;
 import com.e.ble.util.BLEConstant;
+
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.service.BleService;
 
@@ -116,7 +118,9 @@ public class BleDetailActivity extends BaseBleActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		BLEControl.get().disconnect(mac);
+		if (!BLESdk.get().isPermitConnectMore()) {
+			BLEControl.get().disconnect(mac);
+		}
 		this.finish();
 	}
 

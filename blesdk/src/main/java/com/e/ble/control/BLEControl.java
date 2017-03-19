@@ -249,8 +249,8 @@ public class BLEControl extends BaseControl {
 	 * |-----------------------------------------------------------------------------------------------------|
 	 */
 
-	@Override
-	protected void closeGatt() {
-		BLEConnection.get().disConnectAll();
-	}
+//	@Override
+//	protected void closeGatt() {
+//		BLEConnection.get().disConnectAll();
+//	}
 }

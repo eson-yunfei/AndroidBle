@@ -8,9 +8,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * |---------------------------------------------------------------------------------------------------------------|
+ *
  * @author xiaoyunfei
  * @date: 2017/3/19
- * @Description：
+ * @Description： BLEConnectList  连接的设备列表的管理类
+ * <p>
+ * 提供添加，删除，断裂连接
+ * <p>
+ * |---------------------------------------------------------------------------------------------------------------|
  */
 
 class BLEConnectList {
@@ -44,10 +50,21 @@ class BLEConnectList {
 		return false;
 	}
 
+	/**
+	 * 添加新的连接设备
+	 *
+	 * @param address
+	 * @param gatt
+	 */
 	public void putGatt(String address, BluetoothGatt gatt) {
 		mGattHashMap.put(address, gatt);
 	}
 
+	/**
+	 * 根据设备 mac 获取 BluetoothGatt
+	 * @param address
+	 * @return
+	 */
 	public BluetoothGatt getGatt(String address) {
 
 		if (mGattHashMap.containsKey(address)) {
@@ -56,6 +73,9 @@ class BLEConnectList {
 		return null;
 	}
 
+	/**
+	 * 断开所有的设备连接
+	 */
 	public void disconnectAll() {
 
 		for (Map.Entry<String, BluetoothGatt> gattEntry : mGattHashMap.entrySet()) {
@@ -66,12 +86,22 @@ class BLEConnectList {
 		}
 	}
 
+	/**
+	 * 断开某一个设备连接
+	 * @param deviceAddress
+	 */
 	public void disconnect(String deviceAddress) {
 
 		BluetoothGatt gatt = getGatt(deviceAddress);
 		disconnect(deviceAddress, gatt);
 	}
 
+
+	/**
+	 * 断开设备连接
+	 * @param deviceAddress
+	 * @param gatt
+	 */
 	private void disconnect(String deviceAddress, BluetoothGatt gatt) {
 
 		if (gatt == null) {

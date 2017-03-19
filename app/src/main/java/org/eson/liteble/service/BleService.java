@@ -8,15 +8,17 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.e.ble.bean.BLECharacter;
+import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.BLEControl;
 import com.e.ble.control.listener.BLEConnectionListener;
 import com.e.ble.control.listener.BLEStateChangeListener;
+import com.e.ble.control.listener.BLETransportListener;
 import com.e.ble.util.BLEConstant;
+
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
-import com.e.ble.bean.BLEUuid;
-import com.e.ble.control.listener.BLETransportListener;
+import org.eson.liteble.util.LogUtil;
 
 import java.util.UUID;
 
@@ -96,8 +98,8 @@ public class BleService extends Service {
 	BLEConnectionListener bleConnectionListener = new BLEConnectionListener() {
 		@Override
 		public void onConnectError(String address, int errorCode) {
+			LogUtil.e("address -->>"+address +"; errorCode -->>"+errorCode);
 			sendBleState(BLEConstant.Connection.STATE_CONNECT_FAILED, address);
-
 		}
 
 		@Override

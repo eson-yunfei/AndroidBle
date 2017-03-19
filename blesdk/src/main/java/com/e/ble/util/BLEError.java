@@ -8,8 +8,8 @@ package com.e.ble.util;
 
 public interface BLEError {
 
-	int BLE_CLOSE = 0x4001;
-	int BLE_OUT_MAX_CONNECT = 0x4002;
+	int BLE_CLOSE = 1001;
+	int BLE_OUT_MAX_CONNECT = 1002;
 
 
 }

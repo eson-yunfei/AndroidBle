@@ -21,14 +21,15 @@ import java.util.UUID;
  *
  * @作者 xiaoyunfei
  * @日期: 2017/3/5
- * @说明： BaseControl
+ * @说明： BaseControl  ，  提供唯一的 BluetoothGattCallback,
+ * <p>
+ * 根据设备 的 mac 地址 返回不同的数据
  * <p>
  * |---------------------------------------------------------------------------------------------------------------|
  */
 
 abstract class BaseControl implements BLEConnectionListener, BLETransportListener,
 		BLEStateChangeListener, BLEReadRssiListener {
-
 
 	/**
 	 * |---------------------------------------------------------------------------------------------------------|
@@ -42,6 +43,8 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 			super.onConnectionStateChange(gatt, status, newState);
 
+			BLELog.i("BaseControl::onConnectionStateChange()" +
+					"\n status-->>" + status + ";newState-->>" + newState);
 			//更新设备的连接状态
 			updateConnectionState(gatt, status, newState);
 		}
@@ -50,6 +53,8 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			super.onServicesDiscovered(gatt, status);
 			//回调设备的连接成功或失败
+			BLELog.i("BaseControl::onServicesDiscovered()" +
+					"\n status-->>" + status);
 			deviceConnectionCallback(gatt, status);
 		}
 
@@ -57,26 +62,33 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		@Override
 		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			super.onCharacteristicRead(gatt, characteristic, status);
-			BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
 
-			onCharacterRead(bleCharacter);
+			BLELog.i("BaseControl::onCharacteristicRead()" +
+					"\n status-->>" + status);
+
+			if (status == BluetoothGatt.GATT_SUCCESS) {
+				BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
+				onCharacterRead(bleCharacter);
+			} else {
+
+			}
 		}
 
 		@Override
 		public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			super.onCharacteristicWrite(gatt, characteristic, status);
+			if (status == BluetoothGatt.GATT_SUCCESS) {
+				BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
 
-			BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
-
-			onCharacterWrite(bleCharacter);
+				onCharacterWrite(bleCharacter);
+			}
 		}
 
 		@Override
 		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 			super.onCharacteristicChanged(gatt, characteristic);
-
+			// 设备返回数据或设备通知过来数据
 			BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
-
 			onCharacterNotify(bleCharacter);
 		}
 
@@ -102,10 +114,17 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		@Override
 		public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
 			super.onReadRemoteRssi(gatt, rssi, status);
+
+			//读取设备的 RSSI 信号值
 			String address = getConnectDevice(gatt);
 			BLELog.i("BaseControl-->>onReadRemoteRssi() address: " +
 					address + " rssi : " + rssi + " status  : " + status);
-			onReadRssi(address, rssi);
+
+			if (status == BluetoothGatt.GATT_SUCCESS) {
+				onReadRssi(address, rssi);
+			} else {
+				onReadRssiError(address, status);
+			}
 		}
 
 		@Override
@@ -246,17 +265,12 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		} else {
 			BLELog.e("updateConnectionState()-> status:" + status);
 			//发现服务失败，断开设备连接
-//			gatt = null;
-//			closeGatt();
 			onConnectError(getConnectDevice(gatt), status);
 			gatt.disconnect();
 			gatt.close();
 			gatt = null;
 		}
 	}
-
-	protected abstract void closeGatt();
-
 
 	/**
 	 * onServicesDiscovered 当服务发现成功时，返回连接成功，
@@ -276,6 +290,8 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 	}
 
 	/**
+	 * 从连接的 BluetoothGatt 中获取当前设备的 mac 地址
+	 *
 	 * @param gatt
 	 *
 	 * @return
@@ -290,6 +306,8 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 	}
 
 	/**
+	 * 组装 BLECharacter
+	 *
 	 * @param gatt
 	 * @param characteristic
 	 *

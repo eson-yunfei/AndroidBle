@@ -56,4 +56,30 @@
             android:layout_marginRight="10dp"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="6dp"
+        android:id="@+id/maxSizeLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="最大连接设备个数："
+            android:textSize="@dimen/text_size"/>
+
+        <EditText
+            android:id="@+id/maxNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:hint="1-5个"
+            android:textSize="@dimen/text_size"
+            android:inputType="number"
+            android:maxLength="10"/>
+    </RelativeLayout>
+
 </LinearLayout>

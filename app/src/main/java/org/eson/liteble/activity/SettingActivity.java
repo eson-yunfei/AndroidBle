@@ -4,14 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 
+import com.e.ble.BLESdk;
+
+import org.eson.liteble.R;
 import org.eson.liteble.share.ConfigShare;
+import org.eson.liteble.util.ToastUtil;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * @name AndroidBle
@@ -29,6 +35,8 @@ public class SettingActivity extends AppCompatActivity {
 	private EditText timeOutEdit;
 	private Switch aSwitch;
 	private ConfigShare configShare;
+	private RelativeLayout maxSizeLayout;
+	private EditText maxConnectSize;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,8 +52,11 @@ public class SettingActivity extends AppCompatActivity {
 	private void initViews() {
 
 		timeOutEdit = (EditText) findViewById(org.eson.liteble.R.id.timeOutEdit);
+		maxSizeLayout = (RelativeLayout) findViewById(R.id.maxSizeLayout);
+		maxConnectSize = (EditText) findViewById(R.id.maxNumber);
 		aSwitch = (Switch) findViewById(org.eson.liteble.R.id.switchBtn);
 
+		maxSizeLayout.setVisibility(View.GONE);
 
 	}
 
@@ -53,48 +64,54 @@ public class SettingActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 		timeOutEdit.setText("" + configShare.getConnectTime());
-		aSwitch.setChecked(configShare.isPermitConnectMore());
 
+		boolean permit = configShare.isPermitConnectMore();
+		int visibility = permit ? View.VISIBLE : View.GONE;
+
+		maxSizeLayout.setVisibility(visibility);
+		aSwitch.setChecked(permit);
+
+		maxConnectSize.setText("" + configShare.getMaxConnect());
 		aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 				configShare.setPermitConnectMore(isChecked);
-//				BLESdk.get().setPermitConnectMore(isChecked);
-			}
-		});
+				int visibility = isChecked ? View.VISIBLE : View.GONE;
+				maxSizeLayout.setVisibility(visibility);
 
-		timeOutEdit.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
 
 			}
 		});
+
+
 	}
 
 
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+
 		String text = timeOutEdit.getText().toString();
 
 		if (TextUtils.isEmpty(text)) {
 			return;
 		}
-		int value = Integer.parseInt(text);
+		int value = parseInt(text);
 		if (value < -1) {
 			value = -1;
 		}
 		configShare.setConnectTime(value);
+
+		String maxConnect = aSwitch.isChecked() ? maxConnectSize.getText().toString() : "1";
+
+		int size = Integer.parseInt(maxConnect);
+		if (size < 1 || size > 5) {
+			ToastUtil.showShort(mContext, "设备连接超过限制范围");
+			return;
+		}
+		configShare.setMaxConnect(size);
+
+		BLESdk.get().setMaxConnect(size);
+		super.onBackPressed();
 	}
 }

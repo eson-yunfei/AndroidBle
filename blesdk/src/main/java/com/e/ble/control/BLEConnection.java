@@ -88,12 +88,6 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 			return;
 		}
 
-		if (BLEConnectList.get().outLimit()) {
-			//超出最多设置的连接数，返回超限，
-			onConnectError(address, BLEError.BLE_OUT_MAX_CONNECT);
-			return;
-		}
-
 		BluetoothGatt gatt = BLEConnectList.get().getGatt(address);
 		if (gatt != null) {
 
@@ -101,6 +95,7 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 			if (isConnect(gatt, address)) {
 				//如果还正在连接，不进行任何操作
 				BLELog.d("BLEConnection :: connectToAddress() gatt connected");
+				onConnected(address);
 
 			} else {
 				//如果已断开连接
@@ -108,6 +103,12 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 				gatt.close();
 				gatt.connect();
 			}
+			return;
+		}
+
+		if (BLEConnectList.get().outLimit()) {
+			//超出最多设置的连接数，返回超限，
+			onConnectError(address, BLEError.BLE_OUT_MAX_CONNECT);
 			return;
 		}
 
