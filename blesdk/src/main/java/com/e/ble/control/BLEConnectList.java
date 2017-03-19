@@ -3,7 +3,9 @@ package com.e.ble.control;
 import android.bluetooth.BluetoothGatt;
 
 import com.e.ble.BLESdk;
+import com.e.ble.util.BLELog;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +64,9 @@ class BLEConnectList {
 
 	/**
 	 * 根据设备 mac 获取 BluetoothGatt
+	 *
 	 * @param address
+	 *
 	 * @return
 	 */
 	public BluetoothGatt getGatt(String address) {
@@ -81,13 +85,13 @@ class BLEConnectList {
 		for (Map.Entry<String, BluetoothGatt> gattEntry : mGattHashMap.entrySet()) {
 			String key = gattEntry.getKey();
 			BluetoothGatt gatt = gattEntry.getValue();
-
 			disconnect(key, gatt);
 		}
 	}
 
 	/**
 	 * 断开某一个设备连接
+	 *
 	 * @param deviceAddress
 	 */
 	public void disconnect(String deviceAddress) {
@@ -99,6 +103,7 @@ class BLEConnectList {
 
 	/**
 	 * 断开设备连接
+	 *
 	 * @param deviceAddress
 	 * @param gatt
 	 */
@@ -111,10 +116,27 @@ class BLEConnectList {
 			return;
 		}
 		mGattHashMap.remove(deviceAddress);
+		refreshCache(gatt);
 		gatt.disconnect();
 		gatt.close();
 		gatt = null;
 
 	}
 
+	private void refreshCache(BluetoothGatt gatt) {
+		try {
+			Method refresh = gatt.getClass().getMethod("refresh");
+			if (refresh != null) {
+				refresh.invoke(gatt);
+			}
+		} catch (Exception e) {
+			BLELog.e(e.getMessage());
+		}
+	}
+
+	public void removeGatt(String address) {
+		if (mGattHashMap.containsKey(address)) {
+			mGattHashMap.remove(address);
+		}
+	}
 }
