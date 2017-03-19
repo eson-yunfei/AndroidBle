@@ -51,7 +51,7 @@ public class MyApplication extends Application {
 		BLESdk.get().init(mContext);
 		BLESdk.get().setMaxConnect(3);
 		configShare = new ConfigShare(mContext);
-		BLESdk.get().setPermitConnectMore(configShare.isPermitConnectMore());
+//		BLESdk.get().setPermitConnectMore(configShare.isPermitConnectMore());
 		Intent bleServer = new Intent(mContext, BleService.class);
 		startService(bleServer);
 

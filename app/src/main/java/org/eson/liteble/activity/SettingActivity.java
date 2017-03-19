@@ -11,7 +11,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
-import com.e.ble.BLESdk;
 import org.eson.liteble.share.ConfigShare;
 
 /**
@@ -61,7 +60,7 @@ public class SettingActivity extends AppCompatActivity {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 				configShare.setPermitConnectMore(isChecked);
-				BLESdk.get().setPermitConnectMore(isChecked);
+//				BLESdk.get().setPermitConnectMore(isChecked);
 			}
 		});
 
