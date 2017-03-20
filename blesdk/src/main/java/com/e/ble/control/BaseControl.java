@@ -43,7 +43,7 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 			super.onConnectionStateChange(gatt, status, newState);
 
-			BLELog.i("BaseControl::onConnectionStateChange()" +
+			BLELog.e("BaseControl::onConnectionStateChange()" +
 					"\n status-->>" + status + ";newState-->>" + newState);
 			//更新设备的连接状态
 			updateConnectionState(gatt, status, newState);
@@ -239,37 +239,57 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 	 */
 	private void updateConnectionState(BluetoothGatt gatt, int status, int newState) {
 
-		if (status == BluetoothGatt.GATT_SUCCESS) {
-			String address = getConnectDevice(gatt);
-			BLELog.d("updateConnectionState()->address:" + address);
-			switch (newState) {
-				case BluetoothProfile.STATE_CONNECTED:
-					//已连接成功
-					gatt.discoverServices();
-					onStateConnected(address);
-					break;
-				case BluetoothProfile.STATE_CONNECTING:
-					//正在连接
-					onStateConnecting(address);
-					break;
-				case BluetoothProfile.STATE_DISCONNECTED:
-					//已断开连接
-					onStateDisConnected(address);
-					break;
-				case BluetoothProfile.STATE_DISCONNECTING:
-					//断开连接中
-					onStateDisConnecting(address);
-					break;
-			}
+		String address = getConnectDevice(gatt);
+		BLELog.e("BaseControl :: updateConnectionState()->address:" + address);
+		if (newState == BluetoothProfile.STATE_CONNECTED) {
+				//已连接成功
+			gatt.discoverServices();
+			onStateConnected(address);
 
-		} else {
-			BLELog.e("updateConnectionState()-> status:" + status);
-			//发现服务失败，断开设备连接
+		} else if (newState == BluetoothProfile.STATE_DISCONNECTED && status == BluetoothGatt.GATT_SUCCESS) {
+			onStateDisConnected(address);
 			onConnectError(getConnectDevice(gatt), status);
-			gatt.disconnect();
-			gatt.close();
-			gatt = null;
+			BLEConnectList.get().disconnect(address);
+		} else if (status != BluetoothGatt.GATT_SUCCESS) {
+
+			onConnectError(getConnectDevice(gatt), status);
+
 		}
+//		if (status == BluetoothGatt.GATT_SUCCESS) {
+//
+//			BLELog.d("updateConnectionState()->address:" + address);
+//			switch (newState) {
+//				case BluetoothProfile.STATE_CONNECTED:
+//					//已连接成功
+//					gatt.discoverServices();
+//					onStateConnected(address);
+//					break;
+//				case BluetoothProfile.STATE_CONNECTING:
+//					//正在连接
+//					onStateConnecting(address);
+//					break;
+//				case BluetoothProfile.STATE_DISCONNECTED:
+//					//已断开连接
+//					onStateDisConnected(address);
+//					break;
+//				case BluetoothProfile.STATE_DISCONNECTING:
+//					//断开连接中
+//					onStateDisConnecting(address);
+//					break;
+//			}
+//
+//		} else {
+//			BLELog.e("updateConnectionState()-> status:" + status);
+//			//发现服务失败，断开设备连接
+////			onConnectError(getConnectDevice(gatt), status);
+////			BLEConnectList.get().disconnect(getConnectDevice(gatt));
+//
+////			gatt.getDevice()
+////			gatt.disconnect();
+//			gatt.close();
+//			gatt.close();
+////			gatt = null;
+//		}
 	}
 
 	/**

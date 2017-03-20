@@ -88,6 +88,9 @@ public class BLEControl extends BaseControl {
 		BLEConnection.get().disConnectAll();
 	}
 
+	public void cleanGatt(){
+		BLEConnection.get().cleanGatt();
+	}
 	/**
 	 * 断开指定设备的连接
 	 *

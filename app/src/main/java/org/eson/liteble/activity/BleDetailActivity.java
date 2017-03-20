@@ -17,6 +17,7 @@ import com.e.ble.control.BLEControl;
 import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
+import org.eson.liteble.R;
 import org.eson.liteble.service.BleService;
 
 import java.util.ArrayList;
@@ -60,16 +61,16 @@ public class BleDetailActivity extends BaseBleActivity {
 
 	@Override
 	protected int getRootLayout() {
-		return org.eson.liteble.R.layout.activity_detail;
+		return R.layout.activity_detail;
 	}
 
 	@Override
 	protected void initView() {
 		super.initView();
-		textView = (TextView) findViewById(org.eson.liteble.R.id.text);
-		name = (TextView) findViewById(org.eson.liteble.R.id.name);
-		disConnect = (Button) findViewById(org.eson.liteble.R.id.disconnect);
-		expandList = (ExpandableListView) findViewById(org.eson.liteble.R.id.expandList);
+		textView = (TextView) findViewById(R.id.text);
+		name = (TextView) findViewById(R.id.name);
+		disConnect = (Button) findViewById(R.id.disconnect);
+		expandList = (ExpandableListView) findViewById(R.id.expandList);
 	}
 
 	@Override
@@ -226,8 +227,13 @@ public class BleDetailActivity extends BaseBleActivity {
 	 */
 	private void getMessage() {
 
+
+
 		BluetoothGatt gatt = BLEControl.get().getBluetoothGatt(MyApplication.getInstance().getCurrentShowDevice());
 		if (gatt == null) {
+			if (textView == null){
+				return;
+			}
 			textView.setText("gatt == null");
 			return;
 		}
@@ -268,10 +274,13 @@ public class BleDetailActivity extends BaseBleActivity {
 			List<HashMap<String, String>> gattCharacteristicList = new ArrayList<>();
 			UUID serviceUuid = UUID.fromString(map.get(LIST_UUID));
 
-			List<BluetoothGattCharacteristic> gattCharacteristics = gatt.getService(serviceUuid).getCharacteristics();
+			BluetoothGattService service =  gatt.getService(serviceUuid);
+			if (service == null){
+				continue;
+			}
+			List<BluetoothGattCharacteristic> gattCharacteristics = service.getCharacteristics();
 
-
-			if (gattCharacteristics.size() == 0) {
+			if (gattCharacteristics == null || gattCharacteristics.size() == 0) {
 				continue;
 			}
 
@@ -283,13 +292,13 @@ public class BleDetailActivity extends BaseBleActivity {
 				int properties = gattCharacteristic.getProperties();    //用于区分特性用途（读、写、通知）
 				String name = "";
 				if ((properties & PROPERTY_READ) != 0) {
-					name = "读";
+					name = "read";
 				}
 				if ((properties & PROPERTY_WRITE) != 0) {
-					name = "写";
+					name = "write";
 				}
 				if ((properties & PROPERTY_NOTIFY) != 0) {
-					name = "通知";
+					name = "notify";
 				}
 				gattCharacteristicMap.put(LIST_NAME, name);
 				gattCharacteristicList.add(gattCharacteristicMap);

@@ -91,18 +91,18 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 		BluetoothGatt gatt = BLEConnectList.get().getGatt(address);
 		if (gatt != null) {
 
-			BLELog.d("BLEConnection :: connectToAddress() gatt exist");
+			BLELog.e("BLEConnection :: connectToAddress() gatt exist");
 			if (isConnect(gatt, address)) {
 				//如果还正在连接，不进行任何操作
-				BLELog.d("BLEConnection :: connectToAddress() gatt connected");
+				BLELog.e("BLEConnection :: connectToAddress() gatt connected");
 				onConnected(address);
 				return;
-			} else {
-				//如果已断开连接
-				BLELog.d("BLEConnection :: connectToAddress() gatt disConnected and reConnect");
-				gatt.close();
-				BLEConnectList.get().removeGatt(address);
 			}
+
+			//如果已断开连接
+			BLELog.e("BLEConnection :: connectToAddress() gatt disConnected and reConnect");
+			gatt.close();
+			BLEConnectList.get().removeGatt(address);
 
 		} else {
 			if (BLEConnectList.get().outLimit()) {
@@ -116,6 +116,8 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 		BLELog.e("create new bluetoothGatt");
 		BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(address);
 		gatt = bluetoothDevice.connectGatt(context, false, gattCallback);
+		gatt.connect();
+		BLELog.e("create new bluetoothGatt  finish");
 		BLEConnectList.get().putGatt(address, gatt);
 
 	}
@@ -140,7 +142,10 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 		BLEConnectList.get().disconnectAll();
 	}
 
+	public void cleanGatt() {
 
+		BLEConnectList.get().cleanGatt();
+	}
 
 
 	/**
@@ -274,4 +279,6 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 			stateChangeListener.onStateDisConnected(address);
 		}
 	}
+
+
 }

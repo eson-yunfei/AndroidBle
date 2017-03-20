@@ -99,6 +99,9 @@ public class BleService extends Service {
 		@Override
 		public void onConnectError(String address, int errorCode) {
 			LogUtil.e("address -->>"+address +"; errorCode -->>"+errorCode);
+			if (errorCode == 133){
+				BLEControl.get().disconnect(address);
+			}
 			sendBleState(BLEConstant.Connection.STATE_CONNECT_FAILED, address);
 		}
 

@@ -80,7 +80,8 @@ class AndroidBLE {
 	 * 重置 bluetoothManager ， bluetoothAdapter
 	 */
 	public void reset() {
-		bluetoothManager = null;
-		bluetoothAdapter = null;
+//		bluetoothAdapter = null;
+//		bluetoothManager = null;
+
 	}
 }

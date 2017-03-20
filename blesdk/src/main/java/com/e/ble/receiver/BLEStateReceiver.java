@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.e.ble.BLESdk;
+import com.e.ble.control.BLEControl;
 import com.e.ble.util.BLELog;
 
 /**
@@ -28,20 +29,20 @@ public class BLEStateReceiver extends BroadcastReceiver {
 
 				case BluetoothAdapter.STATE_OFF:
 					BLELog.w("BLEStateReceiver-->>STATE_OFF 手机蓝牙关闭");
-//					BLEControl.get().disconnectAll();
-//					BLEControl.get().disconnect();
+					BLEControl.get().cleanGatt();
 					break;
 				case BluetoothAdapter.STATE_TURNING_OFF:
 					BLELog.w("BLEStateReceiver-->>STATE_TURNING_OFF 手机蓝牙正在关闭");
 					break;
 				case BluetoothAdapter.STATE_ON:
 					BLELog.w("BLEStateReceiver-->>STATE_ON 手机蓝牙开启");
+					BLESdk.get().reset();
 					break;
 				case BluetoothAdapter.STATE_TURNING_ON:
 					BLELog.w("BLEStateReceiver-->>STATE_TURNING_ON 手机蓝牙正在开启");
 
 
-					BLESdk.get().reset();
+
 					break;
 
 			}

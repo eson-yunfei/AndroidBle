@@ -1,6 +1,7 @@
 package com.e.ble.control;
 
 import android.bluetooth.BluetoothGatt;
+import android.os.DeadObjectException;
 
 import com.e.ble.BLESdk;
 import com.e.ble.util.BLELog;
@@ -85,7 +86,12 @@ class BLEConnectList {
 		for (Map.Entry<String, BluetoothGatt> gattEntry : mGattHashMap.entrySet()) {
 			String key = gattEntry.getKey();
 			BluetoothGatt gatt = gattEntry.getValue();
-			disconnect(key, gatt);
+			try {
+				disconnect(key, gatt);
+			} catch (Exception e) {
+				BLELog.e("deviceAddress:" + key + " ; gatt is error");
+			}
+
 		}
 	}
 
@@ -96,8 +102,14 @@ class BLEConnectList {
 	 */
 	public void disconnect(String deviceAddress) {
 
+		BLELog.e("BLEConnectList :: disconnect() deviceAddress::" + deviceAddress);
 		BluetoothGatt gatt = getGatt(deviceAddress);
-		disconnect(deviceAddress, gatt);
+		try {
+			disconnect(deviceAddress, gatt);
+		} catch (Exception e) {
+			BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
+		}
+
 	}
 
 
@@ -107,7 +119,7 @@ class BLEConnectList {
 	 * @param deviceAddress
 	 * @param gatt
 	 */
-	private void disconnect(String deviceAddress, BluetoothGatt gatt) {
+	private void disconnect(String deviceAddress, BluetoothGatt gatt) throws DeadObjectException {
 
 		if (gatt == null) {
 			if (mGattHashMap.containsKey(deviceAddress)) {
@@ -116,17 +128,29 @@ class BLEConnectList {
 			return;
 		}
 		mGattHashMap.remove(deviceAddress);
-		refreshCache(gatt);
-		gatt.disconnect();
-		gatt.close();
-		gatt = null;
+
+		BLELog.e("disconnect() deviceAddress ::" + deviceAddress);
+		try {
+			BLELog.e("disconnect() close gatt ::");
+
+			gatt.disconnect();
+			refreshCache(gatt);
+			gatt.close();
+			gatt.close();
+			BLELog.e("disconnect() close gatt :: finish ");
+		} catch (Exception e) {
+			BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
+		}
+
 
 	}
 
-	private void refreshCache(BluetoothGatt gatt) {
+	private void refreshCache(BluetoothGatt gatt) throws DeadObjectException {
+
 		try {
 			Method refresh = gatt.getClass().getMethod("refresh");
 			if (refresh != null) {
+				BLELog.e("refreshCache ::");
 				refresh.invoke(gatt);
 			}
 		} catch (Exception e) {
@@ -138,5 +162,9 @@ class BLEConnectList {
 		if (mGattHashMap.containsKey(address)) {
 			mGattHashMap.remove(address);
 		}
+	}
+
+	public void cleanGatt() {
+		mGattHashMap.clear();
 	}
 }
