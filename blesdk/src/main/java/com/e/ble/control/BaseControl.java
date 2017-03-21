@@ -253,43 +253,7 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		} else if (status != BluetoothGatt.GATT_SUCCESS) {
 
 			onConnectError(getConnectDevice(gatt), status);
-
 		}
-//		if (status == BluetoothGatt.GATT_SUCCESS) {
-//
-//			BLELog.d("updateConnectionState()->address:" + address);
-//			switch (newState) {
-//				case BluetoothProfile.STATE_CONNECTED:
-//					//已连接成功
-//					gatt.discoverServices();
-//					onStateConnected(address);
-//					break;
-//				case BluetoothProfile.STATE_CONNECTING:
-//					//正在连接
-//					onStateConnecting(address);
-//					break;
-//				case BluetoothProfile.STATE_DISCONNECTED:
-//					//已断开连接
-//					onStateDisConnected(address);
-//					break;
-//				case BluetoothProfile.STATE_DISCONNECTING:
-//					//断开连接中
-//					onStateDisConnecting(address);
-//					break;
-//			}
-//
-//		} else {
-//			BLELog.e("updateConnectionState()-> status:" + status);
-//			//发现服务失败，断开设备连接
-////			onConnectError(getConnectDevice(gatt), status);
-////			BLEConnectList.get().disconnect(getConnectDevice(gatt));
-//
-////			gatt.getDevice()
-////			gatt.disconnect();
-//			gatt.close();
-//			gatt.close();
-////			gatt = null;
-//		}
 	}
 
 	/**

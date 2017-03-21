@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-          package="org.eson.ble_sdk"
+          package="com.e.ble"
     >
 
     <uses-permission android:name="android.permission.BLUETOOTH"/>

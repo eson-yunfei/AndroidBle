@@ -241,12 +241,12 @@ public class BLEScanner implements BLEScanListener {
 				+ "\ndevice "
 				+ "\nname-->>" + name
 				+ "\naddress-->>" + mac);
-		//过滤设备MAC 地址，此处为去重
-		if (isAddDevice(mac)) {
-			return null;
-		}
-
-		deviceMac.add(mac);
+//		//过滤设备MAC 地址，此处为去重
+//		if (isAddDevice(mac)) {
+//			return null;
+//		}
+//
+//		deviceMac.add(mac);
 
 		// BLEDevice
 		BLEDevice bleDevice = new BLEDevice();
