@@ -279,7 +279,9 @@ public class MainActivity extends BaseBleActivity {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				if (!deviceList.contains(bleDevice)) {
+				if (deviceList.contains(bleDevice)) {
+					updateDevice(bleDevice);
+				}else {
 					deviceList.add(0, bleDevice);
 				}
 				scanBLEAdapter.notifyDataSetChanged();
@@ -288,6 +290,14 @@ public class MainActivity extends BaseBleActivity {
 	}
 
 	///***********************************************************************************************//
+	private void updateDevice(BLEDevice device){
+		for (BLEDevice bleDevice : deviceList) {
+			if (bleDevice.getMac().equals(device.getMac())) {
+				bleDevice.setRssi(device.getRssi());
+			}
+		}
+
+	}
 	private void startToSetting() {
 		Intent intent = new Intent(MainActivity.this, SettingActivity.class);
 		startActivity(intent);

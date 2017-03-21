@@ -47,6 +47,7 @@ public class BleService extends Service {
 		BLEControl.get().setBleConnectListener(bleConnectionListener);
 		BLEControl.get().setBleStateChangedListener(stateChangeListener);
 		BLEControl.get().setBleTransportListener(transportListener);
+//		BLEControl.get().setBLEReceiverListener();
 	}
 
 	public static BleService get() {

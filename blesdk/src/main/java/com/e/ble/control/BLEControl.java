@@ -8,6 +8,8 @@ import com.e.ble.control.listener.BLEConnectionListener;
 import com.e.ble.control.listener.BLEReadRssiListener;
 import com.e.ble.control.listener.BLEStateChangeListener;
 import com.e.ble.control.listener.BLETransportListener;
+import com.e.ble.receiver.BLEStateReceiver;
+import com.e.ble.receiver.listener.BLEReceiverListener;
 import com.e.ble.util.BLELog;
 
 /**
@@ -31,6 +33,8 @@ public class BLEControl extends BaseControl {
 	 */
 	private static BLEControl bleControl = null;
 	private BLEReadRssiListener bleReadRssiListener;
+
+	private BLEReceiverListener mBLEReceiverListener;
 
 	private BLEControl() {
 	}
@@ -88,9 +92,10 @@ public class BLEControl extends BaseControl {
 		BLEConnection.get().disConnectAll();
 	}
 
-	public void cleanGatt(){
+	public void cleanGatt() {
 		BLEConnection.get().cleanGatt();
 	}
+
 	/**
 	 * 断开指定设备的连接
 	 *
@@ -175,6 +180,9 @@ public class BLEControl extends BaseControl {
 	public void readGattRssi(String deviceAddress) {
 		BluetoothGatt gatt = BLEConnectList.get().getGatt(deviceAddress);
 
+		if (gatt == null) {
+			return;
+		}
 		gatt.readRemoteRssi();
 
 
@@ -241,6 +249,29 @@ public class BLEControl extends BaseControl {
 	 */
 	public void setBleReadRssiListener(BLEReadRssiListener readRssiListener) {
 		bleReadRssiListener = readRssiListener;
+	}
+
+	public void setBLEReceiverListener(BLEReceiverListener bleReceiverListener) {
+
+		mBLEReceiverListener = bleReceiverListener;
+		if (mBLEReceiverListener == null) {
+			mBLEReceiverListener = getBLEReceiverListener();
+		}
+		BLEStateReceiver.setBLEReceiverListener(mBLEReceiverListener);
+	}
+
+	private BLEReceiverListener getBLEReceiverListener() {
+		return new BLEReceiverListener() {
+			@Override
+			public void onStateOff() {
+				disconnectAll();
+			}
+
+			@Override
+			public void onStateOn() {
+
+			}
+		};
 	}
 
 
