@@ -8,8 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.SimpleExpandableListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.e.ble.BLESdk;
@@ -18,10 +17,12 @@ import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
+import org.eson.liteble.adapter.DeviceDetailAdapter;
+import org.eson.liteble.bean.ServiceBean;
+import org.eson.liteble.bean.UUIDBean;
 import org.eson.liteble.service.BleService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,18 +45,12 @@ public class BleDetailActivity extends BaseBleActivity {
 	private TextView textView;
 	private TextView name;
 	private Button disConnect;
-	private ExpandableListView expandList;
+	private ListView detailList;
+
+	private DeviceDetailAdapter mDeviceDetailAdapter;
 
 	private String mac = "";
 	private boolean isConnect = true;
-
-	private final String LIST_NAME = "NAME";
-	private final String LIST_UUID = "UUID";
-
-	private List<HashMap<String, String>> gattServiceData = new ArrayList<>();
-	private List<List<HashMap<String, String>>> gattCharacteristicData = new ArrayList<>();
-
-	private SimpleExpandableListAdapter gattServiceAdapter = null;
 
 	private ProgressDialog m_pDialog;
 
@@ -70,20 +65,13 @@ public class BleDetailActivity extends BaseBleActivity {
 		textView = (TextView) findViewById(R.id.text);
 		name = (TextView) findViewById(R.id.name);
 		disConnect = (Button) findViewById(R.id.disconnect);
-		expandList = (ExpandableListView) findViewById(R.id.expandList);
+		detailList = (ListView) findViewById(R.id.detailList);
 	}
 
 	@Override
 	protected void initViewListener() {
 		super.initViewListener();
 
-		expandList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-				goToCharacteristicDetail(groupPosition, childPosition);
-				return false;
-			}
-		});
 
 		disConnect.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -91,9 +79,6 @@ public class BleDetailActivity extends BaseBleActivity {
 				if (isConnect) {
 					showProgress("断开设备。。。");
 					BLEControl.get().disconnect(mac);
-					gattServiceData.clear();
-					gattCharacteristicData.clear();
-					gattServiceAdapter.notifyDataSetChanged();
 
 					isConnect = false;
 					disProgress();
@@ -207,16 +192,16 @@ public class BleDetailActivity extends BaseBleActivity {
 	 * @param childPosition
 	 */
 	private void goToCharacteristicDetail(int groupPosition, int childPosition) {
-		HashMap<String, String> serviceMap = gattServiceData.get(groupPosition);
-		HashMap<String, String> characterMap = gattCharacteristicData.get(groupPosition).get(childPosition);
-
-		String serviceUUID = serviceMap.get(LIST_UUID);
-		String characterUUID = characterMap.get(LIST_UUID);
-
-		Intent intent = new Intent(BleDetailActivity.this, CharacteristicActivity.class);
-		intent.putExtra("serviceUUID", serviceUUID);
-		intent.putExtra("characterUUID", characterUUID);
-		startActivity(intent);
+//		HashMap<String, String> serviceMap = gattServiceData.get(groupPosition);
+//		HashMap<String, String> characterMap = gattCharacteristicData.get(groupPosition).get(childPosition);
+//
+//		String serviceUUID = serviceMap.get(LIST_UUID);
+//		String characterUUID = characterMap.get(LIST_UUID);
+//
+//		Intent intent = new Intent(BleDetailActivity.this, CharacteristicActivity.class);
+//		intent.putExtra("serviceUUID", serviceUUID);
+//		intent.putExtra("characterUUID", characterUUID);
+//		startActivity(intent);
 	}
 
 	//***************************************************************************************************//
@@ -228,10 +213,9 @@ public class BleDetailActivity extends BaseBleActivity {
 	private void getMessage() {
 
 
-
 		BluetoothGatt gatt = BLEControl.get().getBluetoothGatt(MyApplication.getInstance().getCurrentShowDevice());
 		if (gatt == null) {
-			if (textView == null){
+			if (textView == null) {
 				return;
 			}
 			textView.setText("gatt == null");
@@ -245,82 +229,57 @@ public class BleDetailActivity extends BaseBleActivity {
 			return;
 		}
 
+		List<ServiceBean> serviceBeanList = new ArrayList<>();
 
-		for (BluetoothGattService bluetoothGattService : serviceArrayList) {
-			HashMap<String, String> currentServiceData = new HashMap<>();
-			int serviceType = bluetoothGattService.getType();
-			String name = "";
-			if (serviceType == BluetoothGattService.SERVICE_TYPE_PRIMARY) {
+		ServiceBean serviceBean;
+		for (BluetoothGattService service : serviceArrayList) {
+			serviceBean = new ServiceBean();
+			UUID serviceUUID = service.getUuid();
+			serviceBean.setServiceUUID(serviceUUID.toString());
 
-				name = "PRIMARY";
-			} else {
-				name = "SECONDARY";
-			}
+			int serviceType = service.getType();
+			String typeStr =
+					(serviceType == BluetoothGattService.SERVICE_TYPE_PRIMARY)
+							? "PRIMARY" : "SECONDARY";
 
-			currentServiceData.put(LIST_NAME, name);
-
-			UUID uuid = bluetoothGattService.getUuid();
-			currentServiceData.put(LIST_UUID, uuid.toString());
-			gattServiceData.add(currentServiceData);
-		}
-
-		if (gattServiceData.size() == 0) {
-			return;
-		}
-
-
-		for (HashMap<String, String> map : gattServiceData) {
-
-			List<HashMap<String, String>> gattCharacteristicList = new ArrayList<>();
-			UUID serviceUuid = UUID.fromString(map.get(LIST_UUID));
-
-			BluetoothGattService service =  gatt.getService(serviceUuid);
-			if (service == null){
-				continue;
-			}
 			List<BluetoothGattCharacteristic> gattCharacteristics = service.getCharacteristics();
 
 			if (gattCharacteristics == null || gattCharacteristics.size() == 0) {
+				serviceBeanList.add(serviceBean);
 				continue;
 			}
 
-			for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
-				HashMap<String, String> gattCharacteristicMap = new HashMap<>();
-				UUID uuid = gattCharacteristic.getUuid();
-				gattCharacteristicMap.put(LIST_UUID, uuid.toString());
+			List<UUIDBean> uuidBeanList = new ArrayList<>();
 
+			UUIDBean uuidBean;
+			for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
+				uuidBean = new UUIDBean();
+				UUID character = gattCharacteristic.getUuid();
 				int properties = gattCharacteristic.getProperties();    //用于区分特性用途（读、写、通知）
-				String name = "";
+
 				if ((properties & PROPERTY_READ) != 0) {
-					name = "read";
+					uuidBean.setRead(true);
 				}
 				if ((properties & PROPERTY_WRITE) != 0) {
-					name = "write";
+					uuidBean.setWrite(true);
 				}
 				if ((properties & PROPERTY_NOTIFY) != 0) {
-					name = "notify";
+					uuidBean.setNotice(true);
 				}
-				gattCharacteristicMap.put(LIST_NAME, name);
-				gattCharacteristicList.add(gattCharacteristicMap);
+
+				uuidBean.setUuid(character.toString());
+				uuidBeanList.add(uuidBean);
 			}
-
-			gattCharacteristicData.add(gattCharacteristicList);
+			serviceBean.setUUIDBeen(uuidBeanList);
+			serviceBeanList.add(serviceBean);
 		}
 
 
-		if (gattServiceAdapter == null) {
-			gattServiceAdapter = new SimpleExpandableListAdapter(
-					this,
-					gattServiceData, org.eson.liteble.R.layout.item_two_line,
-					new String[]{LIST_UUID, LIST_NAME},
-					new int[]{org.eson.liteble.R.id.text1, org.eson.liteble.R.id.text2},
-					gattCharacteristicData, org.eson.liteble.R.layout.item_two_line,
-					new String[]{LIST_UUID, LIST_NAME,},
-					new int[]{org.eson.liteble.R.id.text1, org.eson.liteble.R.id.text2}
-			);
-			expandList.setAdapter(gattServiceAdapter);
+		if (serviceBeanList == null) {
+			return;
 		}
-		gattServiceAdapter.notifyDataSetChanged();
+		mDeviceDetailAdapter = new DeviceDetailAdapter(mContext, serviceBeanList);
+		detailList.setAdapter(mDeviceDetailAdapter);
 	}
 
 }

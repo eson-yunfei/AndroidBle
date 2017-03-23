@@ -16,6 +16,7 @@ public class BLEConstant {
 		public static final String TYPE_NAME = "ble_mac";
 		public static final String TYPE_NOTICE = "ble_notice";
 		public static final String TYPE_RISS = "ble_rssi";
+		public static final String type_read = "ble_read";
 	}
 
 	/**

@@ -35,10 +35,16 @@
         android:text="服务列表："
         android:textSize="@dimen/text_size"/>
 
-    <ExpandableListView
-        android:id="@+id/expandList"
+    <ListView
+        android:id="@+id/detailList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:scrollbars="none"/>
+    <!--<ExpandableListView-->
+    <!--android:id="@+id/expandList"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
 
 
 </LinearLayout>

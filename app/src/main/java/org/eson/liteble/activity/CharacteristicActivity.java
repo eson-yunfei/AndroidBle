@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.e.ble.control.BLEControl;
+
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.LogUtil;
@@ -85,10 +86,17 @@ public class CharacteristicActivity extends BaseBleActivity {
 			intent.putExtra("serviceUUID", serviceUUID);
 			intent.putExtra("characterUUID", characterUUID);
 			startActivity(intent);
-		} else {
+		} else if (btnType == 1) {
 
 			enableNotice();
+		} else {
+			readCharacter();
 		}
+	}
+
+	private void readCharacter() {
+		BleService.get().readCharacter(UUID.fromString(serviceUUID),
+				UUID.fromString(characterUUID));
 	}
 
 	//***************************************************************************************************//
@@ -148,7 +156,7 @@ public class CharacteristicActivity extends BaseBleActivity {
 		String name = "";
 		if ((properties & PROPERTY_READ) != 0) {
 			name += "读";
-			btnType = 1;
+			btnType = 2;
 		}
 		if ((properties & PROPERTY_WRITE) != 0) {
 			name += "写";
@@ -162,8 +170,10 @@ public class CharacteristicActivity extends BaseBleActivity {
 		properties_text.setText(name);
 		if (btnType == 0) {
 			btn.setText("写命令");
-		} else {
+		} else if (btnType == 1) {
 			btn.setText("监听通知");
+		} else {
+			btn.setText("读数据");
 		}
 
 

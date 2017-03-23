@@ -95,12 +95,18 @@ public class BleService extends Service {
 		BLEControl.get().sendData(bleUuid);
 	}
 
+	public void readCharacter(UUID serviceUuid, UUID characteristicUuid) {
+		BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+				.setAddress(MyApplication.getInstance().getCurrentShowDevice()).builder();
+		BLEControl.get().readDeviceData(bleUuid);
+	}
+
 
 	BLEConnectionListener bleConnectionListener = new BLEConnectionListener() {
 		@Override
 		public void onConnectError(String address, int errorCode) {
-			LogUtil.e("address -->>"+address +"; errorCode -->>"+errorCode);
-			if (errorCode == 133){
+			LogUtil.e("address -->>" + address + "; errorCode -->>" + errorCode);
+			if (errorCode == 133) {
 				BLEControl.get().disconnect(address);
 			}
 			sendBleState(BLEConstant.Connection.STATE_CONNECT_FAILED, address);
@@ -143,14 +149,20 @@ public class BleService extends Service {
 
 		@Override
 		public void onStateDisConnected(String address) {
-			sendBleState(BLEConstant.State.STATE_DIS_CONNECTED,address);
+			sendBleState(BLEConstant.State.STATE_DIS_CONNECTED, address);
 		}
 	};
 
 	BLETransportListener transportListener = new BLETransportListener() {
 		@Override
 		public void onCharacterRead(BLECharacter bleCharacter) {
+			Bundle bundle = new Bundle();
 
+
+			BleDataBean dataBean = new BleDataBean(bleCharacter.getDeviceAddress(),
+					bleCharacter.getCharacteristicUUID(), bleCharacter.getDataBuffer());
+			bundle.putSerializable(BLEConstant.Type.TYPE_NOTICE, dataBean);
+			RxBus.getInstance().send(bundle);
 		}
 
 		@Override
@@ -182,4 +194,6 @@ public class BleService extends Service {
 		bundle.putString(BLEConstant.Type.TYPE_NAME, name);
 		RxBus.getInstance().send(bundle);
 	}
+
+
 }
