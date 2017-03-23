@@ -21,6 +21,7 @@ import org.eson.liteble.adapter.DeviceDetailAdapter;
 import org.eson.liteble.bean.ServiceBean;
 import org.eson.liteble.bean.UUIDBean;
 import org.eson.liteble.service.BleService;
+import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -235,7 +236,10 @@ public class BleDetailActivity extends BaseBleActivity {
 		for (BluetoothGattService service : serviceArrayList) {
 			serviceBean = new ServiceBean();
 			UUID serviceUUID = service.getUuid();
-			serviceBean.setServiceUUID(serviceUUID.toString());
+
+			String serviceUUIDString = getString(R.string.service_uuid, serviceUUID.toString());
+			LogUtil.e("serviceUUID -->>" + serviceUUIDString);
+			serviceBean.setServiceUUID(serviceUUIDString);
 
 			int serviceType = service.getType();
 			String typeStr =
@@ -267,7 +271,9 @@ public class BleDetailActivity extends BaseBleActivity {
 					uuidBean.setNotice(true);
 				}
 
-				uuidBean.setUuid(character.toString());
+				String characterString = character.toString();
+				LogUtil.e("character:" + character);
+				uuidBean.setUuid(characterString);
 				uuidBeanList.add(uuidBean);
 			}
 			serviceBean.setUUIDBeen(uuidBeanList);

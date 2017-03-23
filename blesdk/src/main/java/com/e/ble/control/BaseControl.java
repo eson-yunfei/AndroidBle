@@ -43,7 +43,7 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 			super.onConnectionStateChange(gatt, status, newState);
 
-			BLELog.e("BaseControl::onConnectionStateChange()" +
+			BLELog.d("BaseControl::onConnectionStateChange()" +
 					"\n status-->>" + status + ";newState-->>" + newState);
 			//更新设备的连接状态
 			updateConnectionState(gatt, status, newState);
@@ -53,7 +53,7 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			super.onServicesDiscovered(gatt, status);
 			//回调设备的连接成功或失败
-			BLELog.i("BaseControl::onServicesDiscovered()" +
+			BLELog.d("BaseControl::onServicesDiscovered()" +
 					"\n status-->>" + status);
 			deviceConnectionCallback(gatt, status);
 		}
@@ -63,7 +63,7 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			super.onCharacteristicRead(gatt, characteristic, status);
 
-			BLELog.i("BaseControl::onCharacteristicRead()" +
+			BLELog.d("BaseControl::onCharacteristicRead()" +
 					"\n status-->>" + status);
 
 			if (status == BluetoothGatt.GATT_SUCCESS) {

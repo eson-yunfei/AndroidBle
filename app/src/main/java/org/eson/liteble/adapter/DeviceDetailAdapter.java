@@ -12,7 +12,6 @@ import org.eson.liteble.R;
 import org.eson.liteble.activity.CharacteristicActivity;
 import org.eson.liteble.bean.ServiceBean;
 import org.eson.liteble.bean.UUIDBean;
-import org.eson.liteble.util.LogUtil;
 
 import java.util.List;
 
@@ -41,9 +40,8 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
 			viewHolder = (ViewHolder) view.getTag();
 		}
 		ServiceBean serviceBean = dataList.get(position);
-		String serviceUUID = context.getString(R.string.service_uuid, serviceBean.getServiceUUID());
-		LogUtil.e("serviceUUID -->>" + serviceUUID);
-		viewHolder.mTextView.setText(serviceUUID);
+
+		viewHolder.mTextView.setText(serviceBean.getServiceUUID());
 		List<UUIDBean> uuidBeanList = serviceBean.getUUIDBeen();
 
 		if (uuidBeanList != null) {

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import org.eson.liteble.R;
 import org.eson.liteble.bean.UUIDBean;
+import org.eson.liteble.util.LogUtil;
 
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class UUIDAdapter extends MyBaseAdapter<UUIDBean> {
 		if (uuidBean == null) {
 			return view;
 		}
-		viewHolder.uuidText.setText(uuidBean.getUuid());
+		String characterUUID = uuidBean.getUuid();
+		viewHolder.uuidText.setText(characterUUID);
 		viewHolder.descText.setText(getDesc(uuidBean));
 		return view;
 	}
