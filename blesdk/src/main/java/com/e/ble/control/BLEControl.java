@@ -81,7 +81,7 @@ public class BLEControl extends BaseControl {
 	 */
 	public void connectDevice(Context context, String device) {
 
-		BLEConnection.get().connectToAddress(context, device, gattCallback);
+		BLEConnection.get().connectToAddress(context, device,mBLEGattCallBack);
 	}
 
 	/**

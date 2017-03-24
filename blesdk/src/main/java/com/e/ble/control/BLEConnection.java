@@ -3,9 +3,10 @@ package com.e.ble.control;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.e.ble.BLESdk;
@@ -35,6 +36,8 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 	private BLEStateChangeListener stateChangeListener = null;
 
 
+	private Handler mHandler;
+
 	/**
 	 * |---------------------------------------------------------------------------------------------------------|
 	 * <p>
@@ -45,6 +48,7 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 
 	private BLEConnection() {
 		bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
+		mHandler = new Handler();
 	}
 
 	public static BLEConnection get() {
@@ -65,14 +69,21 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 
 	/**
 	 * 连接到指定设备
-	 *
-	 * @param context
+	 *  @param context
 	 * @param address
-	 * @param gattCallback
+	 * @param bleGattCallBack
 	 */
-	public void connectToAddress(Context context, String address, BluetoothGattCallback gattCallback) {
+	public void connectToAddress(@NonNull final Context context, @NonNull final String address, final BaseControl.BLEGattCallBack bleGattCallBack) {
+
+
+		if (BLEConnectList.get().outLimit(address)) {
+			//超出最多设置的连接数，返回超限，
+			onConnectError(address, BLEError.BLE_OUT_MAX_CONNECT);
+			return;
+		}
+
 		if (!BLECheck.get().isBleEnable()) {
-			//蓝牙为打开
+			//蓝牙是否为打开
 			onConnectError(address, BLEError.BLE_CLOSE);
 			return;
 		}
@@ -88,38 +99,50 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 			return;
 		}
 
-		BluetoothGatt gatt = BLEConnectList.get().getGatt(address);
-		if (gatt != null) {
 
-			BLELog.e("BLEConnection :: connectToAddress() gatt exist");
-			if (isConnect(gatt, address)) {
-				//如果还正在连接，不进行任何操作
-				BLELog.e("BLEConnection :: connectToAddress() gatt connected");
-				onConnected(address);
-				return;
+		mHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				BluetoothGatt gatt = BLEConnectList.get().getGatt(address);
+				boolean isGattConnect = getGattState(gatt, address);
+				if (isGattConnect) {
+					return;
+				}
+
+
+				BLELog.e("create new bluetoothGatt");
+				final BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(address);
+				if (bluetoothDevice == null) {
+					return;
+				}
+				gatt = bluetoothDevice.connectGatt(context, false, bleGattCallBack);
+				BLELog.e("create new bluetoothGatt  finish");
+				BLEConnectList.get().putGatt(address, gatt);
 			}
+		});
 
-			//如果已断开连接
-			BLELog.e("BLEConnection :: connectToAddress() gatt disConnected and reConnect");
-			gatt.close();
-			BLEConnectList.get().removeGatt(address);
 
-		} else {
-			if (BLEConnectList.get().outLimit()) {
-				//超出最多设置的连接数，返回超限，
-				onConnectError(address, BLEError.BLE_OUT_MAX_CONNECT);
-				return;
-			}
+	}
+
+	private boolean getGattState(@NonNull BluetoothGatt gatt, @NonNull String address) {
+
+		if (gatt == null) {
+			return false;
 		}
 
+		BLELog.e("BLEConnection :: connectToAddress() gatt exist");
+		if (isConnect(gatt, address)) {
+			//如果还正在连接，不进行任何操作
+			BLELog.e("BLEConnection :: connectToAddress() gatt connected");
+			onConnected(address);
+			return true;
+		}
 
-		BLELog.e("create new bluetoothGatt");
-		BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(address);
-		gatt = bluetoothDevice.connectGatt(context, false, gattCallback);
-		gatt.connect();
-		BLELog.e("create new bluetoothGatt  finish");
-		BLEConnectList.get().putGatt(address, gatt);
-
+		//如果已断开连接
+		BLELog.e("BLEConnection :: connectToAddress() gatt disConnected and reConnect");
+//		gatt.connect();
+		gatt.close();
+		return false;
 	}
 
 	/**
@@ -279,6 +302,5 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 			stateChangeListener.onStateDisConnected(address);
 		}
 	}
-
 
 }

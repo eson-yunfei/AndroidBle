@@ -31,6 +31,9 @@ import java.util.UUID;
 abstract class BaseControl implements BLEConnectionListener, BLETransportListener,
 		BLEStateChangeListener, BLEReadRssiListener {
 
+
+	protected BLEGattCallBack mBLEGattCallBack = new BLEGattCallBack();
+
 	/**
 	 * |---------------------------------------------------------------------------------------------------------|
 	 * <p>
@@ -38,7 +41,10 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 	 * <p>
 	 * |--------------------------------------------------------------------------------------------------------|
 	 */
-	protected BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
+
+	public class BLEGattCallBack extends BluetoothGattCallback {
+		long startConnectTime = System.nanoTime();
+
 		@Override
 		public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
 			super.onConnectionStateChange(gatt, status, newState);
@@ -132,7 +138,40 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 			super.onMtuChanged(gatt, mtu, status);
 			//TODO
 		}
-	};
+
+
+		/**
+		 * 更新与设备的连接状态，
+		 * GATT_SUCCESS 时调用gatt.discoverServices()，
+		 * 不返会设备连接成功，当discoverServices 成功时返回连接成功
+		 *
+		 * @param gatt
+		 * @param status
+		 * @param newState
+		 */
+		private void updateConnectionState(BluetoothGatt gatt, int status, int newState) {
+
+			String address = getConnectDevice(gatt);
+			BLELog.e("BaseControl :: updateConnectionState()->address:" + address + "; newState ==" + newState);
+			if (newState == BluetoothProfile.STATE_CONNECTED) {
+				//已连接成功
+				gatt.discoverServices();
+				onStateConnected(address);
+
+			} else if (newState == BluetoothProfile.STATE_DISCONNECTED
+					&& status == BluetoothGatt.GATT_SUCCESS) {
+
+				onStateDisConnected(address);
+				BLEConnectList.get().disconnect(address);
+			} else if (status != BluetoothGatt.GATT_SUCCESS) {
+
+				onConnectError(address, status);
+			} else {
+				onConnectError(address, status);
+			}
+		}
+
+	}
 
 
 	/**
@@ -228,33 +267,6 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 	 * |--------------------------------------------------------------------------------------------------------|
 	 */
 
-	/**
-	 * 更新与设备的连接状态，
-	 * GATT_SUCCESS 时调用gatt.discoverServices()，
-	 * 不返会设备连接成功，当discoverServices 成功时返回连接成功
-	 *
-	 * @param gatt
-	 * @param status
-	 * @param newState
-	 */
-	private void updateConnectionState(BluetoothGatt gatt, int status, int newState) {
-
-		String address = getConnectDevice(gatt);
-		BLELog.e("BaseControl :: updateConnectionState()->address:" + address);
-		if (newState == BluetoothProfile.STATE_CONNECTED) {
-				//已连接成功
-			gatt.discoverServices();
-			onStateConnected(address);
-
-		} else if (newState == BluetoothProfile.STATE_DISCONNECTED && status == BluetoothGatt.GATT_SUCCESS) {
-			onStateDisConnected(address);
-			onConnectError(getConnectDevice(gatt), status);
-			BLEConnectList.get().disconnect(address);
-		} else if (status != BluetoothGatt.GATT_SUCCESS) {
-
-			onConnectError(getConnectDevice(gatt), status);
-		}
-	}
 
 	/**
 	 * onServicesDiscovered 当服务发现成功时，返回连接成功，
