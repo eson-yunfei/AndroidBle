@@ -41,7 +41,8 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
 		}
 		ServiceBean serviceBean = dataList.get(position);
 
-		viewHolder.mTextView.setText(serviceBean.getServiceUUID());
+		String serviceUUIDString = context.getString(R.string.service_uuid, serviceBean.getServiceUUID());
+		viewHolder.mTextView.setText(serviceUUIDString);
 		List<UUIDBean> uuidBeanList = serviceBean.getUUIDBeen();
 
 		if (uuidBeanList != null) {

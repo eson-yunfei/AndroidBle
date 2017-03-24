@@ -1,6 +1,8 @@
 package com.e.ble.control;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothProfile;
 import android.os.DeadObjectException;
 
 import com.e.ble.BLESdk;
@@ -44,9 +46,19 @@ class BLEConnectList {
 	 * 是否超出设置的
 	 * 最大连接设备个数
 	 *
+	 * @param address
+	 *
 	 * @return
 	 */
-	public boolean outLimit() {
+	public boolean outLimit(String address) {
+		if (mGattHashMap == null || mGattHashMap.size() == 0) {
+			return false;
+		}
+
+		if (mGattHashMap.containsKey(address)) {
+			return false;
+		}
+
 		if (mGattHashMap.size() >= BLESdk.get().getMaxConnect()) {
 			return true;
 		}
@@ -72,6 +84,9 @@ class BLEConnectList {
 	 */
 	public BluetoothGatt getGatt(String address) {
 
+		if (mGattHashMap == null || mGattHashMap.size() == 0) {
+			return null;
+		}
 		if (mGattHashMap.containsKey(address)) {
 			return mGattHashMap.get(address);
 		}
@@ -133,10 +148,20 @@ class BLEConnectList {
 		try {
 			BLELog.e("disconnect() close gatt ::");
 
-			gatt.disconnect();
+			BluetoothDevice bluetoothDevice = BLESdk.get().getBluetoothAdapter()
+					.getRemoteDevice(deviceAddress);
+
+			if (bluetoothDevice == null){
+
+			}
+			int state = BLESdk.get().getBluetoothManager().getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
+			if (state == BluetoothGatt.STATE_CONNECTED) {
+				BLELog.e("disconnect()  gatt is connected ::  ");
+				gatt.disconnect();
+			}
+			gatt.close();
 			refreshCache(gatt);
-			gatt.close();
-			gatt.close();
+
 			BLELog.e("disconnect() close gatt :: finish ");
 		} catch (Exception e) {
 			BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
