@@ -237,7 +237,6 @@ public class BleDetailActivity extends BaseBleActivity {
 			serviceBean = new ServiceBean();
 			UUID serviceUUID = service.getUuid();
 
-
 			LogUtil.e("serviceUUID -->>" + serviceUUID.toString());
 			serviceBean.setServiceUUID(serviceUUID.toString());
 
