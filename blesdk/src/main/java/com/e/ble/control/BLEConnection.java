@@ -109,7 +109,6 @@ class BLEConnection implements BLEConnectionListener, BLEStateChangeListener {
 					return;
 				}
 
-
 				BLELog.e("create new bluetoothGatt");
 				final BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(address);
 				if (bluetoothDevice == null) {
