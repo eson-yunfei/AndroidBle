@@ -1,5 +1,6 @@
 package com.e.ble.control;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothProfile;
@@ -128,6 +129,8 @@ class BLEConnectList {
 	}
 
 
+	private BluetoothAdapter mBluetoothAdapter;
+
 	/**
 	 * 断开设备连接
 	 *
@@ -135,35 +138,37 @@ class BLEConnectList {
 	 * @param gatt
 	 */
 	private void disconnect(String deviceAddress, BluetoothGatt gatt) throws DeadObjectException {
-
+		removeGatt(deviceAddress);
 		if (gatt == null) {
-			if (mGattHashMap.containsKey(deviceAddress)) {
-				mGattHashMap.remove(deviceAddress);
-			}
 			return;
 		}
-		mGattHashMap.remove(deviceAddress);
-
 		BLELog.e("disconnect() deviceAddress ::" + deviceAddress);
+
 		try {
+//			refreshCache(gatt);
+			mBluetoothAdapter = BLESdk.get().getBluetoothAdapter();
+			if (mBluetoothAdapter == null) {
+				return;
+			}
 			BLELog.e("disconnect() close gatt ::");
 
-			BluetoothDevice bluetoothDevice = BLESdk.get().getBluetoothAdapter()
-					.getRemoteDevice(deviceAddress);
+			BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(deviceAddress);
 
-			if (bluetoothDevice == null){
-
+			if (bluetoothDevice == null) {
+				return;
 			}
 			int state = BLESdk.get().getBluetoothManager().getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
 			if (state == BluetoothGatt.STATE_CONNECTED) {
 				BLELog.e("disconnect()  gatt is connected ::  ");
 				gatt.disconnect();
 			}
-			gatt.close();
-			refreshCache(gatt);
+			mBluetoothAdapter.cancelDiscovery();
+
+			System.gc();
 
 			BLELog.e("disconnect() close gatt :: finish ");
 		} catch (Exception e) {
+			e.printStackTrace();
 			BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
 		}
 
