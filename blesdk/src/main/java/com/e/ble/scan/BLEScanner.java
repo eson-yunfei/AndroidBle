@@ -110,7 +110,6 @@ public class BLEScanner implements BLEScanListener {
 	public void startScan(int timeOut, String[] nameFilter, UUID[] uuidFilter, BLEScanListener bleScanListener) {
 
 		BLELog.d("BLEScanner :: startScan ()");
-		deviceMac.clear();
 
 		this.bleScanListener = bleScanListener;
 
@@ -163,7 +162,7 @@ public class BLEScanner implements BLEScanListener {
 	 * <p>
 	 * 停止设备扫描
 	 */
-	Runnable stopScanRunnable = new Runnable() {
+	private Runnable stopScanRunnable = new Runnable() {
 		@Override
 		public void run() {
 
@@ -184,9 +183,6 @@ public class BLEScanner implements BLEScanListener {
 			handler = null;
 		}
 	}
-
-	//内部名称过滤
-	private List<String> deviceMac = new ArrayList<>();
 
 	/**
 	 * 系统的设备扫描回调监听
@@ -237,16 +233,10 @@ public class BLEScanner implements BLEScanListener {
 
 		String mac = device.getAddress();
 
-		BLELog.i("BLEScanner :: scanCallback()"
-				+ "\ndevice "
-				+ "\nname-->>" + name
-				+ "\naddress-->>" + mac);
-//		//过滤设备MAC 地址，此处为去重
-//		if (isAddDevice(mac)) {
-//			return null;
-//		}
-//
-//		deviceMac.add(mac);
+//		BLELog.i("BLEScanner :: scanCallback()"
+//				+ "\ndevice "
+//				+ "\nname-->>" + name
+//				+ "\naddress-->>" + mac);
 
 		// BLEDevice
 		BLEDevice bleDevice = new BLEDevice();
@@ -254,29 +244,6 @@ public class BLEScanner implements BLEScanListener {
 		bleDevice.setMac(device.getAddress());
 		return bleDevice;
 	}
-
-	/**
-	 * 是否已加入的列表中
-	 *
-	 * @param mac
-	 *
-	 * @return
-	 */
-	private boolean isAddDevice(String mac) {
-
-		if (deviceMac == null || deviceMac.size() == 0) {
-			return false;
-		}
-		boolean isAdd = false;
-		for (String s : deviceMac) {
-			if (s.equals(mac)) {
-				isAdd = true;
-				break;
-			}
-		}
-		return isAdd;
-	}
-
 
 	/**
 	 * 检测设备名称是否在过滤名称范围内

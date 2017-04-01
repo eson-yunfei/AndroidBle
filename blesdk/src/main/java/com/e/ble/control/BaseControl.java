@@ -123,8 +123,8 @@ abstract class BaseControl implements BLEConnectionListener, BLETransportListene
 
 			//读取设备的 RSSI 信号值
 			String address = getConnectDevice(gatt);
-			BLELog.i("BaseControl-->>onReadRemoteRssi() address: " +
-					address + " rssi : " + rssi + " status  : " + status);
+//			BLELog.i("BaseControl-->>onReadRemoteRssi() address: " +
+//					address + " rssi : " + rssi + " status  : " + status);
 
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				onReadRssi(address, rssi);

@@ -191,7 +191,7 @@ public class BLEControl extends BaseControl {
 	@Override
 	public void onReadRssi(String address, int rssi) {
 
-		BLELog.d("BLEControl-->> onReadRssi()");
+//		BLELog.d("BLEControl-->> onReadRssi()");
 
 		if (bleReadRssiListener == null) {
 			return;
