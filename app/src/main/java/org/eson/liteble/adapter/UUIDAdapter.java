@@ -6,8 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.eson.liteble.R;
-import org.eson.liteble.bean.UUIDBean;
-import org.eson.liteble.util.LogUtil;
+import org.eson.liteble.bean.CharacterBean;
 
 import java.util.List;
 
@@ -17,8 +16,8 @@ import java.util.List;
  * @Description：
  */
 
-public class UUIDAdapter extends MyBaseAdapter<UUIDBean> {
-	public UUIDAdapter(Context context, List<UUIDBean> dataList) {
+public class UUIDAdapter extends MyBaseAdapter<CharacterBean> {
+	public UUIDAdapter(Context context, List<CharacterBean> dataList) {
 		super(context, dataList);
 	}
 
@@ -33,26 +32,26 @@ public class UUIDAdapter extends MyBaseAdapter<UUIDBean> {
 			viewHolder = (ViewHolder) view.getTag();
 		}
 
-		UUIDBean uuidBean = dataList.get(position);
-		if (uuidBean == null) {
+		CharacterBean characterBean = dataList.get(position);
+		if (characterBean == null) {
 			return view;
 		}
-		String characterUUID = uuidBean.getUuid();
+		String characterUUID = characterBean.getCharacterUUID();
 		viewHolder.uuidText.setText(characterUUID);
-		viewHolder.descText.setText(getDesc(uuidBean));
+		viewHolder.descText.setText(getDesc(characterBean));
 		return view;
 	}
 
-	private String getDesc(UUIDBean uuidBean) {
+	private String getDesc(CharacterBean characterBean) {
 
 		String desc = "";
-		if (uuidBean.isWrite()) {
+		if (characterBean.isWrite()) {
 			desc += "write  ";
 		}
-		if (uuidBean.isRead()) {
+		if (characterBean.isRead()) {
 			desc += "read  ";
 		}
-		if (uuidBean.isNotice()) {
+		if (characterBean.isNotify()) {
 			desc += "notify  ";
 		}
 		return desc;

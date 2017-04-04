@@ -1,30 +1,25 @@
 package org.eson.liteble.activity;
 
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.e.ble.control.BLEControl;
-
 import org.eson.liteble.MyApplication;
+import org.eson.liteble.R;
+import org.eson.liteble.bean.CharacterBean;
+import org.eson.liteble.bean.DescriptorBean;
+import org.eson.liteble.bean.ServiceBean;
+import org.eson.liteble.common.ConnectedDevice;
 import org.eson.liteble.service.BleService;
-import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 
 /**
  * @作者 xiaoyunfei
@@ -34,165 +29,181 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 
 public class CharacteristicActivity extends BaseBleActivity {
 
-	private TextView uuid_text;
-	private TextView properties_text;
-	private Button btn;
-	private ListView descListView;
-	private ListView dataListView;
+    private TextView uuid_text;            //UUID
+    private TextView properties_text;    // type
+    private TextView readBtn, writeBtn, notifyBtn;
 
-	private String serviceUUID;
-	private String characterUUID;
-	private List<String> descriptors = new ArrayList<>();
-	private List<String> dataList = new ArrayList<>();
+    private LinearLayout descriptorLayout;
 
-	private ArrayAdapter<String> dataListAdapter;
-	private int btnType = 0;
-	private boolean isListenerNotice = false;
+    private ListView descListView;
+    private ListView dataListView;
 
-	@Override
-	protected int getRootLayout() {
-		return org.eson.liteble.R.layout.activity_characteristic;
-	}
+    private CharacterBean characterBean;
+    private String serviceUUID;
+    private String characterUUID;
+    private List<String> descriptors = new ArrayList<>();
+    private List<String> dataList = new ArrayList<>();
 
-	@Override
-	protected void initView() {
-		super.initView();
-		uuid_text = findView(org.eson.liteble.R.id.uuid_text);
-		properties_text = findView(org.eson.liteble.R.id.properties_text);
-		btn = findView(org.eson.liteble.R.id.btn);
-		descListView = findView(org.eson.liteble.R.id.desc_listView);
-		dataListView = findView(org.eson.liteble.R.id.data_listView);
-	}
+    private ArrayAdapter<String> dataListAdapter;
+    private boolean isListenerNotice = false;
 
-	@Override
-	protected void initViewListener() {
-		super.initViewListener();
-		btn.setOnClickListener(this);
-	}
+    @Override
+    protected int getRootLayout() {
+        return R.layout.activity_characteristic;
+    }
 
-	@Override
-	protected void process(Bundle savedInstanceState) {
-		super.process(savedInstanceState);
-		Bundle bundle = getIntent().getExtras();
-		setData(bundle);
-	}
+    @Override
+    protected void initView() {
+        super.initView();
+        uuid_text = findView(R.id.uuid_text);
+        properties_text = findView(R.id.properties_text);
 
-	@Override
-	public void onClick(View v) {
-		super.onClick(v);
-		if (btnType == 0) {
+        readBtn = findView(R.id.readBtn);
+        writeBtn = findView(R.id.writeBtn);
+        notifyBtn = findView(R.id.notifyBtn);
 
-			Intent intent = new Intent(CharacteristicActivity.this, SendDataActivity.class);
-			intent.putExtra("serviceUUID", serviceUUID);
-			intent.putExtra("characterUUID", characterUUID);
-			startActivity(intent);
-		} else if (btnType == 1) {
+        descriptorLayout = findView(R.id.descriptorLayout);
 
-			enableNotice();
-		} else {
-			readCharacter();
-		}
-	}
+        descListView = findView(R.id.desc_listView);
+        dataListView = findView(R.id.data_listView);
+    }
 
-	private void readCharacter() {
-		BleService.get().readCharacter(UUID.fromString(serviceUUID),
-				UUID.fromString(characterUUID));
-	}
+    @Override
+    protected void initViewListener() {
+        super.initViewListener();
 
-	//***************************************************************************************************//
-	//***************************************************************************************************//
+        readBtn.setOnClickListener(this);
+        writeBtn.setOnClickListener(this);
+        notifyBtn.setOnClickListener(this);
 
-	@Override
-	protected void changeBleData(String uuid, String buffer, String deviceAddress) {
-		dataList.add(0, buffer);
-		if (dataListAdapter == null) {
-			dataListAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
-					android.R.layout.simple_list_item_1, android.R.id.text1, dataList);
-			dataListView.setAdapter(dataListAdapter);
-		} else {
-			dataListAdapter.notifyDataSetChanged();
-		}
-	}
+    }
 
+    @Override
+    protected void process(Bundle savedInstanceState) {
+        super.process(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        setData(bundle);
+    }
 
-	//***************************************************************************************************//
-	//***************************************************************************************************//
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
 
+        switch (v.getId()) {
+            case R.id.writeBtn:
+                Intent intent = new Intent(CharacteristicActivity.this, SendDataActivity.class);
+                intent.putExtra("serviceUUID", serviceUUID);
+                intent.putExtra("characterUUID", characterUUID);
+                startActivity(intent);
 
-	/**
-	 * 启动通知服务
-	 */
-	private void enableNotice() {
+                break;
+            case R.id.readBtn:
+                readCharacter();
 
-		isListenerNotice = !isListenerNotice;
-		String text = isListenerNotice ? "取消监听" : "监听通知";
-		btn.setText(text);
-		BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
-				UUID.fromString(serviceUUID),
-				UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)), isListenerNotice);
-	}
+                break;
+            case R.id.notifyBtn:
+                enableNotice();
+                break;
 
-	/**
-	 * 发送数据
-	 *
-	 * @param bundle
-	 */
-	private void setData(Bundle bundle) {
-		serviceUUID = bundle.getString("serviceUUID");
-		characterUUID = bundle.getString("characterUUID");
+        }
 
-		uuid_text.setText(characterUUID);
+    }
 
-		BluetoothGatt bluetoothGatt = BLEControl.get().getBluetoothGatt(MyApplication.getInstance().getCurrentShowDevice());
-		if (bluetoothGatt == null) {
-			return;
-		}
-		BluetoothGattService service = bluetoothGatt
-				.getService(UUID.fromString(serviceUUID));
-		BluetoothGattCharacteristic characteristic = service
-				.getCharacteristic(UUID.fromString(characterUUID));
+    private void readCharacter() {
+        BleService.get().readCharacter(UUID.fromString(serviceUUID),
+                UUID.fromString(characterUUID));
+    }
 
-		int properties = characteristic.getProperties();    //用于区分特性用途（读、写、通知）
-		String name = "";
-		if ((properties & PROPERTY_READ) != 0) {
-			name += "读";
-			btnType = 2;
-		}
-		if ((properties & PROPERTY_WRITE) != 0) {
-			name += "写";
-			btnType = 0;
-		}
-		if ((properties & PROPERTY_NOTIFY) != 0) {
-			name += "通知";
-			btnType = 1;
-		}
+    //***************************************************************************************************//
+    //***************************************************************************************************//
 
-		properties_text.setText(name);
-		if (btnType == 0) {
-			btn.setText("写命令");
-		} else if (btnType == 1) {
-			btn.setText("监听通知");
-		} else {
-			btn.setText("读数据");
-		}
+    @Override
+    protected void changeBleData(String uuid, String buffer, String deviceAddress) {
+        dataList.add(0, buffer);
+        if (dataListAdapter == null) {
+            dataListAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
+                    android.R.layout.simple_list_item_1, android.R.id.text1, dataList);
+            dataListView.setAdapter(dataListAdapter);
+        } else {
+            dataListAdapter.notifyDataSetChanged();
+        }
+    }
 
 
-		List<BluetoothGattDescriptor> descriptorList = characteristic.getDescriptors();
-
-		if (descriptorList.size() == 0) {
-			return;
-		}
+    //***************************************************************************************************//
+    //***************************************************************************************************//
 
 
-		for (BluetoothGattDescriptor bluetoothGattDescriptor : descriptorList) {
-			LogUtil.e("descriptor-->>" + bluetoothGattDescriptor.getUuid().toString());
-			descriptors.add(bluetoothGattDescriptor.getUuid().toString());
-		}
+    /**
+     * 启动通知服务
+     */
+    private void enableNotice() {
 
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CharacteristicActivity.this,
-				android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
-		descListView.setAdapter(arrayAdapter);
-	}
+        isListenerNotice = !isListenerNotice;
+        String text = isListenerNotice ? "取消监听" : "开始监听";
+        notifyBtn.setText(text);
+        characterBean.setListening(isListenerNotice);
+
+        BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
+                UUID.fromString(serviceUUID),
+                UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)), isListenerNotice);
+    }
+
+    /**
+     * 发送数据
+     *
+     * @param bundle
+     */
+    private void setData(Bundle bundle) {
+        int parentPosition = bundle.getInt("parentPosition");
+        int position = bundle.getInt("position");
+        String connectMac = MyApplication.getInstance().getCurrentShowDevice();
+        ServiceBean serviceBean = ConnectedDevice.get().getServiceList(connectMac).get(parentPosition);
+        serviceUUID = serviceBean.getServiceUUID();
+        characterBean = serviceBean.getUUIDBeen().get(position);
+        serviceUUID = characterBean.getServiceUUID();
+        characterUUID = characterBean.getCharacterUUID();
+
+        uuid_text.setText(characterUUID);
+
+
+        String name = "";
+        if (characterBean.isRead()) {
+            name += "read";
+            readBtn.setVisibility(View.VISIBLE);
+        }
+        if (characterBean.isWrite()) {
+            name += "write";
+            writeBtn.setVisibility(View.VISIBLE);
+        }
+        if (characterBean.isNotify()) {
+            name += "notify";
+            notifyBtn.setVisibility(View.VISIBLE);
+        }
+
+        properties_text.setText(name);
+
+
+        isListenerNotice = characterBean.isListening();
+        String text = isListenerNotice ? "取消监听" : "开始监听";
+        notifyBtn.setText(text);
+
+
+        List<DescriptorBean> descriptorList = characterBean.getDescriptorBeen();
+        if (descriptorList == null || descriptorList.size() == 0) {
+            descriptorLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        for (DescriptorBean descriptorBean : descriptorList) {
+            String uuid = descriptorBean.getUUID();
+            descriptors.add(uuid);
+        }
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CharacteristicActivity.this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
+        descListView.setAdapter(arrayAdapter);
+    }
 
 
 }

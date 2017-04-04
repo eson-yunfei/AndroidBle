@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context="org.eson.liteble.activity.CharacteristicActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.eson.liteble.activity.CharacteristicActivity">
 
 
     <LinearLayout
@@ -18,14 +18,14 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/fab_margin"
             android:text="Characteristic UUID:"
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/uuid_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/fab_margin"
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
 
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/fab_margin"
             android:text="类型："
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
 
         <TextView
             android:id="@+id/properties_text"
@@ -49,37 +49,81 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
 
-        <Button
-            android:id="@+id/btn"
+        <TextView
+            android:id="@+id/readBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size"/>
+            android:background="@color/colorPrimary"
+            android:padding="6dp"
+            android:text="读数据"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size"
+            android:layout_marginRight="6dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/writeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:background="@color/colorPrimary"
+            android:padding="6dp"
+            android:text="写数据"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/notifyBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:background="@color/colorPrimary"
+            android:padding="6dp"
+            android:text="开始监听"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size"
+            android:visibility="gone" />
 
     </LinearLayout>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/fab_margin"
-        android:text="Descriptor:"/>
-
-    <ListView
-        android:id="@+id/desc_listView"
+    <LinearLayout
+        android:id="@+id/descriptorLayout"
         android:layout_width="match_parent"
-        android:layout_height="70dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/fab_margin"
-        android:text="Data:"/>
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/data_listView"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fab_margin"
+            android:text="Descriptor:" />
+
+        <ListView
+            android:id="@+id/desc_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fab_margin"
+            android:text="Data:" />
+
+        <ListView
+            android:id="@+id/data_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 </LinearLayout>
