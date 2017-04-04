@@ -34,10 +34,10 @@
         </activity>
         <activity
             android:name=".activity.SettingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="Setting"/>
         <activity
             android:name=".activity.BleDetailActivity"
-            android:label="BleDetail "/>
+            android:label="BleDetail"/>
         <activity
             android:name=".activity.SendDataActivity"
             android:label="SendData"/>
