@@ -24,8 +24,11 @@ package com.e.ble.util;
 
 public interface BLEError {
 
-	int BLE_CLOSE = 1001;
-	int BLE_OUT_MAX_CONNECT = 1002;
+    int BLE_CLOSE = 1001;       //蓝牙已关闭
+    int BLE_OUT_MAX_CONNECT = 1002; //超过最大连接数
 
 
+    int BLE_SCANNER_CALLBACK_NULL = 1003;   //扫描回调为null
+
+    int BLE_DEVICE_ERROR = 1004;        //设备或手机异常
 }

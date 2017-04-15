@@ -95,8 +95,7 @@ public class BLEByteUtil {
 	}
 
 	private static byte toByte(char c) {
-		byte b = (byte) "0123456789ABCDEF".indexOf(c);
-		return b;
+		return (byte) "0123456789ABCDEF".indexOf(c);
 	}
 
 

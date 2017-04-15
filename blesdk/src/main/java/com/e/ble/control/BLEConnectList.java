@@ -36,181 +36,192 @@ import java.util.Map;
  * @date: 2017/3/19
  * @Description： BLEConnectList  连接的设备列表的管理类
  * <p>
- * 提供添加，删除，断裂连接
+ * 提供添加，删除，断开连接
  * <p>
  * |---------------------------------------------------------------------------------------------------------------|
  */
 
 class BLEConnectList {
-	private static BLEConnectList sBLEConnectList = null;
+    private static BLEConnectList sBLEConnectList = null;
 
-	private HashMap<String, BluetoothGatt> mGattHashMap;
+    private HashMap<String, BluetoothGatt> mGattHashMap;
 
-	private BLEConnectList() {
-		if (mGattHashMap == null) {
-			mGattHashMap = new HashMap<>();
-		}
-	}
+    private BLEConnectList() {
+        if (mGattHashMap == null) {
+            mGattHashMap = new HashMap<>();
+        }
+    }
 
-	public static BLEConnectList get() {
-		if (sBLEConnectList == null) {
-			sBLEConnectList = new BLEConnectList();
-		}
-		return sBLEConnectList;
-	}
+    public static BLEConnectList get() {
+        if (sBLEConnectList == null) {
+            sBLEConnectList = new BLEConnectList();
+        }
+        return sBLEConnectList;
+    }
 
-	/**
-	 * 是否超出设置的
-	 * 最大连接设备个数
-	 *
-	 * @param address
-	 *
-	 * @return
-	 */
-	public boolean outLimit(String address) {
-		if (mGattHashMap == null || mGattHashMap.size() == 0) {
-			return false;
-		}
+    /**
+     * 是否超出设置的
+     * 最大连接设备个数
+     *
+     * @param address
+     * @return
+     */
+    public boolean outLimit(String address) {
+        return !(mGattHashMap == null || mGattHashMap.size() == 0) && !mGattHashMap.containsKey(address) && mGattHashMap.size() >= BLESdk.get().getMaxConnect();
 
-		if (mGattHashMap.containsKey(address)) {
-			return false;
-		}
+    }
 
-		if (mGattHashMap.size() >= BLESdk.get().getMaxConnect()) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * 添加新的连接设备
+     *
+     * @param address
+     * @param gatt
+     */
+    public void putGatt(String address, BluetoothGatt gatt) {
+        mGattHashMap.put(address, gatt);
+    }
 
-	/**
-	 * 添加新的连接设备
-	 *
-	 * @param address
-	 * @param gatt
-	 */
-	public void putGatt(String address, BluetoothGatt gatt) {
-		mGattHashMap.put(address, gatt);
-	}
+    /**
+     * 根据设备 mac 获取 BluetoothGatt
+     *
+     * @param address
+     * @return
+     */
+    public BluetoothGatt getGatt(String address) {
 
-	/**
-	 * 根据设备 mac 获取 BluetoothGatt
-	 *
-	 * @param address
-	 *
-	 * @return
-	 */
-	public BluetoothGatt getGatt(String address) {
+        if (mGattHashMap == null || mGattHashMap.size() == 0) {
+            return null;
+        }
+        if (mGattHashMap.containsKey(address)) {
 
-		if (mGattHashMap == null || mGattHashMap.size() == 0) {
-			return null;
-		}
-		if (mGattHashMap.containsKey(address)) {
-			return mGattHashMap.get(address);
-		}
-		return null;
-	}
+            return mGattHashMap.get(address);
+        }
+        return null;
+    }
 
-	/**
-	 * 断开所有的设备连接
-	 */
-	public void disconnectAll() {
+    /**
+     * 断开所有的设备连接
+     */
+    public void disconnectAll() {
 
-		for (Map.Entry<String, BluetoothGatt> gattEntry : mGattHashMap.entrySet()) {
-			String key = gattEntry.getKey();
-			BluetoothGatt gatt = gattEntry.getValue();
-			try {
-				disconnect(key, gatt);
-			} catch (Exception e) {
-				BLELog.e("deviceAddress:" + key + " ; gatt is error");
-			}
+        for (Map.Entry<String, BluetoothGatt> gattEntry : mGattHashMap.entrySet()) {
+            String key = gattEntry.getKey();
+            BluetoothGatt gatt = gattEntry.getValue();
+            try {
+                disconnect(key, gatt);
+            } catch (Exception e) {
+                BLELog.e("deviceAddress:" + key + " ; gatt is error");
+            }
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * 断开某一个设备连接
-	 *
-	 * @param deviceAddress
-	 */
-	public void disconnect(String deviceAddress) {
+    /**
+     * 断开某一个设备连接
+     *
+     * @param deviceAddress
+     */
+    public void disconnect(String deviceAddress) {
 
-		BLELog.e("BLEConnectList :: disconnect() deviceAddress::" + deviceAddress);
-		BluetoothGatt gatt = getGatt(deviceAddress);
-		try {
-			disconnect(deviceAddress, gatt);
-		} catch (Exception e) {
-			BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
-		}
+        BLELog.e("BLEConnectList :: disconnect() deviceAddress::" + deviceAddress);
+        BluetoothGatt gatt = getGatt(deviceAddress);
+        try {
+            disconnect(deviceAddress, gatt);
+        } catch (Exception e) {
+            BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
+        }
 
-	}
+    }
 
 
-	private BluetoothAdapter mBluetoothAdapter;
+    private final ThreadLocal<BluetoothAdapter> mBluetoothAdapter = new ThreadLocal<>();
 
-	/**
-	 * 断开设备连接
-	 *
-	 * @param deviceAddress
-	 * @param gatt
-	 */
-	private void disconnect(String deviceAddress, BluetoothGatt gatt) throws DeadObjectException {
-		removeGatt(deviceAddress);
-		if (gatt == null) {
-			return;
-		}
-		BLELog.e("disconnect() deviceAddress ::" + deviceAddress);
+    /**
+     * 断开设备连接
+     *
+     * @param deviceAddress
+     * @param gatt
+     */
+    private void disconnect(String deviceAddress, BluetoothGatt gatt) throws DeadObjectException {
 
-		try {
-//			refreshCache(gatt);
-			mBluetoothAdapter = BLESdk.get().getBluetoothAdapter();
-			if (mBluetoothAdapter == null) {
-				return;
-			}
-			BLELog.e("disconnect() close gatt ::");
+        try {
+            mBluetoothAdapter.set(BLESdk.get().getBluetoothAdapter());
+            if (mBluetoothAdapter.get() == null) {
+                return;
+            }
+            BLELog.e("disconnect() close gatt ::");
 
-			BluetoothDevice bluetoothDevice = mBluetoothAdapter.getRemoteDevice(deviceAddress);
+            BluetoothDevice bluetoothDevice = mBluetoothAdapter.get().getRemoteDevice(deviceAddress);
 
-			if (bluetoothDevice == null) {
-				return;
-			}
-			int state = BLESdk.get().getBluetoothManager().getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
-			if (state == BluetoothGatt.STATE_CONNECTED) {
-				BLELog.e("disconnect()  gatt is connected ::  ");
-				gatt.disconnect();
-			}
-			mBluetoothAdapter.cancelDiscovery();
-
-			System.gc();
-
-			BLELog.e("disconnect() close gatt :: finish ");
-		} catch (Exception e) {
-			e.printStackTrace();
-			BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
-		}
+            if (bluetoothDevice == null) {
+                return;
+            }
+            int state = BLESdk.get().getBluetoothManager().getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
+            if (state == BluetoothGatt.STATE_CONNECTED) {
+                BLELog.e("disconnect()  gatt is connected ::  ");
+                gatt.disconnect();
+            }
 
 
-	}
+//            mBluetoothAdapter.get().cancelDiscovery();
+            removeGatt(deviceAddress);
+            System.gc();
 
-	private void refreshCache(BluetoothGatt gatt) throws DeadObjectException {
+            BLELog.e("disconnect() close gatt :: finish ");
+        } catch (Exception e) {
+            e.printStackTrace();
+            BLELog.e("deviceAddress:" + deviceAddress + " ; gatt is error");
+        }
+    }
 
-		try {
-			Method refresh = gatt.getClass().getMethod("refresh");
-			if (refresh != null) {
-				BLELog.e("refreshCache ::");
-				refresh.invoke(gatt);
-			}
-		} catch (Exception e) {
-			BLELog.e(e.getMessage());
-		}
-	}
+    private void refreshCache(BluetoothGatt gatt) throws DeadObjectException {
+//
+//        try {
+//            Method refresh = gatt.getClass().getMethod("refresh");
+//            if (refresh != null) {
+//                BLELog.e("refreshCache ::");
+//                refresh.invoke(gatt);
+//            }
+//        } catch (Exception e) {
+//            BLELog.e(e.getMessage());
+//        }
 
-	public void removeGatt(String address) {
-		if (mGattHashMap.containsKey(address)) {
-			mGattHashMap.remove(address);
-		}
-	}
+        if (gatt == null) {
+            return;
+        }
+        try {
+            BluetoothGatt localBluetoothGatt = gatt;
+            Method localMethod = localBluetoothGatt.getClass().getMethod(
+                    "refresh", new Class[0]);
+            if (localMethod == null) {
 
-	public void cleanGatt() {
-		mGattHashMap.clear();
-	}
+                return;
+            }
+
+            localMethod.invoke(localBluetoothGatt, new Object[0]);
+
+        } catch (Exception localException) {
+            BLELog.e("An exception occured while refreshing device");
+        }
+    }
+
+    public void removeGatt(String address) {
+        if (mGattHashMap.containsKey(address)) {
+            BLELog.e("removeGatt:: address");
+            BluetoothGatt gatt = mGattHashMap.get(address);
+            try {
+                refreshCache(gatt);
+                gatt.close();
+            } catch (DeadObjectException e) {
+                e.printStackTrace();
+            }
+
+            mGattHashMap.remove(address);
+        }
+        System.gc();
+    }
+
+    public void cleanGatt() {
+        mGattHashMap.clear();
+    }
 }

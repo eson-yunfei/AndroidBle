@@ -42,134 +42,137 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class BLECheck {
 
-	private BluetoothAdapter bluetoothAdapter;
+    private BluetoothAdapter bluetoothAdapter;
 
-	private BLECheck() {
-	}
+    private BLECheck() {
+    }
 
-	private static BLECheck bleCheck = null;
+    private static volatile BLECheck bleCheck = null;
 
-	public static void init() {
-		if (bleCheck == null) {
-			bleCheck = new BLECheck();
-		}
-
-		BLELog.i("BLECheck init ok");
-	}
-
-	public static BLECheck get() {
-		if (bleCheck == null) {
-			init();
-		}
-		return bleCheck;
-	}
+    public static void init() {
+        if (bleCheck != null) {
+           return;
+        }
+        synchronized (BLESdk.class){
+            if (bleCheck == null){
+                bleCheck = new BLECheck();
+                BLELog.i("BLECheck init ok");
+            }
+        }
 
 
-	/**
-	 * 检测蓝牙状态
-	 *
-	 * @param context
-	 * @param checkListener
-	 */
-	public void checkBleState(Context context, BLECheckListener checkListener) {
+    }
+
+    public static BLECheck get() {
+        if (bleCheck == null) {
+            init();
+        }
+        return bleCheck;
+    }
 
 
-		//检测是否有蓝牙的权限
-		if (!checkBlePermission(context)) {
-			checkListener.noBluetoothPermission();
-			return;
-		}
+    /**
+     * 检测蓝牙状态
+     *
+     * @param context
+     * @param checkListener
+     */
+    public synchronized void checkBleState(Context context, BLECheckListener checkListener) {
 
-		//是否支持蓝牙设备
-		if (!supportBle(context)) {
-			checkListener.notSupportBle();
-			return;
-		}
 
-		//蓝牙是否打开
-		if (!isBleEnable()) {
-			checkListener.bleClosing();
-			return;
-		}
+        //检测是否有蓝牙的权限
+        if (!checkBlePermission(context)) {
+            checkListener.noBluetoothPermission();
+            return;
+        }
 
-		//蓝牙状态可用
-		checkListener.bleStateOK();
-	}
+        //是否支持蓝牙设备
+        if (!isSupportBle(context)) {
+            checkListener.notSupportBle();
+            return;
+        }
 
-	/**
-	 * 蓝牙是否打开可用状态
-	 *
-	 * @return
-	 */
-	public boolean isBleEnable() {
+        //蓝牙是否打开
+        if (!isBleEnable()) {
+            checkListener.bleClosing();
+            return;
+        }
 
-		bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
-		if (bluetoothAdapter == null) {
-			BLELog.i("BleCheck  isBleEnable() bluetoothAdapter is null");
-			return false;
-		}
+        //蓝牙状态可用
+        checkListener.bleStateOK();
+    }
 
-		return bluetoothAdapter.isEnabled();
-	}
+    /**
+     * 蓝牙是否打开可用状态
+     *
+     * @return
+     */
+    public synchronized boolean isBleEnable() {
 
-	/**
-	 * 是否支持蓝牙设备
-	 *
-	 * @param context
-	 *
-	 * @return
-	 */
-	private boolean supportBle(Context context) {
-		return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
-	}
+        bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
+        if (bluetoothAdapter == null) {
+            BLELog.i("BleCheck  isBleEnable() bluetoothAdapter is null");
+            return false;
+        }
 
-	/**
-	 * 是否具有访问蓝牙的权限蓝牙
-	 *
-	 * @param context
-	 *
-	 * @return
-	 */
-	public boolean checkBlePermission(Context context) {
-		if (Build.VERSION.SDK_INT < 23) {
-			return true;
-		}
+        return bluetoothAdapter.isEnabled();
+    }
 
-		String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION};
-		boolean hasPermissions = EasyPermissions.hasPermissions(context, perms);
-		return hasPermissions;
-	}
+    /**
+     * 是否支持蓝牙设备
+     *
+     * @param context
+     * @return
+     */
+    public synchronized boolean isSupportBle(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE);
+    }
 
-	/**
-	 * 申请蓝牙权限
-	 *
-	 * @param activity
-	 * @param rationale
-	 * @param requestCode
-	 */
-	public void requestBlePermission(Activity activity, String rationale, int requestCode) {
-		EasyPermissions.requestPermissions(activity, rationale, requestCode,
-				new String[]{Manifest.permission.ACCESS_COARSE_LOCATION});
-	}
+    /**
+     * 是否具有访问蓝牙的权限蓝牙
+     *
+     * @param context
+     * @return
+     */
+    public boolean checkBlePermission(Context context) {
+        if (Build.VERSION.SDK_INT < 23) {
+            return true;
+        }
 
-	/**
-	 * 打开蓝牙,软件内打开，不需要跳转的系统界面
-	 */
-	public void openBle() {
-		if (bluetoothAdapter == null) {
-			return;
-		}
-		bluetoothAdapter.enable();
-	}
+        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION};
+        return EasyPermissions.hasPermissions(context, perms);
+    }
 
-	/**
-	 * 跳转到系统界面，打开蓝牙
-	 *
-	 * @param activity
-	 * @param requestCode
-	 */
-	public void openBle(Activity activity, int requestCode) {
-		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		activity.startActivityForResult(intent, requestCode);
-	}
+    /**
+     * 申请蓝牙权限
+     *
+     * @param activity
+     * @param rationale
+     * @param requestCode
+     */
+    public void requestBlePermission(Activity activity, String rationale, int requestCode) {
+        EasyPermissions.requestPermissions(activity, rationale, requestCode,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+    }
+
+    /**
+     * 打开蓝牙,软件内打开，不需要跳转的系统界面
+     */
+    public void openBle() {
+        if (bluetoothAdapter == null) {
+            return;
+        }
+        bluetoothAdapter.enable();
+    }
+
+    /**
+     * 跳转到系统界面，打开蓝牙
+     *
+     * @param activity
+     * @param requestCode
+     */
+    public void openBle(Activity activity, int requestCode) {
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        activity.startActivityForResult(intent, requestCode);
+    }
 }

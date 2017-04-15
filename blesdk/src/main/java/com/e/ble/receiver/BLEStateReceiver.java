@@ -53,6 +53,11 @@ public class BLEStateReceiver extends BroadcastReceiver {
 					break;
 				case BluetoothAdapter.STATE_TURNING_OFF:
 					BLELog.w("BLEStateReceiver-->>STATE_TURNING_OFF 手机蓝牙正在关闭");
+					if (mBLEReceiverListener == null) {
+						return;
+					}
+					mBLEReceiverListener.onStateStartOff();
+
 					break;
 				case BluetoothAdapter.STATE_ON:
 					BLELog.w("BLEStateReceiver-->>STATE_ON 手机蓝牙开启");
@@ -63,6 +68,10 @@ public class BLEStateReceiver extends BroadcastReceiver {
 					break;
 				case BluetoothAdapter.STATE_TURNING_ON:
 					BLELog.w("BLEStateReceiver-->>STATE_TURNING_ON 手机蓝牙正在开启");
+					if (mBLEReceiverListener == null) {
+						return;
+					}
+					mBLEReceiverListener.onStateStartOn();
 					break;
 			}
 		}

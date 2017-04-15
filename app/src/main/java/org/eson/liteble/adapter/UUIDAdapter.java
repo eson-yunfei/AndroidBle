@@ -23,7 +23,7 @@ public class UUIDAdapter extends MyBaseAdapter<CharacterBean> {
 
 	@Override
 	public View getView(int position, View view, ViewGroup var3) {
-		ViewHolder viewHolder = null;
+		ViewHolder viewHolder;
 		if (view == null) {
 			view = inflater.inflate(R.layout.item_uuid, null);
 			viewHolder = new ViewHolder(view);

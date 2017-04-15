@@ -3,4 +3,10 @@
     <string name="action_settings">设置</string>
 
     <string name="service_uuid"><b>UUID: %s</b></string>
+    <string name="image_next">arrow</string>
+    <string name="text_type">类型：</string>
+    <string name="text_read_data">读数据</string>
+    <string name="text_write_data">写数据</string>
+    <string name="text_start_listener_data">开始监听</string>
+    <string name="text_scan_device">搜索设备</string>
 </resources>

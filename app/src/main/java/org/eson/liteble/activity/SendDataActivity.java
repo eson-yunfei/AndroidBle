@@ -34,7 +34,7 @@ public class SendDataActivity extends BaseBleActivity {
 	@Override
 	protected void initView() {
 		super.initView();
-		editText = findView(org.eson.liteble.R.id.editText);
+		editText = findView(org.eson.liteble.R.id.edit_text);
 		sendBtn = findView(org.eson.liteble.R.id.sendBtn);
 	}
 

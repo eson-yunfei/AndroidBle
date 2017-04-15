@@ -1,5 +1,6 @@
 package org.eson.liteble;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
@@ -27,7 +28,8 @@ import java.util.List;
  */
 public class MyApplication extends Application {
 
-	private static Context mContext;
+	protected static Context mContext;
+	@SuppressLint("StaticFieldLeak")
 	private static MyApplication instance;
 
 	private String currentShowDevice = "";
@@ -81,10 +83,7 @@ public class MyApplication extends Application {
 		ComponentName cpn = list.get(0).topActivity;
 		String currentName = cpn.getClassName();
 		LogUtil.e("currentName--->>" + currentName);
-		if (className.equals(currentName)) {
-			return true;
-		}
-		return false;
+		return className.equals(currentName);
 	}
 
 

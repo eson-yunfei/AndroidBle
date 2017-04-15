@@ -27,7 +27,7 @@ public abstract class CommonShare {
 	}
 
 	protected void setValue(String key, float defValue) {
-		this.sharePre.edit().putFloat(key, defValue).commit();
+		this.sharePre.edit().putFloat(key, defValue).apply();
 	}
 
 	protected int getValue(String key, int defValue) {
@@ -35,7 +35,7 @@ public abstract class CommonShare {
 	}
 
 	protected void setValue(String key, int defValue) {
-		this.sharePre.edit().putInt(key, defValue).commit();
+		this.sharePre.edit().putInt(key, defValue).apply();
 	}
 
 	protected long getValue(String key, long defValue) {
@@ -43,7 +43,7 @@ public abstract class CommonShare {
 	}
 
 	protected void setValue(String key, long defValue) {
-		this.sharePre.edit().putLong(key, defValue).commit();
+		this.sharePre.edit().putLong(key, defValue).apply();
 	}
 
 	protected String getValue(String key, String defValue) {
@@ -51,7 +51,7 @@ public abstract class CommonShare {
 	}
 
 	protected void setValue(String key, String defValue) {
-		this.sharePre.edit().putString(key, defValue).commit();
+		this.sharePre.edit().putString(key, defValue).apply();
 	}
 
 	protected Set<String> getValue(String key, Set<String> defValue) {
@@ -59,7 +59,7 @@ public abstract class CommonShare {
 	}
 
 	protected void setValue(String key, Set<String> defValue) {
-		this.sharePre.edit().putStringSet(key, defValue).commit();
+		this.sharePre.edit().putStringSet(key, defValue).apply();
 	}
 
 	protected boolean getValue(String key, boolean defValue) {
@@ -67,7 +67,7 @@ public abstract class CommonShare {
 	}
 
 	protected void setValue(String key, boolean defValue) {
-		this.sharePre.edit().putBoolean(key, defValue).commit();
+		this.sharePre.edit().putBoolean(key, defValue).apply();
 	}
 
 	public boolean remove(String key) {
@@ -75,7 +75,7 @@ public abstract class CommonShare {
 	}
 
 	protected void clear() {
-		this.sharePre.edit().clear().commit();
+		this.sharePre.edit().clear().apply();
 	}
 
 }

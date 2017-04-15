@@ -23,7 +23,11 @@ package com.e.ble.receiver.listener;
  */
 
 public interface BLEReceiverListener {
-	void onStateOff();
+    void onStateStartOff();
 
-	void onStateOn();
+    void onStateOff();
+
+    void onStateStartOn();
+
+    void onStateOn();
 }

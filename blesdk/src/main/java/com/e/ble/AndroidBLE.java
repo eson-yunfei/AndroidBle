@@ -33,71 +33,82 @@ import com.e.ble.util.BLELog;
  * |---------------------------------------------------------------------------------------------------------------|
  */
 class AndroidBLE {
-	private static AndroidBLE androidBLE = null;
-	private Context context;
-	private BluetoothManager bluetoothManager;
-	private BluetoothAdapter bluetoothAdapter;
+    private static volatile AndroidBLE androidBLE;
 
-	// |---------------------------------------------------------------------------------------------------------------|
-	//初始化操作，不说了
-	private AndroidBLE(Context context) {
-		this.context = context;
-	}
+    static {
+        androidBLE = null;
+    }
 
-	public static void init(Context context) {
+    private Context context;
+    private BluetoothManager bluetoothManager;
+    private BluetoothAdapter bluetoothAdapter;
 
-		if (androidBLE == null) {
-			androidBLE = new AndroidBLE(context);
-		}
-		BLELog.i("AndroidBLE init ok");
-	}
+    // |---------------------------------------------------------------------------------------------------------------|
+    //初始化操作，不说了
+    private AndroidBLE(Context context) {
+        this.context = context;
+    }
 
-	public static AndroidBLE get() throws NullPointerException {
-		if (androidBLE == null) {
-			throw new NullPointerException("AndroidBLE not init");
-		}
-		return androidBLE;
-	}
+    public static void init(Context context) {
+
+        if (androidBLE != null) {
+            return;
+        }
+        synchronized (AndroidBLE.class) {
+            if (androidBLE == null) {
+                androidBLE = new AndroidBLE(context);
+                BLELog.i("AndroidBLE is init ok");
+            }
+        }
+
+    }
+
+    public static AndroidBLE get() throws NullPointerException {
+        if (androidBLE == null) {
+            throw new NullPointerException("AndroidBLE not init");
+        }
+        return androidBLE;
+    }
 // |---------------------------------------------------------------------------------------------------------------------|
 
-	/**
-	 * 获取系统 BluetoothManager
-	 *
-	 * @return
-	 */
-	public BluetoothManager getBluetoothManager() {
-		if (bluetoothManager == null) {
-			bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-		}
-		return bluetoothManager;
-	}
+    /**
+     * 获取系统 BluetoothManager
+     *
+     * @return
+     */
+    public synchronized BluetoothManager getBluetoothManager() {
+        if (bluetoothManager == null) {
+            bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+        }
+        return bluetoothManager;
+    }
 
-	/**
-	 * 获取系统 BluetoothAdapter
-	 *
-	 * @return
-	 */
-	public BluetoothAdapter getBluetoothAdapter() throws NullPointerException {
-		getBluetoothManager();
-		if (bluetoothManager == null) {
+    /**
+     * 获取系统 BluetoothAdapter
+     *
+     * @return
+     */
+    public synchronized BluetoothAdapter getBluetoothAdapter() throws NullPointerException {
+        getBluetoothManager();
+        if (bluetoothManager == null) {
 
-			BLELog.e("AndroidBLE.java------->>>bluetoothManager is null");
-			throw new NullPointerException("AndroidBLE.java : getBluetoothAdapter() : bluetoothManager is null");
-		}
-		if (bluetoothAdapter == null) {
-			bluetoothAdapter = bluetoothManager.getAdapter();
-		}
-		return bluetoothAdapter;
+            BLELog.e("AndroidBLE.java------->>>bluetoothManager is null");
+            throw new NullPointerException("AndroidBLE.java : getBluetoothAdapter() : bluetoothManager is null");
+        }
+        if (bluetoothAdapter == null) {
+            bluetoothAdapter = bluetoothManager.getAdapter();
+        }
+        return bluetoothAdapter;
 
 
-	}
+    }
 
-	/**
-	 * 重置 bluetoothManager ， bluetoothAdapter
-	 */
-	public void reset() {
+    /**
+     * 重置 bluetoothManager ， bluetoothAdapter
+     */
+    public void reset() {
 //		bluetoothAdapter = null;
 //		bluetoothManager = null;
 
-	}
+    }
 }

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.check.BLECheck;
 import com.e.ble.check.BLECheckListener;
+import com.e.ble.scan.BLEScanCfg;
 import com.e.ble.scan.BLEScanListener;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
@@ -120,7 +121,8 @@ public class MainActivity extends BaseBleActivity {
         super.onActivityResult(requestCode, resultCode, data);
         LogUtil.e("onActivityResult" + requestCode + ";;;;" + resultCode);
         if (requestCode == 0x01) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode != RESULT_OK) {
+                return;
             }
         } else if (requestCode == 0x02) {
             if (resultCode == RESULT_OK) {
@@ -239,7 +241,9 @@ public class MainActivity extends BaseBleActivity {
      */
     private void searchDevice() {
         showProgress("搜索设备中。。。。");
-        BLEScanner.get().startScan(MyApplication.getInstance().getConfigShare().getConnectTime(), null, null, new BLEScanListener() {
+        BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(MyApplication.getInstance().getConfigShare().getConnectTime())
+                .builder();
+        BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
             @Override
             public void onScannerStart() {
 
@@ -267,8 +271,6 @@ public class MainActivity extends BaseBleActivity {
                     ToastUtil.showShort(mContext, "扫描出现异常");
                 }
             }
-
-
         });
     }
 

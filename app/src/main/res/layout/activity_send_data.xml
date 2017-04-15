@@ -12,7 +12,8 @@
         android:textSize="@dimen/text_size"/>
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/edit_text"
+        android:labelFor="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/fab_margin"

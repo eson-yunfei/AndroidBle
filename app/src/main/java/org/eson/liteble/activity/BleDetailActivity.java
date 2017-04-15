@@ -283,7 +283,7 @@ public class BleDetailActivity extends BaseBleActivity {
                 }
 
                 List<DescriptorBean> descriptorBeen = new ArrayList<>();
-                DescriptorBean descriptorBean = null;
+                DescriptorBean descriptorBean;
                 for (BluetoothGattDescriptor gattDescriptor : descriptorList) {
                     UUID des = gattDescriptor.getUuid();
                     int permissions = gattDescriptor.getPermissions();

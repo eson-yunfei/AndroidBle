@@ -56,10 +56,10 @@ class BLETransport implements BLETransportListener {
 	 */
 	private static BLETransport bleTransport = null;
 	private BLETransportListener bleTransportListener = null;
-	private BluetoothAdapter bluetoothAdapter;
 
 	private BLETransport() {
-		bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
+		ThreadLocal<BluetoothAdapter> bluetoothAdapter = new ThreadLocal<>();
+		bluetoothAdapter.set(BLESdk.get().getBluetoothAdapter());
 	}
 
 	public static BLETransport get() {
@@ -69,16 +69,16 @@ class BLETransport implements BLETransportListener {
 		return bleTransport;
 	}
 
-	/**
-	 * |---------------------------------------------------------------------------------------------------------|
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |  API
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |---------------------------------------------------------------------------------------------------------|
+	/*
+	  |---------------------------------------------------------------------------------------------------------|
+	  <p>
+	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	  <p>
+	  |  API
+	  <p>
+	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	  <p>
+	  |---------------------------------------------------------------------------------------------------------|
 	 */
 
 	/**
@@ -171,16 +171,16 @@ class BLETransport implements BLETransportListener {
 	}
 
 
-	/**
-	 * |---------------------------------------------------------------------------------------------------------|
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |  私有方法
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |---------------------------------------------------------------------------------------------------------|
+	/*
+	  |---------------------------------------------------------------------------------------------------------|
+	  <p>
+	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	  <p>
+	  |  私有方法
+	  <p>
+	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
+	  <p>
+	  |---------------------------------------------------------------------------------------------------------|
 	 */
 
 	/**
@@ -189,11 +189,7 @@ class BLETransport implements BLETransportListener {
 	 * @return
 	 */
 	private boolean checkGattEnable(BluetoothGatt bluetoothGatt) {
-		if (bluetoothGatt == null) {
-			return true;
-		} else {
-			return false;
-		}
+		return bluetoothGatt == null;
 	}
 
 	private boolean isConnect(BluetoothGatt gatt, String deviceAddress) {
@@ -277,5 +273,13 @@ class BLETransport implements BLETransportListener {
 		}
 	}
 
+	@Override
+	public void onDesRead(String address) {
 
+	}
+
+	@Override
+	public void onDesWrite(String address) {
+
+	}
 }

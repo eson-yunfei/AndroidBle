@@ -1,7 +1,5 @@
 package org.eson.liteble.common;
 
-import android.os.Bundle;
-
 import org.eson.liteble.bean.ServiceBean;
 
 import java.util.HashMap;
@@ -41,7 +39,6 @@ public class ConnectedDevice {
 
         if (!serviceMap.containsKey(address)) {
             serviceMap.put(address, serviceList);
-            return;
         }
     }
 

@@ -18,8 +18,8 @@ package com.e.ble.bean;
 
 import java.util.UUID;
 
-/**
- * @作者 xiaoyunfei
+/*
+  @作者 xiaoyunfei
  * @日期: 2017/3/5
  * @说明：
  */

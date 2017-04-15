@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import com.e.ble.bean.BLECharacter;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.BLEControl;
-import com.e.ble.control.listener.BLEConnectionListener;
+import com.e.ble.control.listener.BLEConnListener;
 import com.e.ble.control.listener.BLEStateChangeListener;
 import com.e.ble.control.listener.BLETransportListener;
 import com.e.ble.util.BLEConstant;
@@ -18,7 +18,6 @@ import com.e.ble.util.BLEConstant;
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
-import org.eson.liteble.common.ConnectedDevice;
 import org.eson.liteble.util.LogUtil;
 
 import java.util.UUID;
@@ -102,9 +101,9 @@ public class BleService extends Service {
     }
 
 
-    BLEConnectionListener bleConnectionListener = new BLEConnectionListener() {
+    BLEConnListener bleConnectionListener = new BLEConnListener() {
         @Override
-        public void onConnectError(String address, int errorCode) {
+        public void onConnError(String address, int errorCode) {
             LogUtil.e("address -->>" + address + "; errorCode -->>" + errorCode);
             if (errorCode == 133) {
                 BLEControl.get().disconnect(address);
@@ -113,7 +112,7 @@ public class BleService extends Service {
         }
 
         @Override
-        public void onConnectSuccess(String address) {
+        public void onConnSuccess(String address) {
 
             //更新当前连接的具体的某一个设备
 //			MyApplication.getInstance().setCurrentShowDevice(address);
@@ -124,7 +123,7 @@ public class BleService extends Service {
         }
 
         @Override
-        public void onConnected(String address) {
+        public void onAlreadyConnected(String address) {
 //			MyApplication.getInstance().setCurrentShowDevice(address);
             sendBleState(BLEConstant.Connection.STATE_CONNECT_CONNECTED, address);
         }
@@ -154,6 +153,17 @@ public class BleService extends Service {
     };
 
     BLETransportListener transportListener = new BLETransportListener() {
+
+        @Override
+        public void onDesRead(String address) {
+
+        }
+
+        @Override
+        public void onDesWrite(String address) {
+
+        }
+
         @Override
         public void onCharacterRead(BLECharacter bleCharacter) {
             Bundle bundle = new Bundle();

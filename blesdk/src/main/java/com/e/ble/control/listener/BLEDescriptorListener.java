@@ -16,23 +16,17 @@
 
 package com.e.ble.control.listener;
 
-import com.e.ble.bean.BLECharacter;
-
 /**
- * @作者 xiaoyunfei
- * @日期: 2017/3/5
- * @说明：
+ * @package_name com.e.ble.control.listener
+ * @name ${name}
+ * <p>
+ * Created by xiaoyunfei on 2017/4/15.
+ * @description
  */
 
-public interface BLETransportListener {
+public interface BLEDescriptorListener {
 
-    void onDesRead(String address);
+    void onDescriptorRead(String address);
 
-    void onDesWrite(String address);
-
-    void onCharacterRead(BLECharacter bleCharacter);
-
-    void onCharacterWrite(BLECharacter bleCharacter);
-
-    void onCharacterNotify(BLECharacter bleCharacter);
+    void onDescriptorWrite(String address);
 }

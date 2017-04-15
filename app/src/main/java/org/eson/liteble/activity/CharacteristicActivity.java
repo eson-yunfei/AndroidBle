@@ -200,7 +200,7 @@ public class CharacteristicActivity extends BaseBleActivity {
             descriptors.add(uuid);
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(CharacteristicActivity.this,
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
         descListView.setAdapter(arrayAdapter);
     }

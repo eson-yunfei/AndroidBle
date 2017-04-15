@@ -24,28 +24,12 @@ package com.e.ble.control.listener;
  * 包括设备的连接
  */
 
-public interface BLEConnectionListener {
+public interface BLEConnListener {
 
-	/**
-	 * 连接设备异常
-	 *
-	 * @param address
-	 * @param errorCode
-	 */
-	void onConnectError(String address, int errorCode);
+    void onConnError(String address, int errorCode);//连接设备异常
 
-	/**
-	 * 设备连接成功
-	 *
-	 * @param address
-	 */
-	void onConnectSuccess(String address);
+    void onConnSuccess(String address);//设备连接成功,设备服务 Discovered
 
-	/**
-	 * 设备已经连接
-	 *
-	 * @param address
-	 */
-	void onConnected(String address);
+    void onAlreadyConnected(String address);//设备已经连接
 
 }

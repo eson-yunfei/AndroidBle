@@ -85,6 +85,9 @@ public class BaseBleActivity extends BaseActivity {
 					//蓝牙数据返回
 					BleDataBean dataBean = (BleDataBean) value.getSerializable(BLEConstant.Type.TYPE_NOTICE);
 
+					if (dataBean == null){
+						return;
+					}
 					final String uuid = dataBean.getUuid().toString();
 					final String buffer = BLEByteUtil.getHexString(dataBean.getBuffer());
 					final String deviceAddress = dataBean.getDeviceAddress();
