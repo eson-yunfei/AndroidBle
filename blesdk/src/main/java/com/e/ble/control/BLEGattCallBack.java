@@ -40,7 +40,7 @@ import java.util.UUID;
  * @description BluetoothGattCallback
  */
 
-public class BLEGattCallBack extends BluetoothGattCallback {
+class BLEGattCallBack extends BluetoothGattCallback {
 
     /**
      * 设备连接状态的改变
