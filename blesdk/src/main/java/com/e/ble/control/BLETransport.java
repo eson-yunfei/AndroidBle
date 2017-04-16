@@ -275,11 +275,16 @@ class BLETransport implements BLETransportListener {
 
 	@Override
 	public void onDesRead(String address) {
-
+		if (bleTransportListener != null){
+			bleTransportListener.onDesRead(address);
+		}
 	}
 
 	@Override
 	public void onDesWrite(String address) {
 
+		if (bleTransportListener != null){
+			bleTransportListener.onDesWrite(address);
+		}
 	}
 }

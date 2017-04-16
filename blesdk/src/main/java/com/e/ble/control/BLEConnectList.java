@@ -67,7 +67,9 @@ class BLEConnectList {
      * @return
      */
     public boolean outLimit(String address) {
-        return !(mGattHashMap == null || mGattHashMap.size() == 0) && !mGattHashMap.containsKey(address) && mGattHashMap.size() >= BLESdk.get().getMaxConnect();
+        return !(mGattHashMap == null || mGattHashMap.size() == 0) &&
+                !mGattHashMap.containsKey(address) &&
+                mGattHashMap.size() >= BLESdk.get().getMaxConnect();
 
     }
 
@@ -156,7 +158,8 @@ class BLEConnectList {
             if (bluetoothDevice == null) {
                 return;
             }
-            int state = BLESdk.get().getBluetoothManager().getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
+            int state = BLESdk.get().getBluetoothManager()
+                    .getConnectionState(bluetoothDevice, BluetoothProfile.GATT);
             if (state == BluetoothGatt.STATE_CONNECTED) {
                 BLELog.e("disconnect()  gatt is connected ::  ");
                 gatt.disconnect();
@@ -216,6 +219,7 @@ class BLEConnectList {
                 e.printStackTrace();
             }
 
+            BLEConnDeviceUtil.get().removeConnBean(address);
             mGattHashMap.remove(address);
         }
         System.gc();
