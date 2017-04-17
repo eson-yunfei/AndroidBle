@@ -28,6 +28,7 @@ import com.e.ble.util.BLELog;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * |---------------------------------------------------------------------------------------------------------------|
@@ -44,11 +45,11 @@ import java.util.Map;
 class BLEConnectList {
     private static BLEConnectList sBLEConnectList = null;
 
-    private HashMap<String, BluetoothGatt> mGattHashMap;
+    private ConcurrentHashMap<String, BluetoothGatt> mGattHashMap;
 
     private BLEConnectList() {
         if (mGattHashMap == null) {
-            mGattHashMap = new HashMap<>();
+            mGattHashMap = new ConcurrentHashMap<>();
         }
     }
 
