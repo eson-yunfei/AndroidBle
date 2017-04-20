@@ -16,50 +16,98 @@
 
 package com.e.ble.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.e.ble.support.ScanRecord;
+
 /**
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
  * @说明：
  */
+public class BLEDevice implements Parcelable {
 
-public class BLEDevice {
+    private String name;
+    private String mac;
+    private int rssi;
+    private ScanRecord scanRecord;
 
-	private String name;
-	private String mac;
-	private int rssi;
+    public BLEDevice() {
 
-	public String getName() {
-		return name;
-	}
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    protected BLEDevice(Parcel in) {
+        name = in.readString();
+        mac = in.readString();
+        rssi = in.readInt();
+    }
 
-	public String getMac() {
-		return mac;
-	}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(mac);
+        dest.writeInt(rssi);
+    }
 
-	public void setMac(String mac) {
-		this.mac = mac;
-	}
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-	public int getRssi() {
-		return rssi;
-	}
+    public static final Creator<BLEDevice> CREATOR = new Creator<BLEDevice>() {
+        @Override
+        public BLEDevice createFromParcel(Parcel in) {
+            return new BLEDevice(in);
+        }
 
-	public void setRssi(int rssi) {
-		this.rssi = rssi;
-	}
+        @Override
+        public BLEDevice[] newArray(int size) {
+            return new BLEDevice[size];
+        }
+    };
 
-	@Override
-	public boolean equals(Object obj) {
-		BLEDevice device;
-		if (obj instanceof BLEDevice) {
-			device = (BLEDevice) obj;
-			return device.mac.equals(this.mac);
-		} else {
-			return false;
-		}
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public int getRssi() {
+        return rssi;
+    }
+
+    public void setRssi(int rssi) {
+        this.rssi = rssi;
+    }
+
+
+    public ScanRecord getScanRecord() {
+        return scanRecord;
+    }
+
+    public void setScanRecord(ScanRecord scanRecord) {
+        this.scanRecord = scanRecord;
+    }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        BLEDevice device;
+//        if (obj instanceof BLEDevice) {
+//            device = (BLEDevice) obj;
+//            return device.mac.equals(this.mac);
+//        } else {
+//            return false;
+//        }
+//    }
 }

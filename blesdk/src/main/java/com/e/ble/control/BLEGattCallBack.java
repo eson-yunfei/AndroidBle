@@ -51,14 +51,15 @@ class BLEGattCallBack extends BluetoothGattCallback {
      */
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        super.onConnectionStateChange(gatt, status, newState);
+
         //返回蓝牙连接状态
         updateConnectionState(gatt, status, newState);
+        super.onConnectionStateChange(gatt, status, newState);
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-        super.onServicesDiscovered(gatt, status);
+
 
         //蓝牙 设备所包含的 service 可被启用状态，
         // 注意
@@ -72,58 +73,60 @@ class BLEGattCallBack extends BluetoothGattCallback {
         } else {
             BLEConnection.get().onConnError(address, status);
         }
-
+        super.onServicesDiscovered(gatt, status);
     }
 
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt,
                                      BluetoothGattCharacteristic characteristic,
                                      int status) {
-        super.onCharacteristicRead(gatt, characteristic, status);
+
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
             BLETransport.get().onCharacterRead(bleCharacter);
         }
+        super.onCharacteristicRead(gatt, characteristic, status);
     }
 
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt,
                                       BluetoothGattCharacteristic characteristic,
                                       int status) {
-        super.onCharacteristicWrite(gatt, characteristic, status);
+
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
 
             BLETransport.get().onCharacterWrite(bleCharacter);
         }
+        super.onCharacteristicWrite(gatt, characteristic, status);
 
     }
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt,
                                         BluetoothGattCharacteristic characteristic) {
-        super.onCharacteristicChanged(gatt, characteristic);
 
         BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
         BLETransport.get().onCharacterNotify(bleCharacter);
-
+        super.onCharacteristicChanged(gatt, characteristic);
     }
 
     @Override
     public void onDescriptorRead(BluetoothGatt gatt,
                                  BluetoothGattDescriptor descriptor,
                                  int status) {
-        super.onDescriptorRead(gatt, descriptor, status);
+
         String address = getConnectDevice(gatt);
         BLETransport.get().onDesRead(address);
+        super.onDescriptorRead(gatt, descriptor, status);
     }
 
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt,
                                   BluetoothGattDescriptor descriptor,
                                   int status) {
-        super.onDescriptorWrite(gatt, descriptor, status);
+
         String address = getConnectDevice(gatt);
         BLETransport.get().onDesWrite(address);
         UUID uuid = descriptor.getUuid();
@@ -132,26 +135,27 @@ class BLEGattCallBack extends BluetoothGattCallback {
                 "\n status:" + status +
                 "\n value:" + BLEByteUtil.getHexString(bytes) +
                 "\n uuid:" + uuid.toString());
+        super.onDescriptorWrite(gatt, descriptor, status);
     }
 
     @Override
     public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-        super.onReliableWriteCompleted(gatt, status);
 
         String address = getConnectDevice(gatt);
         BLELog.e("onReliableWriteCompleted() address::" + address + ";status:" + status);
-
+        super.onReliableWriteCompleted(gatt, status);
     }
 
     @Override
     public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-        super.onReadRemoteRssi(gatt, rssi, status);
+
         String address = getConnectDevice(gatt);
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLEControl.get().onReadRssi(address, rssi);
         } else {
             BLEControl.get().onReadRssiError(address, status);
         }
+        super.onReadRemoteRssi(gatt, rssi, status);
     }
 
     //--------------------------------------------------------------------------------------------//
@@ -228,7 +232,7 @@ class BLEGattCallBack extends BluetoothGattCallback {
      * @param gatt
      * @return
      */
-    private String getConnectDevice(BluetoothGatt gatt) {
+    private synchronized String getConnectDevice(BluetoothGatt gatt) {
         String address = "";
         BluetoothDevice device = gatt.getDevice();
         if (device != null) {
@@ -245,7 +249,7 @@ class BLEGattCallBack extends BluetoothGattCallback {
      * @param characteristic
      * @return
      */
-    private BLECharacter getBleCharacter(BluetoothGatt gatt,
+    private synchronized BLECharacter getBleCharacter(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic) {
         String address = getConnectDevice(gatt);
         UUID uuid = characteristic.getUuid();

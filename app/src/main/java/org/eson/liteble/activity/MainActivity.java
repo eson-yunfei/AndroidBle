@@ -278,7 +278,8 @@ public class MainActivity extends BaseBleActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (deviceList.contains(bleDevice)) {
+
+                if (isExitDevice(bleDevice)) {
                     updateDevice(bleDevice);
                 } else {
                     deviceList.add(0, bleDevice);
@@ -289,10 +290,25 @@ public class MainActivity extends BaseBleActivity {
     }
 
     ///***********************************************************************************************//
+
+    private boolean isExitDevice(BLEDevice device) {
+        synchronized (deviceList) {
+            for (BLEDevice bleDevice : deviceList) {
+                if (bleDevice.getMac().equals(device.getMac())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     private void updateDevice(BLEDevice device) {
-        for (BLEDevice bleDevice : deviceList) {
-            if (bleDevice.getMac().equals(device.getMac())) {
-                bleDevice.setRssi(device.getRssi());
+        synchronized (deviceList) {
+            for (BLEDevice bleDevice : deviceList) {
+                if (bleDevice.getMac().equals(device.getMac())) {
+                    bleDevice.setRssi(device.getRssi());
+                    bleDevice.setScanRecord(device.getScanRecord());
+                }
             }
         }
 

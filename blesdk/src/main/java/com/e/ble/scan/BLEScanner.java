@@ -20,13 +20,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.check.BLECheck;
-import com.e.ble.control.listener.BLEStateChangeListener;
+import com.e.ble.util.BLEByteUtil;
 import com.e.ble.util.BLEError;
 import com.e.ble.util.BLELog;
+import com.e.ble.support.ScanRecord;
 
 import java.util.UUID;
 
@@ -196,11 +198,10 @@ public class BLEScanner implements BLEScanListener {
                 return;
             }
 
-            BLEDevice bleDevice = getBleDevice(device);
+            BLEDevice bleDevice = getBleDevice(device, rssi, scanRecord);
             if (bleDevice == null) {
                 return;
             }
-            bleDevice.setRssi(rssi);
 
             //返回设备
             onScanning(bleDevice);
@@ -211,16 +212,18 @@ public class BLEScanner implements BLEScanListener {
      * 根据 BluetoothDevice  获取 BLEDevice
      *
      * @param device
-     * @return
+     * @param rssi
+     * @param scanRecord @return
      */
-    private BLEDevice getBleDevice(BluetoothDevice device) {
+    private BLEDevice getBleDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
 
-        String name = device.getName();
-
+        String name = getDeviceName(device, scanRecord);
         //获取设备名称，名称有可能为： 空字符
+
         if (TextUtils.isEmpty(name)) {
             name = "< UnKnow >";
         }
+
         //判断是否在名称过滤范围之内
         //如果不包含，不添加设备
         if (!containName(name)) {
@@ -231,7 +234,43 @@ public class BLEScanner implements BLEScanListener {
         BLEDevice bleDevice = new BLEDevice();
         bleDevice.setName(name);
         bleDevice.setMac(device.getAddress());
+        bleDevice.setRssi(rssi);
+        if (scanRecord == null || scanRecord.length == 0) {
+            return bleDevice;
+        }
+        ScanRecord record = ScanRecord.parseFromBytes(scanRecord);
+        if (record == null) {
+            return bleDevice;
+        }
+        BLELog.i(record.toString());
+        bleDevice.setScanRecord(record);
+
         return bleDevice;
+    }
+
+    /**
+     * 获取设备名称
+     *
+     * @param device
+     * @param scanRecord
+     * @return
+     */
+    private String getDeviceName(BluetoothDevice device, byte[] scanRecord) {
+
+        String name = device.getName();
+        if (!TextUtils.isEmpty(name)) {
+            return name;
+        }
+        if (scanRecord == null || scanRecord.length == 0) {
+            return name;
+        }
+        ScanRecord record = ScanRecord.parseFromBytes(scanRecord);
+
+        if (record == null) {
+            return name;
+        }
+        name = record.getDeviceName();
+        return name;
     }
 
     /**
