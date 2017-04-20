@@ -242,7 +242,7 @@ public class BLEScanner implements BLEScanListener {
         if (record == null) {
             return bleDevice;
         }
-        BLELog.i(record.toString());
+//        BLELog.i(record.toString());
         bleDevice.setScanRecord(record);
 
         return bleDevice;
