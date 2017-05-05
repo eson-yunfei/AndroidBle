@@ -50,24 +50,26 @@ class BLEGattCallBack extends BluetoothGattCallback {
      * @param newState
      */
     @Override
-    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+    public void onConnectionStateChange(BluetoothGatt gatt,
+                                        int status,
+                                        int newState) {
 
         //返回蓝牙连接状态
         updateConnectionState(gatt, status, newState);
+
         super.onConnectionStateChange(gatt, status, newState);
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 
-
         //蓝牙 设备所包含的 service 可被启用状态，
-        // 注意
+        // 注意:
         // 如果蓝牙回复数据是通过notify的方式
         // 此时，发数据给设备并不能接收到设备，
         // 必须先 ENABLE_NOTIFICATION_VALUE，才可用
 
-        String address = getConnectDevice(gatt);
+        String address = BLEUtil.getConnectDevice(gatt);
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLEConnection.get().onConnSuccess(address);
         } else {
@@ -81,9 +83,8 @@ class BLEGattCallBack extends BluetoothGattCallback {
                                      BluetoothGattCharacteristic characteristic,
                                      int status) {
 
-
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
+            BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
             BLETransport.get().onCharacterRead(bleCharacter);
         }
         super.onCharacteristicRead(gatt, characteristic, status);
@@ -95,8 +96,12 @@ class BLEGattCallBack extends BluetoothGattCallback {
                                       int status) {
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
-
+            BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
+            if (bleCharacter != null) {
+                BLELog.i("----->>>BLEGattCallBack::" +
+                        "\nonCharacteristicWrite::  "
+                        + BLEByteUtil.getHexString(bleCharacter.getDataBuffer()));
+            }
             BLETransport.get().onCharacterWrite(bleCharacter);
         }
         super.onCharacteristicWrite(gatt, characteristic, status);
@@ -107,7 +112,7 @@ class BLEGattCallBack extends BluetoothGattCallback {
     public void onCharacteristicChanged(BluetoothGatt gatt,
                                         BluetoothGattCharacteristic characteristic) {
 
-        BLECharacter bleCharacter = getBleCharacter(gatt, characteristic);
+        BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
         BLETransport.get().onCharacterNotify(bleCharacter);
         super.onCharacteristicChanged(gatt, characteristic);
     }
@@ -117,7 +122,7 @@ class BLEGattCallBack extends BluetoothGattCallback {
                                  BluetoothGattDescriptor descriptor,
                                  int status) {
 
-        String address = getConnectDevice(gatt);
+        String address = BLEUtil.getConnectDevice(gatt);
         BLETransport.get().onDesRead(address);
         super.onDescriptorRead(gatt, descriptor, status);
     }
@@ -127,10 +132,10 @@ class BLEGattCallBack extends BluetoothGattCallback {
                                   BluetoothGattDescriptor descriptor,
                                   int status) {
 
-        String address = getConnectDevice(gatt);
+        String address = BLEUtil.getConnectDevice(gatt);
         BLETransport.get().onDesWrite(address);
         UUID uuid = descriptor.getUuid();
-        byte[] bytes =descriptor.getValue();
+        byte[] bytes = descriptor.getValue();
         BLELog.i(" onDescriptorWrite() address::" + address +
                 "\n status:" + status +
                 "\n value:" + BLEByteUtil.getHexString(bytes) +
@@ -141,7 +146,7 @@ class BLEGattCallBack extends BluetoothGattCallback {
     @Override
     public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
 
-        String address = getConnectDevice(gatt);
+        String address = BLEUtil.getConnectDevice(gatt);
         BLELog.e("onReliableWriteCompleted() address::" + address + ";status:" + status);
         super.onReliableWriteCompleted(gatt, status);
     }
@@ -149,7 +154,7 @@ class BLEGattCallBack extends BluetoothGattCallback {
     @Override
     public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
 
-        String address = getConnectDevice(gatt);
+        String address = BLEUtil.getConnectDevice(gatt);
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLEControl.get().onReadRssi(address, rssi);
         } else {
@@ -173,15 +178,14 @@ class BLEGattCallBack extends BluetoothGattCallback {
      */
     private void updateConnectionState(BluetoothGatt gatt, int status, int newState) {
 
-        String address = getConnectDevice(gatt);
+        String address = BLEUtil.getConnectDevice(gatt);
         if (TextUtils.isEmpty(address)) {
             BLEConnection.get().onConnError(address, 0);
         }
-        BLEConnBean connBean = BLEConnDeviceUtil.get().getExistBean(address);
+        BLEConnBean connBean = BLEConnList.get().getContainBean(address);
         if (connBean == null) {
             return;
         }
-        long startConnectTime = connBean.getStartConnTime();
         BLELog.i("BLEGattCallBack :: updateConnectionState()" +
                 "\n address: " + address +
                 "\n status == " + status +
@@ -189,12 +193,6 @@ class BLEGattCallBack extends BluetoothGattCallback {
 
 
         if (status != BluetoothGatt.GATT_SUCCESS) {
-            long disconncetTime = System.nanoTime();
-            long offset = ((Math.abs(-disconncetTime)) / 1000000);
-            if (offset <= 10) {
-                BLEConnection.get().onConnError(address, BLEError.BLE_DEVICE_ERROR);
-                return;
-            }
             //蓝牙异常断开
             BLEConnection.get().onConnError(address, status);
             BLEConnection.get().onStateDisConnected(address);
@@ -202,63 +200,17 @@ class BLEGattCallBack extends BluetoothGattCallback {
         }
 
         if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            long disconncetTime = System.nanoTime();
-            long offset = ((Math.abs(-disconncetTime)) / 1000000);
-            if (offset <= 10) {
-                BLEConnection.get().onConnError(address, BLEError.BLE_DEVICE_ERROR);
-                return;
-            }
             BLEConnection.get().onStateDisConnected(address);
-        }
-
-        if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
             BLEConnection.get().onStateDisConnecting(address);
-        }
-
-        if (newState == BluetoothProfile.STATE_CONNECTED) {
+        } else if (newState == BluetoothProfile.STATE_CONNECTED) {
             //已连接成功
             gatt.discoverServices();
             BLEConnection.get().onStateConnected(address);
-        }
-
-        if (newState == BluetoothProfile.STATE_CONNECTING) {
+            return;
+        } else if (newState == BluetoothProfile.STATE_CONNECTING) {
             BLEConnection.get().onStateConnecting(address);
         }
     }
 
-    /**
-     * 从连接的 BluetoothGatt 中获取当前设备的 mac 地址
-     *
-     * @param gatt
-     * @return
-     */
-    private synchronized String getConnectDevice(BluetoothGatt gatt) {
-        String address = "";
-        BluetoothDevice device = gatt.getDevice();
-        if (device != null) {
-            address = device.getAddress();
-        }
-        return address;
-    }
-
-
-    /**
-     * 组装 BLECharacter
-     *
-     * @param gatt
-     * @param characteristic
-     * @return
-     */
-    private synchronized BLECharacter getBleCharacter(BluetoothGatt gatt,
-                                         BluetoothGattCharacteristic characteristic) {
-        String address = getConnectDevice(gatt);
-        UUID uuid = characteristic.getUuid();
-        byte[] value = characteristic.getValue();
-
-        BLECharacter.BLECharacterBuilder bleCharacterBuilder =
-                new BLECharacter.BLECharacterBuilder(value);
-        return bleCharacterBuilder
-                .setDeviceAddress(address)
-                .setCharacteristicUUID(uuid).builder();
-    }
 }

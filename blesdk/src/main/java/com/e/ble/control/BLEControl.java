@@ -19,6 +19,7 @@ package com.e.ble.control;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 
+import com.e.ble.bean.BLEConnBean;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.listener.BLEConnListener;
 import com.e.ble.control.listener.BLEReadRssiListener;
@@ -37,15 +38,8 @@ import com.e.ble.receiver.listener.BLEReceiverListener;
  * |---------------------------------------------------------------------------------------------------------------|
  */
 
-public class BLEControl /*extends BaseControl*/ {
+public class BLEControl {
 
-    /**
-     * |------------------------------------------------------------------------------------------------------|
-     * <p>
-     * | Sdk  单例模式 初始化
-     * <p>
-     * |-----------------------------------------------------------------------------------------------------|
-     */
     private static volatile BLEControl bleControl = null;
     private static volatile BLEGattCallBack sGattCallBack;
     private BLEReadRssiListener bleReadRssiListener;
@@ -75,24 +69,6 @@ public class BLEControl /*extends BaseControl*/ {
         return bleControl;
     }
 
-	/*
-      |------------------------------------------------------------------------------------------------------|
-	  <p>
-	  | BLEControl 提供给外部访问的 API   设备连接相关
-	  <p>
-	  |-----------------------------------------------------------------------------------------------------|
-	 */
-
-    /**
-     * 判断一个设备是否为连接状态
-     *
-     * @param deviceAddress
-     * @return
-     */
-    public boolean isConnect(String deviceAddress) {
-
-        return BLEConnection.get().isConnect(deviceAddress);
-    }
 
     /**
      * 连接到指定的设备
@@ -105,16 +81,25 @@ public class BLEControl /*extends BaseControl*/ {
         BLEConnection.get().connectToAddress(context, device, sGattCallBack);
     }
 
+
+    /**
+     * 判断一个设备是否为连接状态
+     *
+     * @param deviceAddress
+     * @return
+     */
+    public boolean isConnect(String deviceAddress) {
+
+        return BLEUtil.isConnected(deviceAddress);
+    }
+
+
     /**
      * 断开所以的设备连接
      * 多连时可用
      */
     public void disconnectAll() {
         BLEConnection.get().disConnectAll();
-    }
-
-    public void cleanGatt() {
-        BLEConnection.get().cleanGatt();
     }
 
     /**
@@ -126,34 +111,6 @@ public class BLEControl /*extends BaseControl*/ {
         BLEConnection.get().disConnect(deviceAddress);
     }
 
-
-	/*
-      |------------------------------------------------------------------------------------------------------|
-	  <p>
-	  | BLEControl 提供给外部访问的 API   设备连接相关
-	  <p>
-	  |-----------------------------------------------------------------------------------------------------|
-	 */
-
-
-    /**
-     * Just for demo test
-     * 获取 BluetoothGatt
-     *
-     * @param deviceAddress
-     * @return
-     */
-    public BluetoothGatt getBluetoothGatt(String deviceAddress) {
-        return BLEConnectList.get().getGatt(deviceAddress);
-    }
-
-	/*
-	  |------------------------------------------------------------------------------------------------------|
-	  <p>
-	  |  BLEControl 提供给外部访问的 API   设备数据传输相关
-	  <p>
-	  |-----------------------------------------------------------------------------------------------------|
-	 */
 
     /**
      * 发送数据
@@ -185,7 +142,7 @@ public class BLEControl /*extends BaseControl*/ {
 
 
 	/*
-	  |------------------------------------------------------------------------------------------------------|
+      |------------------------------------------------------------------------------------------------------|
 	  <p>
 	  |  BLEControl 提供给外部访问的 API   读取设备的 Rssi 信号值
 	  <p>
@@ -198,8 +155,7 @@ public class BLEControl /*extends BaseControl*/ {
      * @param deviceAddress
      */
     public void readGattRssi(String deviceAddress) {
-        BluetoothGatt gatt = BLEConnectList.get().getGatt(deviceAddress);
-
+        BluetoothGatt gatt = BLEUtil.getBluetoothGatt(deviceAddress);
         if (gatt == null) {
             return;
         }
@@ -208,10 +164,7 @@ public class BLEControl /*extends BaseControl*/ {
 
     }
 
-//    @Override
     public void onReadRssi(String address, int rssi) {
-
-//		BLELog.d("BLEControl-->> onReadRssi()");
 
         if (bleReadRssiListener == null) {
             return;
@@ -219,7 +172,7 @@ public class BLEControl /*extends BaseControl*/ {
         bleReadRssiListener.onReadRssi(address, rssi);
     }
 
-//    @Override
+    //    @Override
     public void onReadRssiError(String address, int errorCode) {
         if (bleReadRssiListener == null) {
             return;
@@ -228,8 +181,13 @@ public class BLEControl /*extends BaseControl*/ {
     }
 
 
+    public BluetoothGatt getBluetoothGatt(String connectMac) {
+
+        return BLEUtil.getBluetoothGatt(connectMac);
+    }
+
 	/*
-	  |------------------------------------------------------------------------------------------------------|
+      |------------------------------------------------------------------------------------------------------|
 	  <p>
 	  |  BLEControl 提供给外部访问的 API   设备回调相关
 	  <p>
@@ -303,6 +261,7 @@ public class BLEControl /*extends BaseControl*/ {
             }
         };
     }
+
 
 
 }

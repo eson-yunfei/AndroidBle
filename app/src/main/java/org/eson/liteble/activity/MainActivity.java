@@ -1,48 +1,42 @@
 package org.eson.liteble.activity;
 
-import android.app.ProgressDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.Toolbar;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
 
-import com.e.ble.bean.BLEDevice;
 import com.e.ble.check.BLECheck;
 import com.e.ble.check.BLECheckListener;
-import com.e.ble.scan.BLEScanCfg;
-import com.e.ble.scan.BLEScanListener;
-import com.e.ble.scan.BLEScanner;
-import com.e.ble.util.BLEConstant;
-import com.e.ble.util.BLEError;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
-import org.eson.liteble.adapter.ScanBLEAdapter;
-import org.eson.liteble.service.BleService;
-import org.eson.liteble.util.ToastUtil;
+import org.eson.liteble.activity.fragment.BondedDevicesFragment;
+import org.eson.liteble.activity.fragment.DeviceScanFragment;
 import org.eson.liteble.util.LogUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.eson.liteble.util.ToastUtil;
 
 /**
  * 主界面，蓝牙状态检测，蓝牙搜索界面
  */
 public class MainActivity extends BaseBleActivity {
 
-    private Button searchBtn;
-    private ListView mListView;
-    private Button checkBtn;
-    private List<BLEDevice> deviceList = new ArrayList<>();
-    private ScanBLEAdapter scanBLEAdapter;
-    private ProgressDialog m_pDialog;
+    private ActionBar mActionBar;
+    private TabLayout mTabLayout;
+    private FragmentManager mFragmentManager;
+    private FragmentTransaction mTransaction;
 
-    private BLEDevice selectDevice = null;
+    private DeviceScanFragment mScanFragment;
+    private BondedDevicesFragment mDevicesFragment;
+
+    private MenuItem menuRefresh;
+    private MenuItem menuScan;
+
+    private int currentIndex = 0;
 
     @Override
     protected int getRootLayout() {
@@ -52,40 +46,113 @@ public class MainActivity extends BaseBleActivity {
 
     @Override
     protected void initView() {
-        //设置列表
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        searchBtn = findView(R.id.start_search);
-        mListView = findView(R.id.listview);
-        checkBtn = findView(R.id.checkBle);
 
-        scanBLEAdapter = new ScanBLEAdapter(this, deviceList);
-        mListView.setAdapter(scanBLEAdapter);
+        mActionBar = getSupportActionBar();
+        if (Build.VERSION.SDK_INT >= 21) {
+            mActionBar.setElevation(0);
+        }
 
-    }
+        mTabLayout = findView(R.id.tabLayout);
 
-    @Override
-    protected void initViewListener() {
-        searchBtn.setOnClickListener(this);
-        checkBtn.setOnClickListener(this);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mScanFragment = new DeviceScanFragment();
+        mDevicesFragment = new BondedDevicesFragment();
+
+        mFragmentManager = getFragmentManager();
+        mTransaction = mFragmentManager.beginTransaction();
+        mTransaction.add(R.id.containerLayout, mScanFragment);
+        mTransaction.commit();
+
+        mTabLayout.addTab(mTabLayout.newTab().setText("Scanner"), true);
+        mTabLayout.addTab(mTabLayout.newTab().setText("Bonded"));
+
+
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+            public void onTabSelected(TabLayout.Tab tab) {
+                onTabChanged(tab);
+            }
 
-                selectDevice = deviceList.get(i);
-                showProgress("正在连接设备：" + selectDevice.getName());
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-                MyApplication.getInstance().setCurrentShowDevice(selectDevice.getMac());
-                BLEScanner.get().stopScan();
-                BleService.get().connectionDevice(MainActivity.this, selectDevice.getMac());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
     }
 
-    ///***********************************************************************************************//
-    ///***********************************************************************************************//
+    private void onTabChanged(TabLayout.Tab tab) {
+        currentIndex = tab.getPosition();
+        mTransaction = mFragmentManager.beginTransaction();
 
+        reSetMenu();
+
+        switch (currentIndex) {
+            case 0:
+                mTransaction.replace(R.id.containerLayout, mScanFragment);
+                break;
+            case 1:
+                mTransaction.replace(R.id.containerLayout, mDevicesFragment);
+                menuScan.setVisible(false);
+                break;
+
+        }
+        mTransaction.commit();
+
+
+    }
+
+    @Override
+    protected void process(Bundle savedInstanceState) {
+        super.process(savedInstanceState);
+
+        checkBLEState();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reSetMenu();
+    }
+
+    private void reSetMenu() {
+        if (menuRefresh == null){
+            return;
+        }
+        menuRefresh.setVisible(false);
+        menuRefresh.setActionView(null);
+        menuScan.setTitle("Scan");
+        menuScan.setVisible(true);
+    }
+
+    private void checkBLEState() {
+        BLECheck.get().checkBleState(mContext, new BLECheckListener() {
+            @Override
+            public void noBluetoothPermission() {
+                //没有蓝牙权限，申请
+                BLECheck.get().requestBlePermission(MainActivity.this, "", 0x01);
+            }
+
+            @Override
+            public void notSupportBle() {
+                ToastUtil.showShort(mContext, "Sorry,UnSupport BLE !");
+                finish();
+            }
+
+            @Override
+            public void bleClosing() {
+                BLECheck.get().openBle(MainActivity.this, 0x02);
+            }
+
+            @Override
+            public void bleStateOK() {
+                //DO NOTHING
+            }
+        });
+    }
 
     @Override
     protected void changeBleData(String uuid, String buffer, String deviceAddress) {
@@ -99,42 +166,21 @@ public class MainActivity extends BaseBleActivity {
     protected void changerBleState(int state) {
         super.changerBleState(state);
 
-        switch (state) {
-            case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
-            case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
-                startToNext();
-                break;
-            case BLEConstant.Connection.STATE_CONNECT_FAILED:
-                hideProgress();
-                ToastUtil.showShort(mContext, "设备连接失败");
-                break;
-
-
-        }
-
-    }
-
-    ///***********************************************************************************************//
-    ///***********************************************************************************************//
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        LogUtil.e("onActivityResult" + requestCode + ";;;;" + resultCode);
-        if (requestCode == 0x01) {
-            if (resultCode != RESULT_OK) {
-                return;
-            }
-        } else if (requestCode == 0x02) {
-            if (resultCode == RESULT_OK) {
-                final Drawable yes = getResources().getDrawable(org.eson.liteble.R.mipmap.icon_ok);
-                checkBtn.setCompoundDrawablesWithIntrinsicBounds(null, null, yes, null);
-            }
+        if (currentIndex == 0) {
+            mScanFragment.onBleStateChange(state);
+        } else {
+            mDevicesFragment.onBleStateChange(state);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(org.eson.liteble.R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        menuRefresh = menu.findItem(R.id.menu_refresh);
+        menuScan = menu.findItem(R.id.menu_scan);
+
+        reSetMenu();
         return true;
     }
 
@@ -142,197 +188,50 @@ public class MainActivity extends BaseBleActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == org.eson.liteble.R.id.action_settings) {
-            LogUtil.e("setting ~~~~ ");
+        if (id == R.id.action_settings) {
             startToSetting();
             return true;
         }
 
+        if (id == R.id.menu_scan) {
+            if (menuRefresh.isVisible()) {
+                mScanFragment.stopScanner();
+                reSetMenu();
+            } else {
+                mScanFragment.startScanner();
+                menuRefresh.setVisible(true);
+                menuRefresh.setActionView(R.layout.action_bar_progress);
+                menuScan.setTitle("Scanning");
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case org.eson.liteble.R.id.checkBle:
-                checkBleEnable();
-                break;
-
-            case org.eson.liteble.R.id.start_search:
-                LogUtil.e("开始扫描");
-                deviceList.clear();
-                scanBLEAdapter.notifyDataSetChanged();
-                searchDevice();
-                break;
-        }
-    }
-    ///***********************************************************************************************//
-    ///***********************************************************************************************//
-
-    /**
-     * 显示等待框
-     *
-     * @param msg
-     */
-    public void showProgress(String msg) {
-        if (m_pDialog == null) {
-            m_pDialog = new ProgressDialog(this);
-            m_pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            m_pDialog.setIndeterminate(false);
-            m_pDialog.setCancelable(true);
-        }
-        if (m_pDialog.isShowing()) {
-            return;
-        }
-
-        m_pDialog.setMessage(msg);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                m_pDialog.show();
-            }
-        });
-
-    }
-
-    public void hideProgress() {
-
-        if (m_pDialog == null) {
-            return;
-        }
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                m_pDialog.dismiss();
-            }
-        });
-
-    }
-
-    ///***********************************************************************************************//
-    ///***********************************************************************************************//
-    private void checkBleEnable() {
-        BLECheck.get().checkBleState(this, new BLECheckListener() {
-            @Override
-            public void noBluetoothPermission() {
-                //没有蓝牙权限，申请
-                BLECheck.get().requestBlePermission(MainActivity.this, "", 0x01);
-            }
-
-            @Override
-            public void notSupportBle() {
-            }
-
-            @Override
-            public void bleClosing() {
-                BLECheck.get().openBle(MainActivity.this, 0x02);
-            }
-
-            @Override
-            public void bleStateOK() {
-                final Drawable yes = getResources().getDrawable(org.eson.liteble.R.mipmap.icon_ok);
-                checkBtn.setCompoundDrawablesWithIntrinsicBounds(null, null, yes, null);
-            }
-        });
-    }
-
-    /**
-     * 扫描蓝牙设备
-     */
-    private void searchDevice() {
-        showProgress("搜索设备中。。。。");
-        BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(MyApplication.getInstance().getConfigShare().getConnectTime())
-                .builder();
-        BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
-            @Override
-            public void onScannerStart() {
-
-            }
-
-            @Override
-            public void onScanning(BLEDevice device) {
-                hideProgress();
-                addScanBLE(device);
-            }
-
-
-            @Override
-            public void onScannerStop() {
-                hideProgress();
-                ToastUtil.showShort(mContext, "扫描结束");
-            }
-
-            @Override
-            public void onScannerError(int errorCode) {
-                hideProgress();
-                if (errorCode == BLEError.BLE_CLOSE) {
-                    ToastUtil.showShort(mContext, "蓝牙未打开，请打开蓝牙后重试");
-                } else {
-                    ToastUtil.showShort(mContext, "扫描出现异常");
-                }
-            }
-        });
-    }
-
-    public void addScanBLE(final BLEDevice bleDevice) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                if (isExitDevice(bleDevice)) {
-                    updateDevice(bleDevice);
-                } else {
-                    deviceList.add(0, bleDevice);
-                }
-                scanBLEAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    ///***********************************************************************************************//
-
-    private boolean isExitDevice(BLEDevice device) {
-        synchronized (deviceList) {
-            for (BLEDevice bleDevice : deviceList) {
-                if (bleDevice.getMac().equals(device.getMac())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    private void updateDevice(BLEDevice device) {
-        synchronized (deviceList) {
-            for (BLEDevice bleDevice : deviceList) {
-                if (bleDevice.getMac().equals(device.getMac())) {
-                    bleDevice.setRssi(device.getRssi());
-                    bleDevice.setScanRecord(device.getScanRecord());
-                }
-            }
-        }
-
-    }
 
     private void startToSetting() {
         Intent intent = new Intent(MainActivity.this, SettingActivity.class);
         startActivity(intent);
     }
 
-    /**
-     * 跳转的想起界面
-     */
-    private void startToNext() {
-        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
-            return;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        LogUtil.e("onActivityResult" + requestCode + ";;;;" + resultCode);
+        if (requestCode == 0x01) {
+            if (resultCode != RESULT_OK) {
+
+                return;
+            }
+
+            ToastUtil.showShort(mContext, "获取蓝牙权限成功");
+            checkBLEState();
+        } else if (requestCode == 0x02) {
+            if (resultCode != RESULT_OK) {
+                return;
+            }
+            ToastUtil.showShort(mContext, "打开蓝牙成功");
+            checkBLEState();
         }
-        hideProgress();
-
-        ToastUtil.showShort(mContext, "连接成功");
-        Intent intent = new Intent(MainActivity.this, BleDetailActivity.class);
-        intent.putExtra("mac", selectDevice.getMac());
-        intent.putExtra("name", selectDevice.getName());
-        startActivity(intent);
-
     }
+
 }

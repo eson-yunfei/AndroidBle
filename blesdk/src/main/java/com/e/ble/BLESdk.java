@@ -83,7 +83,6 @@ public class BLESdk {
      */
     public void init(Context context) {
 
-
         AndroidBLE.init(context);                //初始化 BluetoothManager,BluetoothAdapter.
         BLECheck.init();                    //初始化蓝牙检测类
         BLEScanner.init();                    //初始化蓝牙扫描类
@@ -131,18 +130,6 @@ public class BLESdk {
         return maxConnect;
     }
 
-
-    /*
-      |------------------------------------------------------------------------------------------------------|
-      <p>
-      |
-      <p>
-      | Sdk 提供的获取系统的 BluetoothManager，BluetoothAdapter 的方法，有 SDK 内部使用，外部最后不要使用
-      <p>
-      |
-      <p>
-      |-----------------------------------------------------------------------------------------------------|
-     */
 
     /**
      * 获取 BluetoothManager

@@ -8,7 +8,10 @@ import java.util.UUID;
  * @Description：
  */
 
-public class UUIDFormat {
+public interface UUIDFormat {
+
+	UUID DESC =
+			UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
 
 	UUID BATTERY_SERVICE = UUID.fromString("00000180f-0000-1000-8000-00805f9b34fb");
 	UUID BATTERY = UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb");

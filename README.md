@@ -1,5 +1,5 @@
 # AndroidBle
-蓝牙
+一个蓝牙BLE 测试，调试工具以及开发SDK
 
 
 [![](https://jitpack.io/v/eson-yunfei/MyTest.svg)](https://jitpack.io/#eson-yunfei/MyTest)
@@ -37,16 +37,15 @@
 
 # API 指南
 ### 一、SDK 初始化
+        
+    //之前版本
+    // BLESdk.init();
+    //3.19 修改之后
+    BLESdk.get().init(mContext);
 
-        ```
-        //之前版本
-        // BLESdk.init();
-        //3.19 修改之后
-        BLESdk.get().init(mContext);
+    设置最大连接的设备
+    //BLESdk.get().setMaxConnect(3);
 
-        设置最大连接的设备
-        //BLESdk.get().setMaxConnect(3);
-        ```
 
 ### 二、蓝牙权限、状态等检测
 

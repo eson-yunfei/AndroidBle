@@ -14,35 +14,26 @@
  *     limitations under the License.
  */
 
-package com.e.ble.bean;
+package org.eson.liteble.activity.fragment;
 
-import android.bluetooth.BluetoothGatt;
+import org.eson.liteble.R;
 
 /**
- * @package_name com.e.ble.bean
+ * @package_name org.eson.liteble.activity.fragment
  * @name ${name}
  * <p>
- * Created by xiaoyunfei on 2017/4/15.
+ * Created by xiaoyunfei on 2017/5/5.
  * @description
  */
 
-public class BLEConnBean {
-    private String address;
-    private BluetoothGatt mBluetoothGatt;
-
-    public BLEConnBean(String address) {
-        this.address = address;
+public class BondedDevicesFragment extends BaseFragment {
+    @Override
+    protected int getLayoutID() {
+        return R.layout.fragment_bonded_device;
     }
 
-    public String getAddress() {
-        return address;
-    }
+    @Override
+    protected void initViews() {
 
-    public BluetoothGatt getBluetoothGatt() {
-        return mBluetoothGatt;
-    }
-
-    public void setBluetoothGatt(BluetoothGatt bluetoothGatt) {
-        mBluetoothGatt = bluetoothGatt;
     }
 }

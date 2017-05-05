@@ -21,6 +21,8 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLECharacter;
@@ -43,248 +45,199 @@ import java.util.UUID;
 
 class BLETransport implements BLETransportListener {
 
-	/**
-	 * |---------------------------------------------------------------------------------------------------------|
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |  实例化
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |---------------------------------------------------------------------------------------------------------|
-	 */
-	private static BLETransport bleTransport = null;
-	private BLETransportListener bleTransportListener = null;
+    private static BLETransport bleTransport = null;
+    private BLETransportListener bleTransportListener = null;
 
-	private BLETransport() {
-		ThreadLocal<BluetoothAdapter> bluetoothAdapter = new ThreadLocal<>();
-		bluetoothAdapter.set(BLESdk.get().getBluetoothAdapter());
-	}
+    private BLETransport() {
+        ThreadLocal<BluetoothAdapter> bluetoothAdapter = new ThreadLocal<>();
+        bluetoothAdapter.set(BLESdk.get().getBluetoothAdapter());
+    }
 
-	public static BLETransport get() {
-		if (bleTransport == null) {
-			bleTransport = new BLETransport();
-		}
-		return bleTransport;
-	}
-
-	/*
-	  |---------------------------------------------------------------------------------------------------------|
-	  <p>
-	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	  <p>
-	  |  API
-	  <p>
-	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	  <p>
-	  |---------------------------------------------------------------------------------------------------------|
-	 */
-
-	/**
-	 * 设置回调
-	 *
-	 * @param bleTransportListener
-	 */
-	public void setBleTransportListener(BLETransportListener bleTransportListener) {
-		this.bleTransportListener = bleTransportListener;
-	}
-
-	/**
-	 * 发送数据
-	 *
-	 * @param bleUuid
-	 */
-	public void sendDataToDevice(BLEUuid bleUuid) {
-
-		BluetoothGatt bluetoothGatt = BLEConnectList.get().getGatt(bleUuid.getAddress());
-		if (checkGattEnable(bluetoothGatt)) {
-			return;
-		}
-
-		if (!isConnect(bluetoothGatt, bleUuid.getAddress())) {
-			return;
-		}
+    public static BLETransport get() {
+        if (bleTransport == null) {
+            bleTransport = new BLETransport();
+        }
+        return bleTransport;
+    }
 
 
-		UUID serviceUuid = bleUuid.getServiceUUID();
-		UUID characteristicUuid = bleUuid.getCharacteristicUUID();
-		BluetoothGattCharacteristic characteristic = getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
-		if (characteristic == null) {
-			return;
-		}
-		BLELog.e("发送数据-->>:");
-		BLEByteUtil.printHex(bleUuid.getDataBuffer());
-		characteristic.setValue(bleUuid.getDataBuffer());
-		bluetoothGatt.writeCharacteristic(characteristic);
-	}
+    /**
+     * 设置回调
+     *
+     * @param bleTransportListener
+     */
+    public void setBleTransportListener(BLETransportListener bleTransportListener) {
+        this.bleTransportListener = bleTransportListener;
+    }
 
-	/**
-	 * 通知的启用和关闭
-	 *
-	 * @param bleUuid
-	 */
-	public void enableNotify(BLEUuid bleUuid) {
-		BluetoothGatt bluetoothGatt = BLEConnectList.get().getGatt(bleUuid.getAddress());
-		if (checkGattEnable(bluetoothGatt)) {
-			return;
-		}
+    /**
+     * 发送数据
+     *
+     * @param bleUuid
+     */
+    public void sendDataToDevice(BLEUuid bleUuid) {
 
-		if (!isConnect(bluetoothGatt, bleUuid.getAddress())) {
-			return;
-		}
+        BluetoothGatt bluetoothGatt = getEnableBleGatt(bleUuid);
+        if (bluetoothGatt == null) {
+            return;
+        }
 
-		UUID serviceUuid = bleUuid.getServiceUUID();
-		UUID characteristicUuid = bleUuid.getCharacteristicUUID();
-		BluetoothGattCharacteristic characteristic = getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
-		if (characteristic == null) {
-			return;
-		}
-		UUID descriptorUuid = bleUuid.getDescriptorUUID();
-		changeNotifyState(bluetoothGatt, characteristic, descriptorUuid, bleUuid.isEnable());
-		BLELog.e("enableNotify()-->>characteristicUuid:" + characteristicUuid);
+        UUID serviceUuid = bleUuid.getServiceUUID();
+        UUID characteristicUuid = bleUuid.getCharacteristicUUID();
+        BluetoothGattCharacteristic characteristic =
+                getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
+        if (characteristic == null) {
+            return;
+        }
+        BLELog.e("发送数据-->>:");
+        BLEByteUtil.printHex(bleUuid.getDataBuffer());
+        characteristic.setValue(bleUuid.getDataBuffer());
+        bluetoothGatt.writeCharacteristic(characteristic);
+    }
 
-	}
+    @Nullable
+    private BluetoothGatt getEnableBleGatt(BLEUuid bleUuid) {
+        String address = bleUuid.getAddress();
+        if (TextUtils.isEmpty(address) || !BLEUtil.isConnected(address)) {
+            return null;
+        }
 
-	/**
-	 * 读取数据
-	 *
-	 * @param bleUuid
-	 */
-	public void readDeviceData(BLEUuid bleUuid) {
-		BluetoothGatt bluetoothGatt = BLEConnectList.get().getGatt(bleUuid.getAddress());
-		if (checkGattEnable(bluetoothGatt)) {
-			return;
-		}
+        BluetoothGatt bluetoothGatt = BLEUtil.getBluetoothGatt(address);
+        return bluetoothGatt;
+    }
 
-		if (!isConnect(bluetoothGatt, bleUuid.getAddress())) {
-			return;
-		}
-		UUID serviceUuid = bleUuid.getServiceUUID();
-		UUID characteristicUuid = bleUuid.getCharacteristicUUID();
+    /**
+     * 通知的启用和关闭
+     *
+     * @param bleUuid
+     */
+    public void enableNotify(BLEUuid bleUuid) {
+        BluetoothGatt bluetoothGatt = getEnableBleGatt(bleUuid);
+        if (bluetoothGatt == null) {
+            return;
+        }
 
-		BluetoothGattCharacteristic characteristic = getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
-		if (characteristic == null) {
-			return;
-		}
-		bluetoothGatt.readCharacteristic(characteristic);
-	}
+        UUID serviceUuid = bleUuid.getServiceUUID();
+        UUID characteristicUuid = bleUuid.getCharacteristicUUID();
+        BluetoothGattCharacteristic characteristic = getCharacteristicByUUID(bluetoothGatt,
+                serviceUuid,
+                characteristicUuid);
+        if (characteristic == null) {
+            return;
+        }
+        UUID descriptorUuid = bleUuid.getDescriptorUUID();
+        changeNotifyState(bluetoothGatt,
+                characteristic,
+                descriptorUuid,
+                bleUuid.isEnable());
+        BLELog.e("enableNotify()-->>characteristicUuid:" + characteristicUuid);
 
+    }
 
-	/*
-	  |---------------------------------------------------------------------------------------------------------|
-	  <p>
-	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	  <p>
-	  |  私有方法
-	  <p>
-	  |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	  <p>
-	  |---------------------------------------------------------------------------------------------------------|
-	 */
+    /**
+     * 读取数据
+     *
+     * @param bleUuid
+     */
+    public void readDeviceData(BLEUuid bleUuid) {
+        BluetoothGatt bluetoothGatt = getEnableBleGatt(bleUuid);
+        if (bluetoothGatt == null) {
+            return;
+        }
+        UUID serviceUuid = bleUuid.getServiceUUID();
+        UUID characteristicUuid = bleUuid.getCharacteristicUUID();
 
-	/**
-	 * 检测 bluetoothGatt 是否可用
-	 *
-	 * @return
-	 */
-	private boolean checkGattEnable(BluetoothGatt bluetoothGatt) {
-		return bluetoothGatt == null;
-	}
-
-	private boolean isConnect(BluetoothGatt gatt, String deviceAddress) {
-
-		return BLEConnection.get().isConnect(gatt, deviceAddress);
-	}
-
-	/**
-	 * 获取指定的 GattCharacteristic
-	 *
-	 * @param serviceUuid
-	 * @param characteristicUuid
-	 *
-	 * @return
-	 */
-	private BluetoothGattCharacteristic getCharacteristicByUUID(BluetoothGatt bluetoothGatt, UUID serviceUuid, UUID characteristicUuid) {
-		BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
-		if (service == null) {
-			return null;
-		}
-		return service.getCharacteristic(characteristicUuid);
-	}
-
-	/**
-	 * 改变通知状态
-	 *
-	 * @param characteristic
-	 * @param descriptorUuid
-	 * @param enable
-	 */
-	private void changeNotifyState(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic, UUID descriptorUuid, boolean enable) {
-		bluetoothGatt.setCharacteristicNotification(characteristic, enable);//激活通知
-//		BLELog.e("descriptorUuid-->>" + descriptorUuid.toString());
-
-		BluetoothGattDescriptor descriptor = characteristic.getDescriptor(descriptorUuid);
-		if (descriptor == null) {
-			BLELog.e("descriptorUuid not find");
-			return;
-		}
-		if (enable) {
-			descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-		} else {
-			descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
-		}
-		bluetoothGatt.writeDescriptor(descriptor);
-	}
+        BluetoothGattCharacteristic characteristic =
+                getCharacteristicByUUID(bluetoothGatt,
+                        serviceUuid,
+                        characteristicUuid);
+        if (characteristic == null) {
+            return;
+        }
+        bluetoothGatt.readCharacteristic(characteristic);
+    }
 
 
-	/**
-	 * |---------------------------------------------------------------------------------------------------------|
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |  LETransportListener 回调
-	 * <p>
-	 * |+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++|
-	 * <p>
-	 * |---------------------------------------------------------------------------------------------------------|
-	 */
+    /**
+     * 获取指定的 GattCharacteristic
+     *
+     * @param serviceUuid
+     * @param characteristicUuid
+     * @return
+     */
+    private BluetoothGattCharacteristic getCharacteristicByUUID(
+            BluetoothGatt bluetoothGatt,
+            UUID serviceUuid,
+            UUID characteristicUuid) {
+        BluetoothGattService service = bluetoothGatt.getService(serviceUuid);
+        if (service == null) {
+            return null;
+        }
+        return service.getCharacteristic(characteristicUuid);
+    }
 
-	@Override
-	public void onCharacterRead(BLECharacter bleCharacter) {
+    /**
+     * 改变通知状态
+     *
+     * @param characteristic
+     * @param descriptorUuid
+     * @param enable
+     */
+    private void changeNotifyState(BluetoothGatt bluetoothGatt,
+                                   BluetoothGattCharacteristic characteristic,
+                                   UUID descriptorUuid,
+                                   boolean enable) {
+        bluetoothGatt.setCharacteristicNotification(characteristic, enable);//激活通知
 
-		if (bleTransportListener != null) {
-			bleTransportListener.onCharacterRead(bleCharacter);
-		}
-	}
+        BluetoothGattDescriptor descriptor = characteristic.getDescriptor(descriptorUuid);
+        if (descriptor == null) {
+            BLELog.e("descriptorUuid not find");
+            return;
+        }
+        if (enable) {
+            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        } else {
+            descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+        }
+        bluetoothGatt.writeDescriptor(descriptor);
+    }
 
-	@Override
-	public void onCharacterWrite(BLECharacter bleCharacter) {
-		if (bleTransportListener != null) {
-			bleTransportListener.onCharacterWrite(bleCharacter);
-		}
-	}
 
-	@Override
-	public void onCharacterNotify(BLECharacter bleCharacter) {
-		BLELog.e("BLETransport -->>onCharacterNotify()");
-		if (bleTransportListener != null) {
-			bleTransportListener.onCharacterNotify(bleCharacter);
-		}
-	}
+    @Override
+    public void onCharacterRead(BLECharacter bleCharacter) {
 
-	@Override
-	public void onDesRead(String address) {
-		if (bleTransportListener != null){
-			bleTransportListener.onDesRead(address);
-		}
-	}
+        if (bleTransportListener != null) {
+            bleTransportListener.onCharacterRead(bleCharacter);
+        }
+    }
 
-	@Override
-	public void onDesWrite(String address) {
+    @Override
+    public void onCharacterWrite(BLECharacter bleCharacter) {
+        if (bleTransportListener != null) {
+            bleTransportListener.onCharacterWrite(bleCharacter);
+        }
+    }
 
-		if (bleTransportListener != null){
-			bleTransportListener.onDesWrite(address);
-		}
-	}
+    @Override
+    public void onCharacterNotify(BLECharacter bleCharacter) {
+        BLELog.e("BLETransport -->>onCharacterNotify()");
+        if (bleTransportListener != null) {
+            bleTransportListener.onCharacterNotify(bleCharacter);
+        }
+    }
+
+    @Override
+    public void onDesRead(String address) {
+        if (bleTransportListener != null) {
+            bleTransportListener.onDesRead(address);
+        }
+    }
+
+    @Override
+    public void onDesWrite(String address) {
+
+        if (bleTransportListener != null) {
+            bleTransportListener.onDesWrite(address);
+        }
+    }
 }

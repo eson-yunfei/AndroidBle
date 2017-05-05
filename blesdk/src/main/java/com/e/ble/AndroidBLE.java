@@ -24,13 +24,9 @@ import com.e.ble.util.BLELog;
 
 
 /**
- * |---------------------------------------------------------------------------------------------------------------|
- *
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
  * @说明： AndroidBLE  SDK 内部访问的 类
- * <p>
- * |---------------------------------------------------------------------------------------------------------------|
  */
 class AndroidBLE {
     private static volatile AndroidBLE androidBLE;
@@ -43,8 +39,6 @@ class AndroidBLE {
     private BluetoothManager bluetoothManager;
     private BluetoothAdapter bluetoothAdapter;
 
-    // |---------------------------------------------------------------------------------------------------------------|
-    //初始化操作，不说了
     private AndroidBLE(Context context) {
         this.context = context;
     }
@@ -76,9 +70,10 @@ class AndroidBLE {
      *
      * @return
      */
-    public synchronized BluetoothManager getBluetoothManager() {
+    public BluetoothManager getBluetoothManager() {
         if (bluetoothManager == null) {
-            bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+            bluetoothManager = (BluetoothManager)
+                    context.getSystemService(Context.BLUETOOTH_SERVICE);
         }
         return bluetoothManager;
     }
@@ -88,12 +83,14 @@ class AndroidBLE {
      *
      * @return
      */
-    public synchronized BluetoothAdapter getBluetoothAdapter() throws NullPointerException {
+    public BluetoothAdapter getBluetoothAdapter() throws NullPointerException {
         getBluetoothManager();
         if (bluetoothManager == null) {
 
             BLELog.e("AndroidBLE.java------->>>bluetoothManager is null");
-            throw new NullPointerException("AndroidBLE.java : getBluetoothAdapter() : bluetoothManager is null");
+            throw new NullPointerException("AndroidBLE.java :" +
+                    " getBluetoothAdapter() :" +
+                    " bluetoothManager is null");
         }
         if (bluetoothAdapter == null) {
             bluetoothAdapter = bluetoothManager.getAdapter();
@@ -107,8 +104,6 @@ class AndroidBLE {
      * 重置 bluetoothManager ， bluetoothAdapter
      */
     public void reset() {
-//		bluetoothAdapter = null;
-//		bluetoothManager = null;
 
     }
 }

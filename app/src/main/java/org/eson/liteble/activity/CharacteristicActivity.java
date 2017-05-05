@@ -15,6 +15,7 @@ import org.eson.liteble.bean.DescriptorBean;
 import org.eson.liteble.bean.ServiceBean;
 import org.eson.liteble.common.ConnectedDevice;
 import org.eson.liteble.service.BleService;
+import org.eson.liteble.util.UUIDFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,10 +144,15 @@ public class CharacteristicActivity extends BaseBleActivity {
         String text = isListenerNotice ? "取消监听" : "开始监听";
         notifyBtn.setText(text);
         characterBean.setListening(isListenerNotice);
-
+        UUID des = null;
+        if (descriptors.size() == 0) {
+            des = UUIDFormat.DESC;
+        } else {
+            des = UUID.fromString(descriptors.get(0));
+        }
         BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
                 UUID.fromString(serviceUUID),
-                UUID.fromString(characterUUID), UUID.fromString(descriptors.get(0)), isListenerNotice);
+                UUID.fromString(characterUUID), des, isListenerNotice);
     }
 
     /**
