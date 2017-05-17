@@ -32,6 +32,8 @@ public class BLE_UUID_Util {
 
     public static final String UUID_FORMAT = "0000%04x-0000-1000-8000-00805f9b34fb";
 
+    public static final String UNKNOWN_SERVICE = "Unknown Service";
+    public static final String UNKNOWN_CHARACTER = "Unknown character";
 
     public static final class GattService {
         public static final int Generic_Access = 0x1800;
@@ -57,7 +59,7 @@ public class BLE_UUID_Util {
         UUID uuid1 = makeUUID(serviceID);
 
         if (!TextUtils.equals(uuid.toString(), uuid1.toString())) {
-            return "Unknown Service";
+            return UNKNOWN_SERVICE;
         }
         switch (serviceID) {
             case GattService.Generic_Access:
@@ -67,7 +69,7 @@ public class BLE_UUID_Util {
             case GattService.Device_Information:
                 return "Device Information";
             default:
-                return "Unknown Service";
+                return UNKNOWN_SERVICE;
         }
     }
 
@@ -77,7 +79,7 @@ public class BLE_UUID_Util {
         UUID uuid1 = makeUUID(characterID);
 
         if (!TextUtils.equals(characterUUID.toString(), uuid1.toString())) {
-            return "Unknown character";
+            return UNKNOWN_CHARACTER;
         }
 
         switch (characterID) {
@@ -96,7 +98,7 @@ public class BLE_UUID_Util {
             case GattCharacteristics.Manufacturer_Name_String:
                 return "Manufacturer Name String";
             default:
-                return "Unknown character";
+                return UNKNOWN_CHARACTER;
         }
     }
 

@@ -155,7 +155,7 @@ public class MainActivity extends BaseBleActivity {
     }
 
     @Override
-    protected void changeBleData(String uuid, String buffer, String deviceAddress) {
+    protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
         if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
             return;
         }

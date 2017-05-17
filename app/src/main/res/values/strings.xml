@@ -10,6 +10,16 @@
     <string name="text_start_listener_data">开始监听</string>
     <string name="text_scan_device">搜索设备</string>
 
+    <!--<string name="exchange_txt_hint">-->
+        <!--<Data>-->
+            <!--<font color="#ff0000">-->
+            <!--<b>%1$s</b>-->
+            <!--</font>-->
+             <!--:-->
+            <!--<font color="#00ff00">-->
+            <!--<b>%2$s</b>-->
+            <!--</font>-->
+        <!--</Data></string>-->
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>

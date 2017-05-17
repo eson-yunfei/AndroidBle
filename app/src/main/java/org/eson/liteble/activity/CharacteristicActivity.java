@@ -8,8 +8,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.e.ble.util.BLE_UUID_Util;
+
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
+import org.eson.liteble.adapter.BleDataAdapter;
+import org.eson.liteble.bean.BleDataBean;
 import org.eson.liteble.bean.CharacterBean;
 import org.eson.liteble.bean.DescriptorBean;
 import org.eson.liteble.bean.ServiceBean;
@@ -17,7 +21,9 @@ import org.eson.liteble.common.ConnectedDevice;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.UUIDFormat;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,8 +51,11 @@ public class CharacteristicActivity extends BaseBleActivity {
     private List<String> descriptors = new ArrayList<>();
     private List<String> dataList = new ArrayList<>();
 
+    private List<BleDataBean> bleDataList = new ArrayList<>();
+    private BleDataAdapter adapter;
     private ArrayAdapter<String> dataListAdapter;
     private boolean isListenerNotice = false;
+    private String characterName = "";
 
     @Override
     protected int getRootLayout() {
@@ -119,21 +128,51 @@ public class CharacteristicActivity extends BaseBleActivity {
     //***************************************************************************************************//
 
     @Override
-    protected void changeBleData(String uuid, String buffer, String deviceAddress) {
-        dataList.add(0, buffer);
-        if (dataListAdapter == null) {
-            dataListAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
-                    android.R.layout.simple_list_item_1, android.R.id.text1, dataList);
-            dataListView.setAdapter(dataListAdapter);
+    protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
+
+        BleDataBean bean = new BleDataBean(deviceAddress, UUID.fromString(uuid), buffer);
+        bean.setTime(getCurrentTime());
+        bleDataList.add(0,bean);
+        if (adapter == null) {
+            adapter = new BleDataAdapter(this, bleDataList, characterName);
+            dataListView.setAdapter(adapter);
         } else {
-            dataListAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
+
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss, SSS");
+//        String currentTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+//
+//        String text = BLEByteUtil.getHexString(buffer);
+//
+//
+//        if (!characterName.equals(BLE_UUID_Util.UNKNOWN_CHARACTER)) {
+//            text = text + " (  " + BLEByteUtil.byteToCharSequence(buffer) + "  )";
+//        }
+////
+//        String showText = getString(R.string.exchange_txt_hint, currentTime, text);
+//        dataList.add(0, Html.fromHtml(showText).toString());
+//        if (dataListAdapter == null) {
+//            dataListAdapter = new ArrayAdapter<>(CharacteristicActivity.this,
+//                    R.layout.item_data, R.id.data_text, dataList);
+//            dataListView.setAdapter(dataListAdapter);
+//        } else {
+//            dataListAdapter.notifyDataSetChanged();
+//        }
+
+
     }
 
 
     //***************************************************************************************************//
     //***************************************************************************************************//
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss, SSS");
+
+    private String getCurrentTime() {
+        String currentTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        return currentTime;
+    }
 
     /**
      * 启动通知服务
@@ -165,25 +204,27 @@ public class CharacteristicActivity extends BaseBleActivity {
         int position = bundle.getInt("position");
         String connectMac = MyApplication.getInstance().getCurrentShowDevice();
         ServiceBean serviceBean = ConnectedDevice.get().getServiceList(connectMac).get(parentPosition);
-        serviceUUID = serviceBean.getServiceUUID();
+//        serviceUUID = serviceBean.getServiceUUID();
+
         characterBean = serviceBean.getUUIDBeen().get(position);
         serviceUUID = characterBean.getServiceUUID();
         characterUUID = characterBean.getCharacterUUID();
 
+        characterName = BLE_UUID_Util.getCharacterNameByUUID(UUID.fromString(characterUUID));
         uuid_text.setText(characterUUID);
 
 
         String name = "";
         if (characterBean.isRead()) {
-            name += "read";
+            name += "read ";
             readBtn.setVisibility(View.VISIBLE);
         }
         if (characterBean.isWrite()) {
-            name += "write";
+            name += "write ";
             writeBtn.setVisibility(View.VISIBLE);
         }
         if (characterBean.isNotify()) {
-            name += "notify";
+            name += "notify ";
             notifyBtn.setVisibility(View.VISIBLE);
         }
 

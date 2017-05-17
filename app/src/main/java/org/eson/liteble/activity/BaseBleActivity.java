@@ -75,7 +75,7 @@ public class BaseBleActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            changerBleState(mac,state);
+                            changerBleState(mac, state);
                         }
                     });
 
@@ -91,7 +91,7 @@ public class BaseBleActivity extends BaseActivity {
                         return;
                     }
                     final String uuid = dataBean.getUuid().toString();
-                    final String buffer = BLEByteUtil.getHexString(dataBean.getBuffer());
+                    final byte[] buffer = dataBean.getBuffer();
                     final String deviceAddress = dataBean.getDeviceAddress();
 
                     runOnUiThread(new Runnable() {
@@ -118,10 +118,10 @@ public class BaseBleActivity extends BaseActivity {
 
     }
 
-    protected void changeBleData(String uuid, String buffer, String deviceAddress) {
+    protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
 
         ToastUtil.showShort(mContext, "uuid:"
-                + uuid + "\ndata:" + buffer
+                + uuid + "\ndata:" + BLEByteUtil.getHexString(buffer)
                 + "\ndeviceAddress:" + deviceAddress);
     }
 

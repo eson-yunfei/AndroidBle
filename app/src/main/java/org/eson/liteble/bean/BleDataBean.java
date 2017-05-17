@@ -10,40 +10,50 @@ import java.util.UUID;
  */
 
 public class BleDataBean implements Serializable {
-	private static final long serialVersionUID = 3942862920612792824L;
+    private static final long serialVersionUID = 3942862920612792824L;
 
-	private String deviceAddress;
-	private UUID uuid;
-	private byte[] buffer;
+    private String deviceAddress;
+    private UUID uuid;
+    private byte[] buffer;
+    private String time;
 
 
-	public BleDataBean(String deviceAddress, UUID uuid, byte[] buffer) {
-		this.deviceAddress = deviceAddress;
-		this.uuid = uuid;
-		this.buffer = buffer;
-	}
+    public BleDataBean(String deviceAddress, UUID uuid, byte[] buffer) {
+        this.deviceAddress = deviceAddress;
+        this.uuid = uuid;
+        this.buffer = buffer;
+    }
 
-	public String getDeviceAddress() {
-		return deviceAddress;
-	}
+    public String getDeviceAddress() {
+        return deviceAddress;
+    }
 
-	public void setDeviceAddress(String deviceAddress) {
-		this.deviceAddress = deviceAddress;
-	}
+    public void setDeviceAddress(String deviceAddress) {
+        this.deviceAddress = deviceAddress;
+    }
 
-	public UUID getUuid() {
-		return uuid;
-	}
+    public UUID getUuid() {
+        return uuid;
+    }
 
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
-	}
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 
-	public byte[] getBuffer() {
-		return buffer;
-	}
 
-	public void setBuffer(byte[] buffer) {
-		this.buffer = buffer;
-	}
+    public byte[] getBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(byte[] buffer) {
+        this.buffer = buffer;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }
