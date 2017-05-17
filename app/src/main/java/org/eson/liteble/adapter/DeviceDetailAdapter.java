@@ -2,11 +2,14 @@ package org.eson.liteble.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.CharacteristicActivity;
@@ -14,6 +17,7 @@ import org.eson.liteble.bean.ServiceBean;
 import org.eson.liteble.bean.CharacterBean;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author xiaoyunfei
@@ -40,10 +44,19 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
             viewHolder = (ViewHolder) view.getTag();
         }
         ServiceBean serviceBean = dataList.get(position);
+        String uuid = serviceBean.getServiceUUID();
+        if (TextUtils.isEmpty(uuid)) {
+            return view;
+        }
+        String serviceName = BLE_UUID_Util.getServiceNameByUUID(UUID.fromString(uuid));
+        String shortUUID = BLE_UUID_Util.getHexValue(UUID.fromString(uuid));
+        String serviceUUIDString = context.getString(R.string.service_uuid, shortUUID, serviceBean.getServiceUUID());
+        String serviceType = serviceBean.getServiceType();
 
-        String serviceUUIDString = context.getString(R.string.service_uuid, serviceBean.getServiceUUID());
-
+        viewHolder.serviceNameText.setText(serviceName);
         viewHolder.mTextView.setText(serviceUUIDString);
+        viewHolder.serviceTypeText.setText(serviceType + " Service");
+
         List<CharacterBean> characterBeanList = serviceBean.getUUIDBeen();
 
         if (characterBeanList != null) {
@@ -74,7 +87,10 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
 
     private class ViewHolder {
         private View rootView;
+        public TextView serviceNameText;
         public TextView mTextView;
+        public TextView serviceTypeText;
+
         public ListView mListView;
 
         ViewHolder(View rootView) {
@@ -83,8 +99,10 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
         }
 
         private void initViews() {
+            serviceNameText = findView(rootView, R.id.server_name_text);
             mTextView = findView(rootView, R.id.server_uuid_text);
             mListView = findView(rootView, R.id.character_list);
+            serviceTypeText = findView(rootView, R.id.server_type_text);
         }
     }
 }

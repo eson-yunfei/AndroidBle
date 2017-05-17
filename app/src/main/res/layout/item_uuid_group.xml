@@ -4,19 +4,43 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/server_uuid_text"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:textColor="#000000"
-        android:textSize="16sp"/>
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+
+        <TextView
+            android:id="@+id/server_name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/server_uuid_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="#555555"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/server_type_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="#555555"
+            android:textSize="14sp"/>
+    </LinearLayout>
 
     <org.eson.liteble.widget.CustomListView
         android:id="@+id/character_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:divider="@color/gray"
-        android:dividerHeight="0.5dp"
-        android:padding="5dp"/>
+        android:dividerHeight="0.5dp"/>
 </LinearLayout>

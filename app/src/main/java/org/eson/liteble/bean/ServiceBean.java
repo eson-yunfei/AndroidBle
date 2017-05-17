@@ -10,6 +10,7 @@ import java.util.List;
 
 public class ServiceBean {
     private String serviceUUID;
+    private String serviceType;
 
     private List<CharacterBean> mUUIDBeen;
 
@@ -19,6 +20,15 @@ public class ServiceBean {
 
     public void setServiceUUID(String serviceUUID) {
         this.serviceUUID = serviceUUID;
+    }
+
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 
     public List<CharacterBean> getUUIDBeen() {

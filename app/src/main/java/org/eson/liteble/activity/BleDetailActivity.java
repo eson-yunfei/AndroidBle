@@ -237,12 +237,6 @@ public class BleDetailActivity extends BaseBleActivity {
             serviceBean = new ServiceBean();
             UUID serviceUUID = service.getUuid();
 
-            int serviceValue = BLE_UUID_Util.getValue(serviceUUID);
-            UUID uuid = BLE_UUID_Util.makeUUID(serviceValue);
-
-            LogUtil.e("serviceUUID -->>" + serviceUUID.toString());
-            LogUtil.e("serviceValue -->>" + Integer.toHexString(serviceValue));
-            LogUtil.e("uuid -->>" + uuid.toString());
             serviceBean.setServiceUUID(serviceUUID.toString());
 
             int serviceType = service.getType();
@@ -250,6 +244,7 @@ public class BleDetailActivity extends BaseBleActivity {
                     (serviceType == BluetoothGattService.SERVICE_TYPE_PRIMARY)
                             ? "PRIMARY" : "SECONDARY";
 
+            serviceBean.setServiceType(typeStr);
             List<BluetoothGattCharacteristic> gattCharacteristics = service.getCharacteristics();
 
             if (gattCharacteristics == null || gattCharacteristics.size() == 0) {
