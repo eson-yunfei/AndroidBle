@@ -9,28 +9,35 @@
 
 
     <LinearLayout
-        android:layout_marginLeft="8dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
-            android:textColor="#333333"
-            android:textSize="20sp"
             android:id="@+id/deviceName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#333333"
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/deviceMac"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"/>
+
+        <TextView
+            android:id="@+id/scanRet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/deviceRssi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:gravity="center"/>
 </LinearLayout>

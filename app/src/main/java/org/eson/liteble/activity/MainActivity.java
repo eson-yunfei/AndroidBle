@@ -163,13 +163,13 @@ public class MainActivity extends BaseBleActivity {
     }
 
     @Override
-    protected void changerBleState(int state) {
-        super.changerBleState(state);
+    protected void changerBleState(String mac, int state) {
+        super.changerBleState(mac, state);
 
         if (currentIndex == 0) {
-            mScanFragment.onBleStateChange(state);
+            mScanFragment.onBleStateChange(mac,state);
         } else {
-            mDevicesFragment.onBleStateChange(state);
+            mDevicesFragment.onBleStateChange(mac,state);
         }
     }
 

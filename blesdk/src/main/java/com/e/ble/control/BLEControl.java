@@ -19,7 +19,6 @@ package com.e.ble.control;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 
-import com.e.ble.bean.BLEConnBean;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.listener.BLEConnListener;
 import com.e.ble.control.listener.BLEReadRssiListener;
@@ -117,9 +116,9 @@ public class BLEControl {
      *
      * @param bleUuid
      */
-    public void sendData(BLEUuid bleUuid) {
+    public boolean sendData(BLEUuid bleUuid) {
 
-        BLETransport.get().sendDataToDevice(bleUuid);
+        return BLETransport.get().sendDataToDevice(bleUuid);
     }
 
     /**
@@ -136,8 +135,8 @@ public class BLEControl {
      *
      * @param bleUuid
      */
-    public void readDeviceData(BLEUuid bleUuid) {
-        BLETransport.get().readDeviceData(bleUuid);
+    public boolean readDeviceData(BLEUuid bleUuid) {
+        return BLETransport.get().readDeviceData(bleUuid);
     }
 
 
@@ -261,7 +260,6 @@ public class BLEControl {
             }
         };
     }
-
 
 
 }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.e.ble.BLESdk;
 import com.e.ble.control.BLEControl;
 import com.e.ble.util.BLEConstant;
+import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
@@ -136,8 +137,8 @@ public class BleDetailActivity extends BaseBleActivity {
     }
 
     @Override
-    protected void changerBleState(int state) {
-        super.changerBleState(state);
+    protected void changerBleState(String mac, int state) {
+        super.changerBleState(mac, state);
         disProgress();
         switch (state) {
 
@@ -236,7 +237,12 @@ public class BleDetailActivity extends BaseBleActivity {
             serviceBean = new ServiceBean();
             UUID serviceUUID = service.getUuid();
 
+            int serviceValue = BLE_UUID_Util.getValue(serviceUUID);
+            UUID uuid = BLE_UUID_Util.makeUUID(serviceValue);
+
             LogUtil.e("serviceUUID -->>" + serviceUUID.toString());
+            LogUtil.e("serviceValue -->>" + Integer.toHexString(serviceValue));
+            LogUtil.e("uuid -->>" + uuid.toString());
             serviceBean.setServiceUUID(serviceUUID.toString());
 
             int serviceType = service.getType();
@@ -261,7 +267,11 @@ public class BleDetailActivity extends BaseBleActivity {
                 String characterString = character.toString();
                 characterBean.setCharacterUUID(characterString);
                 characterBean.setServiceUUID(serviceUUID.toString());
+
+                int characterValue = BLE_UUID_Util.getValue(character);
+
                 LogUtil.e("character:" + character);
+                LogUtil.e("characterValue:" + Integer.toHexString(characterValue));
 
                 int properties = gattCharacteristic.getProperties();    //用于区分特性用途（读、写、通知）
 

@@ -35,6 +35,8 @@ import org.eson.liteble.activity.BleDetailActivity;
 import org.eson.liteble.activity.MainActivity;
 import org.eson.liteble.adapter.ScanBLEAdapter;
 import org.eson.liteble.service.BleService;
+import org.eson.liteble.util.BondedDeviceBean;
+import org.eson.liteble.util.BondedDeviceUtil;
 import org.eson.liteble.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -217,12 +219,20 @@ public class DeviceScanFragment extends BaseFragment {
 
 
     @Override
-    public void onBleStateChange(int state) {
-        super.onBleStateChange(state);
+    public void onBleStateChange(String mac, int state) {
+        super.onBleStateChange(mac, state);
 
         switch (state) {
             case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
             case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
+
+                BondedDeviceUtil.get().addBondDevice(mac);
+                BondedDeviceBean bondedDeviceBean = BondedDeviceUtil.get().getDevice(mac);
+                if (mac.equals(selectDevice.getMac())) {
+
+                    bondedDeviceBean.setName(selectDevice.getName());
+                }
+                bondedDeviceBean.setConnected(true);
 
                 startToNext();
                 break;
@@ -233,6 +243,7 @@ public class DeviceScanFragment extends BaseFragment {
             case BLEConstant.State.STATE_CONNECTED:
                 hideProgress();
                 ToastUtil.showShort(getActivity(), "设备连接成功");
+
                 break;
             case BLEConstant.State.STATE_DIS_CONNECTED:
                 hideProgress();
@@ -243,7 +254,7 @@ public class DeviceScanFragment extends BaseFragment {
     }
 
     /**
-     * 跳转的想起界面
+     * 跳转的详情界面
      */
     private void startToNext() {
         if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {

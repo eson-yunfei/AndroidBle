@@ -23,7 +23,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.os.DeadObjectException;
-import android.text.TextUtils;
 
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLECharacter;
@@ -49,28 +48,36 @@ class BLEUtil {
         if (manager == null) {
             return false;
         }
-        List<BluetoothDevice> bindList = getBindDevices();
-        if (bindList == null) {
+//        List<BluetoothDevice> bindList = getBindDevices();
+//        if (bindList == null) {
+//            return false;
+//        }
+////        BLELog.i("--->>>bindList::" + bindList.size());
+//
+//        BluetoothDevice device = null;
+//        for (BluetoothDevice bluetoothDevice : bindList) {
+//            String bindDevice = bluetoothDevice.getAddress();
+//
+//            if (TextUtils.equals(bindDevice, address)) {
+//                device = bluetoothDevice;
+////                BLELog.i("--->>>contain bindDevice::" + bindDevice);
+//            }
+//        }
+//        if (device == null) {
+//            return false;
+//        }
+        BluetoothAdapter adapter = BLESdk.get().getBluetoothAdapter();
+        if (adapter == null) {
             return false;
         }
-        BLELog.i("--->>>bindList::" + bindList.size());
 
-        BluetoothDevice device = null;
-        for (BluetoothDevice bluetoothDevice : bindList) {
-            String bindDevice = bluetoothDevice.getAddress();
-
-            if (TextUtils.equals(bindDevice, address)) {
-                device = bluetoothDevice;
-                BLELog.i("--->>>contain bindDevice::" + bindDevice);
-            }
-        }
+        BluetoothDevice device = adapter.getRemoteDevice(address);
         if (device == null) {
             return false;
         }
 
         int state = manager.getConnectionState(device, BluetoothProfile.GATT);
-        BLELog.i("--->>>isConnected（） " + address
-                + getStateString(state));
+//        BLELog.i("--->>> " + address + " " + getStateString(state));
         return state == BluetoothProfile.STATE_CONNECTED;
     }
 

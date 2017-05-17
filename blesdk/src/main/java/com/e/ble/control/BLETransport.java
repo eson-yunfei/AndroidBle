@@ -28,7 +28,6 @@ import com.e.ble.BLESdk;
 import com.e.ble.bean.BLECharacter;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.listener.BLETransportListener;
-import com.e.ble.util.BLEByteUtil;
 import com.e.ble.util.BLELog;
 
 import java.util.UUID;
@@ -75,11 +74,11 @@ class BLETransport implements BLETransportListener {
      *
      * @param bleUuid
      */
-    public void sendDataToDevice(BLEUuid bleUuid) {
+    public boolean sendDataToDevice(final BLEUuid bleUuid) {
 
-        BluetoothGatt bluetoothGatt = getEnableBleGatt(bleUuid);
+        final BluetoothGatt bluetoothGatt = getEnableBleGatt(bleUuid);
         if (bluetoothGatt == null) {
-            return;
+            return false;
         }
 
         UUID serviceUuid = bleUuid.getServiceUUID();
@@ -87,12 +86,13 @@ class BLETransport implements BLETransportListener {
         BluetoothGattCharacteristic characteristic =
                 getCharacteristicByUUID(bluetoothGatt, serviceUuid, characteristicUuid);
         if (characteristic == null) {
-            return;
+            return false;
         }
-        BLELog.e("发送数据-->>:");
-        BLEByteUtil.printHex(bleUuid.getDataBuffer());
+        BLELog.i("BLETransport  :: 发送数据-->>:");
+//        BLEByteUtil.printHex(bleUuid.getDataBuffer());
         characteristic.setValue(bleUuid.getDataBuffer());
-        bluetoothGatt.writeCharacteristic(characteristic);
+        return bluetoothGatt.writeCharacteristic(characteristic);
+
     }
 
     @Nullable
@@ -102,8 +102,7 @@ class BLETransport implements BLETransportListener {
             return null;
         }
 
-        BluetoothGatt bluetoothGatt = BLEUtil.getBluetoothGatt(address);
-        return bluetoothGatt;
+        return BLEUtil.getBluetoothGatt(address);
     }
 
     /**
@@ -126,11 +125,9 @@ class BLETransport implements BLETransportListener {
             return;
         }
         UUID descriptorUuid = bleUuid.getDescriptorUUID();
-        changeNotifyState(bluetoothGatt,
-                characteristic,
-                descriptorUuid,
-                bleUuid.isEnable());
-        BLELog.e("enableNotify()-->>characteristicUuid:" + characteristicUuid);
+        changeNotifyState(bluetoothGatt, characteristic,
+                descriptorUuid, bleUuid.isEnable());
+        BLELog.i("enableNotify()-->>characteristicUuid:" + characteristicUuid);
 
     }
 
@@ -139,10 +136,10 @@ class BLETransport implements BLETransportListener {
      *
      * @param bleUuid
      */
-    public void readDeviceData(BLEUuid bleUuid) {
+    public boolean readDeviceData(BLEUuid bleUuid) {
         BluetoothGatt bluetoothGatt = getEnableBleGatt(bleUuid);
         if (bluetoothGatt == null) {
-            return;
+            return false;
         }
         UUID serviceUuid = bleUuid.getServiceUUID();
         UUID characteristicUuid = bleUuid.getCharacteristicUUID();
@@ -152,9 +149,9 @@ class BLETransport implements BLETransportListener {
                         serviceUuid,
                         characteristicUuid);
         if (characteristic == null) {
-            return;
+            return false;
         }
-        bluetoothGatt.readCharacteristic(characteristic);
+        return bluetoothGatt.readCharacteristic(characteristic);
     }
 
 
@@ -207,6 +204,9 @@ class BLETransport implements BLETransportListener {
     public void onCharacterRead(BLECharacter bleCharacter) {
 
         if (bleTransportListener != null) {
+            BLELog.i("BLETransport -->>onCharacterRead("
+                    + bleCharacter.getDeviceAddress()
+                    + ")");
             bleTransportListener.onCharacterRead(bleCharacter);
         }
     }
@@ -214,20 +214,27 @@ class BLETransport implements BLETransportListener {
     @Override
     public void onCharacterWrite(BLECharacter bleCharacter) {
         if (bleTransportListener != null) {
+            BLELog.i("BLETransport -->>onCharacterWrite("
+                    + bleCharacter.getDeviceAddress()
+                    + ")");
             bleTransportListener.onCharacterWrite(bleCharacter);
         }
     }
 
     @Override
     public void onCharacterNotify(BLECharacter bleCharacter) {
-        BLELog.e("BLETransport -->>onCharacterNotify()");
+
         if (bleTransportListener != null) {
+            BLELog.i("BLETransport -->>onCharacterNotify("
+                    + bleCharacter.getDeviceAddress()
+                    + ")");
             bleTransportListener.onCharacterNotify(bleCharacter);
         }
     }
 
     @Override
     public void onDesRead(String address) {
+        BLELog.i("BLETransport -->>onDesRead()");
         if (bleTransportListener != null) {
             bleTransportListener.onDesRead(address);
         }
@@ -235,7 +242,7 @@ class BLETransport implements BLETransportListener {
 
     @Override
     public void onDesWrite(String address) {
-
+        BLELog.i("BLETransport -->>onDesWrite()");
         if (bleTransportListener != null) {
             bleTransportListener.onDesWrite(address);
         }

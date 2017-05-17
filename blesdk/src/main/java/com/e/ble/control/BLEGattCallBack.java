@@ -16,7 +16,6 @@
 
 package com.e.ble.control;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -27,7 +26,6 @@ import android.text.TextUtils;
 import com.e.ble.bean.BLECharacter;
 import com.e.ble.bean.BLEConnBean;
 import com.e.ble.util.BLEByteUtil;
-import com.e.ble.util.BLEError;
 import com.e.ble.util.BLELog;
 
 import java.util.UUID;
@@ -97,11 +95,11 @@ class BLEGattCallBack extends BluetoothGattCallback {
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
             BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
-            if (bleCharacter != null) {
-                BLELog.i("----->>>BLEGattCallBack::" +
-                        "\nonCharacteristicWrite::  "
-                        + BLEByteUtil.getHexString(bleCharacter.getDataBuffer()));
-            }
+//            if (bleCharacter != null) {
+//                BLELog.i("----->>>BLEGattCallBack::" +
+//                        "\nonCharacteristicWrite::  "
+//                        + BLEByteUtil.getHexString(bleCharacter.getDataBuffer()));
+//            }
             BLETransport.get().onCharacterWrite(bleCharacter);
         }
         super.onCharacteristicWrite(gatt, characteristic, status);

@@ -54,7 +54,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
 
-    public void onBleStateChange(int state) {
+    public void onBleStateChange(String mac, int state) {
 
     }
 
