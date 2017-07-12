@@ -28,6 +28,8 @@
      	}
 
 # 更新日期和内容
+##2017/06/18
+### 第二次修改调用指南
 
 ## 2017/03/19
 ### 修改API的调用方式
@@ -77,11 +79,13 @@
 		});
 
 ### 三、蓝牙搜索
+####已废弃
 
-            3.19添加两个扫描时长常量：
+    
+     3.19添加两个扫描时长常量：
 
-            public static final int INFINITE = -1;// 无限时长扫描，用户手动调用停止扫描
-            public static final int DEFAULT = 0;//默认时长
+      public static final int INFINITE = -1;// 无限时长扫描，用户手动调用停止扫描
+      public static final int DEFAULT = 0;//默认时长
 
             nameFilter ,uuidFilter 可以为 null
 
@@ -106,6 +110,17 @@
                     //扫描出错
     			}
     		});
+    		
+    		
+#### 新的调用方式
+ 	 BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(10*1000)
+                     .addNameFilter("name1","name1")
+                     .addUUIDFilter(UUDI1,UUID2)
+                     .builder();
+                    
+     BLEScanner.get().startScanner(scanCfg, new BLEScanListener())
+ 	
+
 
 
 ### 四、蓝牙交互

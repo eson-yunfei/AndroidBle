@@ -22,16 +22,17 @@ package com.e.ble.check;
  * @说明： 蓝牙状态检测的结果
  */
 
+@Deprecated
 public interface BLECheckListener {
 
-	//没有蓝牙权限
-	void noBluetoothPermission();
+    //没有蓝牙权限
+    void noBluetoothPermission();
 
-	//不支持蓝牙
-	void notSupportBle();
+    //不支持蓝牙
+    void notSupportBle();
 
-	//蓝牙未打开
-	void bleClosing();
+    //蓝牙未打开
+    void bleClosing();
 
-	void bleStateOK();
+    void bleStateOK();
 }

@@ -116,7 +116,11 @@ public class DeviceScanFragment extends BaseFragment {
         }
 
         m_pDialog.setMessage(msg);
-        getActivity().runOnUiThread(new Runnable() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null) {
+            return;
+        }
+        mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 m_pDialog.show();
@@ -163,6 +167,7 @@ public class DeviceScanFragment extends BaseFragment {
             @Override
             public void onScannerStop() {
                 hideProgress();
+                stopScanner();
                 ToastUtil.showShort(getActivity(), "扫描结束");
             }
 
@@ -271,10 +276,8 @@ public class DeviceScanFragment extends BaseFragment {
     }
 
     public void stopScanner() {
-
-
+        ((MainActivity) getActivity()).reSetMenu();
         BLEScanner.get().stopScan();
-
     }
 
     public void startScanner() {

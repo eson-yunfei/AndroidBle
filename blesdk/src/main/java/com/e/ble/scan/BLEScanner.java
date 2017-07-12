@@ -19,17 +19,17 @@ package com.e.ble.scan;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
+import android.os.ParcelUuid;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.check.BLECheck;
-import com.e.ble.util.BLEByteUtil;
+import com.e.ble.support.ScanRecord;
 import com.e.ble.util.BLEError;
 import com.e.ble.util.BLELog;
-import com.e.ble.support.ScanRecord;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -140,7 +140,7 @@ public class BLEScanner implements BLEScanListener {
      */
     private void startScanner() {
         bluetoothAdapter = BLESdk.get().getBluetoothAdapter();
-        bluetoothAdapter.startLeScan(uuidFilter, scanCallback);
+        bluetoothAdapter.startLeScan(null, scanCallback);
 
         if (scanTime == INFINITE) {
             return;
@@ -217,7 +217,9 @@ public class BLEScanner implements BLEScanListener {
      */
     private BLEDevice getBleDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
 
-        String name = getDeviceName(device, scanRecord);
+        ScanRecord record = ScanRecord.parseFromBytes(scanRecord);
+
+        String name = getDeviceName(device, record);
         //获取设备名称，名称有可能为： 空字符
 
         if (TextUtils.isEmpty(name)) {
@@ -230,23 +232,60 @@ public class BLEScanner implements BLEScanListener {
             return null;
         }
 
+        //判断是否在 UUID 过滤范围之内
+        //如果不包含，不添加设备
+        if (!containUUid(record)) {
+            return null;
+        }
         // BLEDevice
         BLEDevice bleDevice = new BLEDevice();
         bleDevice.setName(name);
         bleDevice.setMac(device.getAddress());
         bleDevice.setRssi(rssi);
-        if (scanRecord == null || scanRecord.length == 0) {
-            return bleDevice;
-        }
-        ScanRecord record = ScanRecord.parseFromBytes(scanRecord);
-        if (record == null) {
-            return bleDevice;
-        }
-//        BLELog.i(record.toString());
+
         bleDevice.setScanRecord(record);
 
         return bleDevice;
     }
+
+    private boolean containUUid(ScanRecord record) {
+
+        if (uuidFilter == null || uuidFilter.length == 0) {
+            return true;
+        }
+        if (record == null) {
+            return false;
+        }
+
+
+        List<ParcelUuid> parcelUuids = record.getServiceUuids();
+        if (parcelUuids == null || parcelUuids.size() == 0) {
+            return false;
+        }
+        for (int i = 0; i < parcelUuids.size(); i++) {
+            ParcelUuid uuid = parcelUuids.get(i);
+            if (isContainsUuid(uuid)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isContainsUuid(ParcelUuid uuid) {
+        if (uuidFilter == null || uuidFilter.length == 0) {
+            return true;
+        }
+
+        for (int i = 0; i < uuidFilter.length; i++) {
+            UUID uuid1 = uuidFilter[i];
+            if (TextUtils.equals(uuid.toString(), uuid1.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 获取设备名称
@@ -255,21 +294,18 @@ public class BLEScanner implements BLEScanListener {
      * @param scanRecord
      * @return
      */
-    private String getDeviceName(BluetoothDevice device, byte[] scanRecord) {
+    private String getDeviceName(BluetoothDevice device, ScanRecord scanRecord) {
 
         String name = device.getName();
         if (!TextUtils.isEmpty(name)) {
             return name;
         }
-        if (scanRecord == null || scanRecord.length == 0) {
-            return name;
-        }
-        ScanRecord record = ScanRecord.parseFromBytes(scanRecord);
 
-        if (record == null) {
+        if (scanRecord == null) {
             return name;
         }
-        name = record.getDeviceName();
+
+        name = scanRecord.getDeviceName();
         return name;
     }
 

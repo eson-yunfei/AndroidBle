@@ -118,8 +118,8 @@ public class MainActivity extends BaseBleActivity {
         reSetMenu();
     }
 
-    private void reSetMenu() {
-        if (menuRefresh == null){
+    public void reSetMenu() {
+        if (menuRefresh == null) {
             return;
         }
         menuRefresh.setVisible(false);
@@ -167,9 +167,9 @@ public class MainActivity extends BaseBleActivity {
         super.changerBleState(mac, state);
 
         if (currentIndex == 0) {
-            mScanFragment.onBleStateChange(mac,state);
+            mScanFragment.onBleStateChange(mac, state);
         } else {
-            mDevicesFragment.onBleStateChange(mac,state);
+            mDevicesFragment.onBleStateChange(mac, state);
         }
     }
 

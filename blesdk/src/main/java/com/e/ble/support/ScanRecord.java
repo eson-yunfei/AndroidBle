@@ -173,7 +173,7 @@ public final class ScanRecord {
      * @hide
      */
     public static ScanRecord parseFromBytes(byte[] scanRecord) {
-        if (scanRecord == null) {
+        if (scanRecord == null || scanRecord.length == 0) {
             return null;
         }
 

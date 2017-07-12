@@ -40,6 +40,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  * |---------------------------------------------------------------------------------------------------------------|
  */
 
+@Deprecated
 public class BLECheck {
 
     private BluetoothAdapter bluetoothAdapter;

@@ -49,6 +49,7 @@ public class BLEConstant {
 	 * 设备连接是回调
 	 */
 	public static final class Connection {
+		@Deprecated
 		public static final int STATE_CONNECT_SUCCEED = 201;
 		public static final int STATE_CONNECT_FAILED = 202;
 		public static final int STATE_CONNECT_CONNECTED = 203;
