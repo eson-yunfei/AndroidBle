@@ -150,6 +150,7 @@ public class DeviceScanFragment extends BaseFragment {
         showProgress("搜索设备中。。。。");
         BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(
                 MyApplication.getInstance().getConfigShare().getConnectTime())
+//                .addUUIDFilter(UUID.fromString("6e401892-b5a3-f393-e0a9-e50e24dcca9e"))
                 .builder();
         BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
             @Override
