@@ -20,8 +20,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -34,8 +32,6 @@ import com.e.ble.control.listener.BLEConnListener;
 import com.e.ble.control.listener.BLEStateChangeListener;
 import com.e.ble.util.BLEError;
 import com.e.ble.util.BLELog;
-
-import java.util.List;
 
 /**
  * @作者 xiaoyunfei
@@ -166,6 +162,7 @@ class BLEConnection implements BLEConnListener, BLEStateChangeListener {
             gatt = connBean.getBluetoothGatt();
             boolean isGattConnect = BLEUtil.isConnected(address);
             if (isGattConnect) {
+                onAlreadyConnected(address);
                 return;
             }
             if (gatt != null) {

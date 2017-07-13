@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.e.ble.bean.BLECharacter;
@@ -39,6 +40,8 @@ import java.util.UUID;
  */
 
 class BLEGattCallBack extends BluetoothGattCallback {
+
+    private Handler mHandler = new Handler();
 
     /**
      * 设备连接状态的改变
@@ -77,14 +80,20 @@ class BLEGattCallBack extends BluetoothGattCallback {
     }
 
     @Override
-    public void onCharacteristicRead(BluetoothGatt gatt,
-                                     BluetoothGattCharacteristic characteristic,
-                                     int status) {
+    public void onCharacteristicRead(final BluetoothGatt gatt,
+                                     final BluetoothGattCharacteristic characteristic,
+                                     final int status) {
 
-        if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
-            BLETransport.get().onCharacterRead(bleCharacter);
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
+                    BLETransport.get().onCharacterRead(bleCharacter);
+                }
+            }
+        });
+
         super.onCharacteristicRead(gatt, characteristic, status);
     }
 
@@ -107,57 +116,89 @@ class BLEGattCallBack extends BluetoothGattCallback {
     }
 
     @Override
-    public void onCharacteristicChanged(BluetoothGatt gatt,
-                                        BluetoothGattCharacteristic characteristic) {
+    public void onCharacteristicChanged(final BluetoothGatt gatt,
+                                        final BluetoothGattCharacteristic characteristic) {
 
-        BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
-        BLETransport.get().onCharacterNotify(bleCharacter);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                BLECharacter bleCharacter = BLEUtil.getBleCharacter(gatt, characteristic);
+                BLETransport.get().onCharacterNotify(bleCharacter);
+            }
+        });
+
         super.onCharacteristicChanged(gatt, characteristic);
     }
 
     @Override
-    public void onDescriptorRead(BluetoothGatt gatt,
+    public void onDescriptorRead(final BluetoothGatt gatt,
                                  BluetoothGattDescriptor descriptor,
                                  int status) {
 
-        String address = BLEUtil.getConnectDevice(gatt);
-        BLETransport.get().onDesRead(address);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                String address = BLEUtil.getConnectDevice(gatt);
+                BLETransport.get().onDesRead(address);
+            }
+        });
+
         super.onDescriptorRead(gatt, descriptor, status);
     }
 
     @Override
-    public void onDescriptorWrite(BluetoothGatt gatt,
-                                  BluetoothGattDescriptor descriptor,
-                                  int status) {
+    public void onDescriptorWrite(final BluetoothGatt gatt,
+                                  final BluetoothGattDescriptor descriptor,
+                                  final int status) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                String address = BLEUtil.getConnectDevice(gatt);
+                BLETransport.get().onDesWrite(address);
+                UUID uuid = descriptor.getUuid();
+                byte[] bytes = descriptor.getValue();
+                BLELog.i(" onDescriptorWrite() address::" + address +
+                        "\n status:" + status +
+                        "\n value:" + BLEByteUtil.getHexString(bytes) +
+                        "\n uuid:" + uuid.toString());
+            }
+        });
 
-        String address = BLEUtil.getConnectDevice(gatt);
-        BLETransport.get().onDesWrite(address);
-        UUID uuid = descriptor.getUuid();
-        byte[] bytes = descriptor.getValue();
-        BLELog.i(" onDescriptorWrite() address::" + address +
-                "\n status:" + status +
-                "\n value:" + BLEByteUtil.getHexString(bytes) +
-                "\n uuid:" + uuid.toString());
         super.onDescriptorWrite(gatt, descriptor, status);
     }
 
     @Override
-    public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
+    public void onReliableWriteCompleted(final BluetoothGatt gatt,
+                                         final int status) {
 
-        String address = BLEUtil.getConnectDevice(gatt);
-        BLELog.e("onReliableWriteCompleted() address::" + address + ";status:" + status);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                String address = BLEUtil.getConnectDevice(gatt);
+                BLELog.e("onReliableWriteCompleted() address::" + address + ";status:" + status);
+            }
+        });
+
         super.onReliableWriteCompleted(gatt, status);
     }
 
     @Override
-    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+    public void onReadRemoteRssi(final BluetoothGatt gatt,
+                                 final int rssi,
+                                 final int status) {
 
-        String address = BLEUtil.getConnectDevice(gatt);
-        if (status == BluetoothGatt.GATT_SUCCESS) {
-            BLEControl.get().onReadRssi(address, rssi);
-        } else {
-            BLEControl.get().onReadRssiError(address, status);
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                String address = BLEUtil.getConnectDevice(gatt);
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    BLEControl.get().onReadRssi(address, rssi);
+                } else {
+                    BLEControl.get().onReadRssiError(address, status);
+                }
+            }
+        });
+
         super.onReadRemoteRssi(gatt, rssi, status);
     }
 
@@ -194,11 +235,14 @@ class BLEGattCallBack extends BluetoothGattCallback {
             //蓝牙异常断开
             BLEConnection.get().onConnError(address, status);
             BLEConnection.get().onStateDisConnected(address);
+            BLEConnList.get().delConnDevice(address);
             return;
         }
 
         if (newState == BluetoothProfile.STATE_DISCONNECTED) {
             BLEConnection.get().onStateDisConnected(address);
+            BLEConnList.get().delConnDevice(address);
+
         } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
             BLEConnection.get().onStateDisConnecting(address);
         } else if (newState == BluetoothProfile.STATE_CONNECTED) {
