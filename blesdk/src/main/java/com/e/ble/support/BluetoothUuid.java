@@ -30,6 +30,7 @@ import java.util.UUID;
  * Static helper methods and constants to decode the ParcelUuid of remote devices.
  *  @hide
  */
+@Deprecated
   class BluetoothUuid {
     /* See Bluetooth Assigned Numbers document - SDP section, to get the values of UUIDs
      * for the various services.

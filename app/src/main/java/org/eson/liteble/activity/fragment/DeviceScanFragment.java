@@ -17,7 +17,9 @@
 package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.os.ParcelUuid;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -25,7 +27,11 @@ import android.widget.ListView;
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.scan.BLEScanCfg;
 import com.e.ble.scan.BLEScanListener;
-import com.e.ble.scan.BLEScanner;
+import com.e.ble.scan.appcompat.BLEScannerCompat;
+import com.e.ble.scan.appcompat.ScanCallback;
+import com.e.ble.scan.appcompat.ScanFilter;
+import com.e.ble.scan.appcompat.ScanResult;
+import com.e.ble.scan.appcompat.ScanSettings;
 import com.e.ble.util.BLEConstant;
 import com.e.ble.util.BLEError;
 
@@ -41,6 +47,8 @@ import org.eson.liteble.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 /**
  * @package_name org.eson.liteble.activity.fragment
@@ -86,7 +94,7 @@ public class DeviceScanFragment extends BaseFragment {
                 showProgress("正在连接设备：" + selectDevice.getName());
 
                 MyApplication.getInstance().setCurrentShowDevice(selectDevice.getMac());
-                BLEScanner.get().stopScan();
+                com.e.ble.scan.BLEScanner.get().stopScan();
                 BleService.get().connectionDevice(getActivity(), selectDevice.getMac());
 
             }
@@ -95,7 +103,7 @@ public class DeviceScanFragment extends BaseFragment {
 
     @Override
     public void onPause() {
-        BLEScanner.get().stopScan();
+        com.e.ble.scan.BLEScanner.get().stopScan();
         super.onPause();
     }
 
@@ -143,6 +151,40 @@ public class DeviceScanFragment extends BaseFragment {
 
     }
 
+    private void searchDevice2(){
+        BLEScannerCompat scanner = BLEScannerCompat.getScanner();
+        ScanFilter scanFilter = new ScanFilter.Builder()
+                .setServiceUuid(new ParcelUuid(UUID.fromString("00000a60-0000-1000-8000-00805f9b34fb")))
+                .build();
+        List<ScanFilter> scanFilters = new ArrayList<>();
+        scanFilters.add(scanFilter);
+        ScanSettings scanSettings = new ScanSettings.Builder()
+//                .setMatchOptions(5*1000,)
+                .build();
+        scanner.startScan(scanFilters,scanSettings,new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+                BluetoothDevice device = result.getDevice();
+                BLEDevice bleDevice = new BLEDevice();
+                bleDevice.setName(device.getName());
+                bleDevice.setMac(device.getAddress());
+                bleDevice.setRssi(result.getRssi());
+
+                addScanBLE(bleDevice);
+            }
+
+            @Override
+            public void onBatchScanResults(List<ScanResult> results) {
+                super.onBatchScanResults(results);
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                super.onScanFailed(errorCode);
+            }
+        });
+    }
     /**
      * 扫描蓝牙设备
      */
@@ -152,7 +194,7 @@ public class DeviceScanFragment extends BaseFragment {
                 MyApplication.getInstance().getConfigShare().getConnectTime())
 //                .addUUIDFilter(UUID.fromString("6e401892-b5a3-f393-e0a9-e50e24dcca9e"))
                 .builder();
-        BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
+        com.e.ble.scan.BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
             @Override
             public void onScannerStart() {
 
@@ -185,9 +227,9 @@ public class DeviceScanFragment extends BaseFragment {
     }
 
     public void addScanBLE(final BLEDevice bleDevice) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
 
                 if (isExitDevice(bleDevice)) {
                     updateDevice(bleDevice);
@@ -195,8 +237,8 @@ public class DeviceScanFragment extends BaseFragment {
                     deviceList.add(0, bleDevice);
                 }
                 scanBLEAdapter.notifyDataSetChanged();
-            }
-        });
+//            }
+//        });
     }
 
 
@@ -278,12 +320,13 @@ public class DeviceScanFragment extends BaseFragment {
 
     public void stopScanner() {
         ((MainActivity) getActivity()).reSetMenu();
-        BLEScanner.get().stopScan();
+        com.e.ble.scan.BLEScanner.get().stopScan();
     }
 
     public void startScanner() {
         deviceList.clear();
         scanBLEAdapter.notifyDataSetChanged();
         searchDevice();
+//        searchDevice2();
     }
 }

@@ -29,6 +29,7 @@ import java.util.Map;
  *
  * @hide
  */
+@Deprecated
  class BluetoothLeUtils {
     /**
      * Returns a string composed from a {@link SparseArray}.

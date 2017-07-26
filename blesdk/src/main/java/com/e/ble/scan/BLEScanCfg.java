@@ -25,7 +25,6 @@ import java.util.UUID;
  * Created by xiaoyunfei on 2017/4/13.
  * @description
  */
-
 public class BLEScanCfg {
     //999999999
     private int scanTime = -1;

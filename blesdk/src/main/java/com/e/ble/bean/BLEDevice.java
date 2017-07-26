@@ -19,7 +19,8 @@ package com.e.ble.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.e.ble.support.ScanRecord;
+import com.e.ble.scan.appcompat.ScanRecord;
+
 
 /**
  * @作者 xiaoyunfei

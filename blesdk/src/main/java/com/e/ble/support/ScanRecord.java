@@ -31,6 +31,7 @@ import java.util.Map;
  * Copy form android framework and fixed
  * Represents a scan record from Bluetooth LE scan.
  */
+@Deprecated
 public final class ScanRecord {
 
     private static final String TAG = "ScanRecord";

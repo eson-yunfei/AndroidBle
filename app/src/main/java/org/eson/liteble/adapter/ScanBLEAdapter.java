@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.e.ble.bean.BLEDevice;
-import com.e.ble.support.ScanRecord;
+import com.e.ble.scan.appcompat.ScanRecord;
 import com.e.ble.util.BLEByteUtil;
 
 import org.eson.liteble.R;
@@ -52,6 +52,9 @@ public class ScanBLEAdapter extends MyBaseAdapter<BLEDevice> {
 
         viewHolder.scanRet.setVisibility(View.GONE);
         ScanRecord scanRecord = device.getScanRecord();
+        if (scanRecord == null){
+            return view;
+        }
         SparseArray array = scanRecord.getManufacturerSpecificData();
         if (array == null || array.size() == 0) {
             return view;
