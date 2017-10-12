@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 
@@ -167,7 +168,7 @@ public class CharacteristicActivity extends BaseBleActivity {
     //***************************************************************************************************//
     //***************************************************************************************************//
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss, SSS");
+    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("HH:mm:ss, SSS", Locale.getDefault());
 
     private String getCurrentTime() {
         String currentTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));

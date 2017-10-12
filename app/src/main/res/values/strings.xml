@@ -11,18 +11,22 @@
     <string name="text_scan_device">搜索设备</string>
 
     <!--<string name="exchange_txt_hint">-->
-        <!--<Data>-->
-            <!--<font color="#ff0000">-->
-            <!--<b>%1$s</b>-->
-            <!--</font>-->
-             <!--:-->
-            <!--<font color="#00ff00">-->
-            <!--<b>%2$s</b>-->
-            <!--</font>-->
-        <!--</Data></string>-->
+    <!--<Data>-->
+    <!--<font color="#ff0000">-->
+    <!--<b>%1$s</b>-->
+    <!--</font>-->
+    <!--:-->
+    <!--<font color="#00ff00">-->
+    <!--<b>%2$s</b>-->
+    <!--</font>-->
+    <!--</Data></string>-->
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>
     <string name="menu_stop">Stop</string>
+    <string name="action_about">关于</string>
+    <string name="app_version">APP版本：V%s</string>
+    <string name="sdk_version">SDK版本：V%s</string>
+    <string name="save_setting">保存</string>
 </resources>

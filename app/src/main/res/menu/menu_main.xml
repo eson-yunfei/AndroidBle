@@ -4,10 +4,10 @@
       tools:context="org.eson.liteble.activity.MainActivity">
 
     <item
-        android:title=""
         android:id="@+id/menu_refresh"
         android:checkable="false"
         android:orderInCategory="1"
+        android:title=""
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menu_scan"
@@ -19,5 +19,10 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
         app:showAsAction="never"/>
 </menu>

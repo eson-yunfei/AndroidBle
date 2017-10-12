@@ -125,13 +125,13 @@ class BLEUtil {
         try {
             BluetoothGatt localBluetoothGatt = gatt;
             Method localMethod = localBluetoothGatt.getClass().getMethod(
-                    "refresh", new Class[0]);
+                    "refresh");
             if (localMethod == null) {
 
                 return;
             }
 
-            localMethod.invoke(localBluetoothGatt, new Object[0]);
+            localMethod.invoke(localBluetoothGatt);
 
         } catch (Exception localException) {
             BLELog.e("An exception occured while refreshing device");

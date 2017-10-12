@@ -193,6 +193,10 @@ public class MainActivity extends BaseBleActivity {
             return true;
         }
 
+        if (id == R.id.action_about) {
+            startToAbout();
+            return true;
+        }
         if (id == R.id.menu_scan) {
             if (menuRefresh.isVisible()) {
                 mScanFragment.stopScanner();
@@ -205,6 +209,11 @@ public class MainActivity extends BaseBleActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startToAbout() {
+        Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+        startActivity(intent);
     }
 
 

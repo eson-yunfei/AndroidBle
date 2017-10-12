@@ -25,9 +25,9 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:hint="单位：s"
-            android:textSize="@dimen/text_size"
             android:inputType="numberSigned"
-            android:maxLength="10"/>
+            android:maxLength="10"
+            android:textSize="@dimen/text_size"/>
     </RelativeLayout>
 
     <View
@@ -57,10 +57,10 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/maxSizeLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:padding="6dp"
-        android:id="@+id/maxSizeLayout">
+        android:padding="6dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,9 +77,15 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:hint="1-5个"
-            android:textSize="@dimen/text_size"
             android:inputType="number"
-            android:maxLength="10"/>
+            android:maxLength="10"
+            android:textSize="@dimen/text_size"/>
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/save_setting"/>
 </LinearLayout>
