@@ -19,7 +19,6 @@ package com.e.ble.scan;
 import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
 import android.os.ParcelUuid;
-import android.text.TextUtils;
 
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.check.BLECheck;
@@ -48,13 +47,21 @@ import java.util.UUID;
  * |---------------------------------------------------------------------------------------------------------------|
  */
 public class BLEScanner implements BLEScanListener {
+    //instance
+    private static volatile BLEScanner bleScanner = null;
 
     public static final int INFINITE = -1;// 无限时长扫描，用户手动调用停止扫描
     public static final int DEFAULT = 0;//默认时长
 
-    //instance
-    private static volatile BLEScanner bleScanner = null;
+    private int scanTime = 10000;            //扫描时长
+    private String[] nameFilter = null;        //名称过滤
+    private UUID[] uuidFilter = null;       //UUID 过滤
+
+    private BLEScanListener bleScanListener;    //扫描监听
+    private BLEDevice bleDevice = null;
     private BLEScannerCompat mScannerCompat;
+
+    private Handler handler = null;
 
     private List<ScanFilter> filterList = new ArrayList<>();
 
@@ -62,6 +69,9 @@ public class BLEScanner implements BLEScanListener {
         mScannerCompat = BLEScannerCompat.getScanner();
     }
 
+    /**
+     * <p>初始化</p>
+     */
     public static void init() {
         if (bleScanner == null) {
             synchronized (BLEScanner.class) {
@@ -81,41 +91,48 @@ public class BLEScanner implements BLEScanListener {
     }
 
 
-    private int scanTime = 10000;            //扫描时长
-    private String[] nameFilter = null;        //名称过滤
-    private UUID[] uuidFilter = null;       //UUID 过滤
-    private BLEScanListener bleScanListener;    //扫描监听
-
-
     /**
-     * 开始扫描设备
+     * 开始扫描设备<br/>
      *
      * @param bleScanCfg
      * @param scanListener
      */
-    public synchronized void startScanner(BLEScanCfg bleScanCfg, BLEScanListener scanListener) {
+    public void startScanner(BLEScanCfg bleScanCfg, BLEScanListener scanListener) {
 
         if (scanListener == null) {
-            bleScanListener.onScannerError(BLEError.BLE_SCANNER_CALLBACK_NULL);
+            BLELog.e("scanListener is null");
             return;
         }
-
         this.bleScanListener = scanListener;
+
         if (!BLECheck.get().isBleEnable()) {
             //BLE not enable
             bleScanListener.onScannerError(BLEError.BLE_CLOSE);
             return;
         }
 
+        initScanConfig(bleScanCfg);
+        tryToStopScanner();
+        startScanner();
+    }
+
+    public void stopScan() {
+        tryToStopScanner();
+    }
+
+    private void initScanConfig(BLEScanCfg bleScanCfg) {
         if (bleScanCfg == null) {
             bleScanCfg = getDftCfg();
         }
+        filterList.clear();
         scanTime = bleScanCfg.getScanTime();
         nameFilter = bleScanCfg.getNameFilter();
         uuidFilter = bleScanCfg.getUuidFilter();
+
+        ScanFilter filter = null;
         if (nameFilter != null && nameFilter.length != 0) {
             for (int i = 0; i < nameFilter.length; i++) {
-                ScanFilter filter = new ScanFilter.Builder()
+                filter = new ScanFilter.Builder()
                         .setDeviceName(nameFilter[i])
                         .build();
                 filterList.add(filter);
@@ -124,25 +141,18 @@ public class BLEScanner implements BLEScanListener {
 
         if (uuidFilter != null && uuidFilter.length != 0) {
             for (int i = 0; i < uuidFilter.length; i++) {
-                ScanFilter filter = new ScanFilter.Builder()
+                filter = new ScanFilter.Builder()
                         .setServiceUuid(new ParcelUuid(uuidFilter[i]))
                         .build();
                 filterList.add(filter);
             }
         }
-        tryToStopScanner();
-        startScanner();
-
-    }
-
-    public synchronized void stopScan() {
-        tryToStopScanner();
     }
 
     /**
      * 尝试停止扫描设备
      */
-    private synchronized void tryToStopScanner() {
+    private void tryToStopScanner() {
         if (handler != null) {
             handler.removeCallbacks(stopScanRunnable);
             handler = null;
@@ -152,8 +162,6 @@ public class BLEScanner implements BLEScanListener {
             mScannerCompat.stopScan(mScanCallback);
         }
     }
-
-//    private BluetoothAdapter bluetoothAdapter;
 
     /**
      * 开始扫描
@@ -169,7 +177,6 @@ public class BLEScanner implements BLEScanListener {
         } else {
             mScannerCompat.startScan(filterList, scanSettings, mScanCallback);
         }
-
         if (scanTime == INFINITE) {
             return;
         }
@@ -178,9 +185,6 @@ public class BLEScanner implements BLEScanListener {
         }
         startTimer();
     }
-
-
-    private Handler handler = null;
 
     /**
      * 开始扫描时长倒计时
@@ -201,25 +205,19 @@ public class BLEScanner implements BLEScanListener {
     private Runnable stopScanRunnable = new Runnable() {
         @Override
         public void run() {
-
             tryToStopScanner();
-
             //回调扫描结束状态
             onScannerStop();
-
         }
     };
-
 
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             BluetoothDevice device = result.getDevice();
-            int rssi = result.getRssi();
             ScanRecord scanRecord = result.getScanRecord();
-            BLEDevice bleDevice = getBleDevice(device, rssi, scanRecord);
-            onScanning(bleDevice);
+            getBleDevice(device, result.getRssi(), scanRecord);
         }
 
         @Override
@@ -231,150 +229,32 @@ public class BLEScanner implements BLEScanListener {
     };
 
     /**
-     * 系统的设备扫描回调监听
-     * <p>
-     * SDK 加入了重复地址过滤，
-     * <p>
-     * 用户不需要再次过滤
-     */
-    @Deprecated
-//    private BluetoothAdapter.LeScanCallback scanCallback = new BluetoothAdapter.LeScanCallback() {
-//        @Override
-//        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-//
-//            if (bleScanListener == null) {
-//                return;
-//            }
-//
-//            BLEDevice bleDevice = getBleDevice(device, rssi, scanRecord);
-//            if (bleDevice == null) {
-//                return;
-//            }
-//
-//            //返回设备
-//            onScanning(bleDevice);
-//        }
-//    };
-
-    /**
      * 根据 BluetoothDevice  获取 BLEDevice
      *
      * @param device
      * @param rssi
      * @param scanRecord @return
      */
-    private BLEDevice getBleDevice(BluetoothDevice device, int rssi, ScanRecord scanRecord) {
-
-        String name = getDeviceName(device, scanRecord);
-        if (TextUtils.isEmpty(name)) {
-            name = "< UnKnow >";
+    private void getBleDevice(BluetoothDevice device, int rssi, ScanRecord scanRecord) {
+        if (device == null) {
+            return;
         }
+        String name = BLEScanUtils.getDeviceName(device.getName(), scanRecord);
+
         //判断是否在名称过滤范围之内
         //如果不包含，不添加设备
-        if (!containName(name)) {
-            return null;
+        if (!BLEScanUtils.isFilterContainName(name, nameFilter)) {
+            return;
         }
-
-//        //判断是否在 UUID 过滤范围之内
-//        //如果不包含，不添加设备
-//        if (!containUUid(scanRecord)) {
-//            return null;
-//        }
         // BLEDevice
-        BLEDevice bleDevice = new BLEDevice();
+        bleDevice = new BLEDevice();
         bleDevice.setName(name);
         bleDevice.setMac(device.getAddress());
         bleDevice.setRssi(rssi);
 
         bleDevice.setScanRecord(scanRecord);
-
-        return bleDevice;
+        onScanning(bleDevice);
     }
-
-    private boolean containUUid(ScanRecord record) {
-
-        if (uuidFilter == null || uuidFilter.length == 0) {
-            return true;
-        }
-        if (record == null) {
-            return false;
-        }
-
-
-        List<ParcelUuid> parcelUuids = record.getServiceUuids();
-        if (parcelUuids == null || parcelUuids.size() == 0) {
-            return false;
-        }
-        for (int i = 0; i < parcelUuids.size(); i++) {
-            ParcelUuid uuid = parcelUuids.get(i);
-            if (isContainsUuid(uuid)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isContainsUuid(ParcelUuid uuid) {
-        if (uuidFilter == null || uuidFilter.length == 0) {
-            return true;
-        }
-
-        for (int i = 0; i < uuidFilter.length; i++) {
-            UUID uuid1 = uuidFilter[i];
-            if (TextUtils.equals(uuid.toString(), uuid1.toString())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * 获取设备名称
-     *
-     * @param device
-     * @param scanRecord
-     * @return
-     */
-    private String getDeviceName(BluetoothDevice device, ScanRecord scanRecord) {
-
-        String name = device.getName();
-        if (!TextUtils.isEmpty(name)) {
-            return name;
-        }
-
-        if (scanRecord == null) {
-            return name;
-        }
-
-        name = scanRecord.getDeviceName();
-        return name;
-    }
-
-    /**
-     * 检测设备名称是否在过滤名称范围内
-     *
-     * @param name
-     * @return 如果包含设备名称，返回true
-     */
-    private boolean containName(String name) {
-
-        if (nameFilter == null || nameFilter.length == 0) {
-            return true;
-        }
-        boolean isContain = false;
-        for (String aNameFilter : nameFilter) {
-
-            if (name.equals(aNameFilter)) {
-                isContain = true;
-            }
-            break;
-        }
-
-        return isContain;
-    }
-
 
     @Override
     public void onScannerStart() {
@@ -385,7 +265,9 @@ public class BLEScanner implements BLEScanListener {
 
     @Override
     public void onScanning(BLEDevice device) {
-        bleScanListener.onScanning(device);
+        if (bleScanListener != null) {
+            bleScanListener.onScanning(device);
+        }
     }
 
     @Override
@@ -401,7 +283,6 @@ public class BLEScanner implements BLEScanListener {
             bleScanListener.onScannerError(errorCode);
         }
     }
-
 
     private BLEScanCfg getDftCfg() {
         BLEScanCfg bleScanCfg = new BLEScanCfg.ScanCfgBuilder(DEFAULT).builder();

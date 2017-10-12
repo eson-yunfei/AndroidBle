@@ -20,7 +20,7 @@ import java.util.UUID;
 
 /**
  * @package_name com.e.ble.scan
- * @name ${name}
+ * @name ${BLEScanCfg}
  * <p>
  * Created by xiaoyunfei on 2017/4/13.
  * @description
