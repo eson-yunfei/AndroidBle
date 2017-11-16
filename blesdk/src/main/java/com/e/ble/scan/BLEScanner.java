@@ -16,57 +16,63 @@
 
 package com.e.ble.scan;
 
-import android.bluetooth.BluetoothDevice;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelUuid;
 
+import com.e.ble.BLESdk;
 import com.e.ble.bean.BLEDevice;
-import com.e.ble.check.BLECheck;
-import com.e.ble.scan.appcompat.BLEScannerCompat;
-import com.e.ble.scan.appcompat.ScanCallback;
-import com.e.ble.scan.appcompat.ScanFilter;
-import com.e.ble.scan.appcompat.ScanRecord;
-import com.e.ble.scan.appcompat.ScanResult;
-import com.e.ble.scan.appcompat.ScanSettings;
+import com.e.ble.check.BLECheckUtil;
 import com.e.ble.util.BLEError;
 import com.e.ble.util.BLELog;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 /**
- * |---------------------------------------------------------------------------------------------------------------|
- *
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
  * @说明： 蓝牙扫描工具类
  * <p>
  * |只提供 开始扫描&停止扫描
  * <p>
- * |---------------------------------------------------------------------------------------------------------------|
  */
-public class BLEScanner implements BLEScanListener {
-    //instance
+public class BLEScanner extends BLEScanListener {
+    /**
+     * INSTANCE
+     */
     private static volatile BLEScanner bleScanner = null;
 
-    public static final int INFINITE = -1;// 无限时长扫描，用户手动调用停止扫描
-    public static final int DEFAULT = 0;//默认时长
+    /**
+     * 无限时长扫描，用户手动调用停止扫描
+     */
+    public static final int INFINITE = -1;
+    /**
+     * 默认时长
+     */
+    public static final int DEFAULT = 0;
 
-    private int scanTime = 10000;            //扫描时长
-    private String[] nameFilter = null;        //名称过滤
-    private UUID[] uuidFilter = null;       //UUID 过滤
+    /**
+     * 扫描时长
+     */
+    private int scanTime = 10000;
+    /**
+     * 名称过滤
+     */
+    private String[] nameFilter = null;
+    /**
+     * UUID 过滤
+     */
+    private ParcelUuid[] uuidFilter = null;
 
-    private BLEScanListener bleScanListener;    //扫描监听
-    private BLEDevice bleDevice = null;
-    private BLEScannerCompat mScannerCompat;
+    private BLEScanCallback mBLEScanCallback;
+
+    /**
+     * 扫描监听
+     */
+    private BLEScanListener bleScanListener;
 
     private Handler handler = null;
 
-    private List<ScanFilter> filterList = new ArrayList<>();
-
     private BLEScanner() {
-        mScannerCompat = BLEScannerCompat.getScanner();
+
     }
 
     /**
@@ -97,56 +103,49 @@ public class BLEScanner implements BLEScanListener {
      * @param bleScanCfg
      * @param scanListener
      */
-    public void startScanner(BLEScanCfg bleScanCfg, BLEScanListener scanListener) {
+    public boolean startScanner(BLEScanCfg bleScanCfg, BLEScanListener scanListener) {
 
         if (scanListener == null) {
             BLELog.e("scanListener is null");
-            return;
+            return false;
         }
         this.bleScanListener = scanListener;
 
-        if (!BLECheck.get().isBleEnable()) {
-            //BLE not enable
+        if (!BLECheckUtil.getBleEnable()) {
             bleScanListener.onScannerError(BLEError.BLE_CLOSE);
-            return;
+
+            tryToStopScanner();
+            onScannerStop();
+            return false;
         }
 
-        initScanConfig(bleScanCfg);
+        //先尝试关闭之前的扫描
         tryToStopScanner();
-        startScanner();
+
+        //创建新的扫描
+        initScanConfig(bleScanCfg);
+
+        return startScanner();
     }
 
+    /**
+     * 结束扫描
+     */
     public void stopScan() {
         tryToStopScanner();
+        onScannerStop();
     }
+
 
     private void initScanConfig(BLEScanCfg bleScanCfg) {
         if (bleScanCfg == null) {
             bleScanCfg = getDftCfg();
         }
-        filterList.clear();
         scanTime = bleScanCfg.getScanTime();
         nameFilter = bleScanCfg.getNameFilter();
-        uuidFilter = bleScanCfg.getUuidFilter();
+        uuidFilter = bleScanCfg.getParcelUuidFilters();
 
-        ScanFilter filter = null;
-        if (nameFilter != null && nameFilter.length != 0) {
-            for (int i = 0; i < nameFilter.length; i++) {
-                filter = new ScanFilter.Builder()
-                        .setDeviceName(nameFilter[i])
-                        .build();
-                filterList.add(filter);
-            }
-        }
-
-        if (uuidFilter != null && uuidFilter.length != 0) {
-            for (int i = 0; i < uuidFilter.length; i++) {
-                filter = new ScanFilter.Builder()
-                        .setServiceUuid(new ParcelUuid(uuidFilter[i]))
-                        .build();
-                filterList.add(filter);
-            }
-        }
+        mBLEScanCallback = new BLEScanCallback(nameFilter, uuidFilter, this);
     }
 
     /**
@@ -158,32 +157,43 @@ public class BLEScanner implements BLEScanListener {
             handler = null;
         }
 
-        if (BLECheck.get().isBleEnable()) {
-            mScannerCompat.stopScan(mScanCallback);
+        if (mBLEScanCallback != null) {
+            try {
+                BLESdk.get().getBluetoothAdapter().stopLeScan(mBLEScanCallback);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
+
     }
 
     /**
      * 开始扫描
      */
-    private void startScanner() {
+    private boolean startScanner() {
 
-        ScanSettings scanSettings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
-                .build();
-
-        if (filterList.size() == 0) {
-            mScannerCompat.startScan(null, scanSettings, mScanCallback);
-        } else {
-            mScannerCompat.startScan(filterList, scanSettings, mScanCallback);
+        boolean scanState = false;
+        try {
+            scanState = BLESdk.get().getBluetoothAdapter().startLeScan(mBLEScanCallback);
+        } catch (Exception e) {
+            e.printStackTrace();
+            scanState = false;
+            onScannerError(BLEError.BLE_CLOSE);
         }
+        if (!scanState) {
+            return scanState;
+        }
+        onScannerStart();
+
         if (scanTime == INFINITE) {
-            return;
+            return scanState;
         }
         if (scanTime == DEFAULT) {
             scanTime = 10000;
         }
         startTimer();
+        return scanState;
     }
 
     /**
@@ -192,10 +202,9 @@ public class BLEScanner implements BLEScanListener {
      * 开始之前先尝试停止上一次的倒计时
      */
     private void startTimer() {
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(stopScanRunnable, scanTime);
     }
-
 
     /**
      * 定时需要执行的任务
@@ -210,51 +219,6 @@ public class BLEScanner implements BLEScanListener {
             onScannerStop();
         }
     };
-
-    private ScanCallback mScanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-            BluetoothDevice device = result.getDevice();
-            ScanRecord scanRecord = result.getScanRecord();
-            getBleDevice(device, result.getRssi(), scanRecord);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            super.onScanFailed(errorCode);
-            tryToStopScanner();
-            onScannerError(errorCode);
-        }
-    };
-
-    /**
-     * 根据 BluetoothDevice  获取 BLEDevice
-     *
-     * @param device
-     * @param rssi
-     * @param scanRecord @return
-     */
-    private void getBleDevice(BluetoothDevice device, int rssi, ScanRecord scanRecord) {
-        if (device == null) {
-            return;
-        }
-        String name = BLEScanUtils.getDeviceName(device.getName(), scanRecord);
-
-        //判断是否在名称过滤范围之内
-        //如果不包含，不添加设备
-        if (!BLEScanUtils.isFilterContainName(name, nameFilter)) {
-            return;
-        }
-        // BLEDevice
-        bleDevice = new BLEDevice();
-        bleDevice.setName(name);
-        bleDevice.setMac(device.getAddress());
-        bleDevice.setRssi(rssi);
-
-        bleDevice.setScanRecord(scanRecord);
-        onScanning(bleDevice);
-    }
 
     @Override
     public void onScannerStart() {
@@ -274,11 +238,15 @@ public class BLEScanner implements BLEScanListener {
     public void onScannerStop() {
         if (bleScanListener != null) {
             bleScanListener.onScannerStop();
+            if (bleScanListener.isRemove()){
+                bleScanListener = null;
+            }
         }
     }
 
     @Override
     public void onScannerError(int errorCode) {
+
         if (bleScanListener != null) {
             bleScanListener.onScannerError(errorCode);
         }

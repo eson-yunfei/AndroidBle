@@ -24,13 +24,27 @@ import com.e.ble.bean.BLEDevice;
  * @日期: 2017/2/22
  * @说明：
  */
-public interface BLEScanListener {
+public abstract class BLEScanListener {
 
-	void onScannerStart();
+	public  void onScannerStart(){
 
-	void onScanning(BLEDevice device);
+	}
 
-	void onScannerStop();
+	/**
+	 *
+	 * @param device
+	 */
+	public abstract void onScanning(BLEDevice device);
 
-	void onScannerError(int errorCode);
+	public void onScannerStop(){
+
+	}
+
+	public void onScannerError(int errorCode){
+
+	}
+
+	public boolean isRemove(){
+		return true;
+	}
 }

@@ -19,10 +19,11 @@ package com.e.ble.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.e.ble.scan.appcompat.ScanRecord;
+import com.e.ble.support.ScanRecord;
 
 
 /**
+ * @author xiaoyunfei
  * @作者 xiaoyunfei
  * @日期: 2017/2/22
  * @说明：
@@ -36,6 +37,13 @@ public class BLEDevice implements Parcelable {
 
     public BLEDevice() {
 
+    }
+
+    public BLEDevice(String name, String mac, int rssi, ScanRecord scanRecord) {
+        this.name = name;
+        this.mac = mac;
+        this.rssi = rssi;
+        this.scanRecord = scanRecord;
     }
 
     protected BLEDevice(Parcel in) {
@@ -101,14 +109,4 @@ public class BLEDevice implements Parcelable {
         this.scanRecord = scanRecord;
     }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        BLEDevice device;
-//        if (obj instanceof BLEDevice) {
-//            device = (BLEDevice) obj;
-//            return device.mac.equals(this.mac);
-//        } else {
-//            return false;
-//        }
-//    }
 }

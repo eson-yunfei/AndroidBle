@@ -94,7 +94,6 @@ class BLEConnection implements BLEConnListener, BLEStateChangeListener {
             }
         });
 
-
     }
 
     /**

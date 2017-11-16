@@ -26,6 +26,7 @@ import com.e.ble.control.listener.BLEStateChangeListener;
 import com.e.ble.control.listener.BLETransportListener;
 import com.e.ble.receiver.BLEStateReceiver;
 import com.e.ble.receiver.listener.BLEReceiverListener;
+import com.e.ble.scan.BLEScanner;
 
 /**
  * |---------------------------------------------------------------------------------------------------------------|
@@ -76,7 +77,7 @@ public class BLEControl {
      * @param device
      */
     public void connectDevice(Context context, String device) {
-
+        BLEScanner.get().stopScan();    //连接设备前停止扫描设备
         BLEConnection.get().connectToAddress(context, device, sGattCallBack);
     }
 

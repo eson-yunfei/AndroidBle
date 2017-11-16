@@ -1,44 +1,35 @@
-# AndroidBle
+AndroidBle
+------
 一个蓝牙BLE 测试，调试工具以及开发SDK
 
 
 [![](https://jitpack.io/v/eson-yunfei/MyTest.svg)](https://jitpack.io/#eson-yunfei/MyTest)
 
-
-## 2017/03/15
 项目发布到 JitPack
 
-构建方式：
-    在根目录： build.gradle 文件中添加：
 
+SDK 接入
+------
+####1.1、gradle 构建
+       //在根目录： build.gradle 文件中添加：
         allprojects {
         		repositories {
         			...
-        			maven { url 'https://jitpack.io' }
+       			maven { url 'https://jitpack.io' }
         		}
         	}
-
-
-
-在app的 build.gradle 文件中添加：
-
-
-     dependencies {
+        	
+       //在app的 build.gradle 文件中添加：
+        
+        dependencies {
      	        compile 'com.github.eson-yunfei:AndroidBle:xxxx'
-     	}
+     	  }
 
-# 更新日期和内容
-##2017/06/18
-### 第二次修改调用指南
+####1.2、下载源码，导入
 
-## 2017/03/19
-### 修改API的调用方式
-
-## 2017/02/22
-### 创建仓库，首次提交项目代码
-
-# API 指南
-### 一、SDK 初始化
+API 指南
+------
+###1、SDK 初始化
         
     //之前版本
     // BLESdk.init();
@@ -49,7 +40,7 @@
     //BLESdk.get().setMaxConnect(3);
 
 
-### 二、蓝牙权限、状态等检测
+###2、蓝牙权限、状态等检测
 
 
         BLECheck.get().checkBleState(context, new BLECheckListener() {
@@ -77,59 +68,57 @@
                 //蓝牙状态一切正常，可以扫描、连接设备
 			}
 		});
+		
+###3、蓝牙搜索
+####3.1 开启蓝牙扫描
+        //扫描规则构造
+        BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(timeOut)
+                .addUUIDFilter(uuid1,uuid2)//可选，多个
+                .addNameFilter(name1,name2)//可选，多个
+                .builder();
+                
+        BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
+            @Override
+            public void onScannerStart() {
+                super.onScannerStart();
+                //可选
+            }
 
-### 三、蓝牙搜索
-####已废弃
+            @Override
+            public void onScanning(BLEDevice device) {
+                //  必须，可直接刷新界面
+            }
 
-    
-     3.19添加两个扫描时长常量：
 
-      public static final int INFINITE = -1;// 无限时长扫描，用户手动调用停止扫描
-      public static final int DEFAULT = 0;//默认时长
+            @Override
+            public void onScannerStop() {
+               //可选
+            }
 
-            nameFilter ,uuidFilter 可以为 null
+            @Override
+            public void onScannerError(int errorCode) {
+               //可选
+            }
 
-            BLEScanner.get().startScan(BLEScanner.DEFAULT, nameFilter, uuidFilter, new BLEScanListener() {
-    			@Override
-    			public void onScannerStart() {
-    				//开始扫描
-    			}
-
-    			@Override
-    			public void onScanning(BLEDevice device) {
-                    //扫描设备中
-    			}
-
-    			@Override
-    			public void onScannerStop() {
-                    //扫描停止
-    			}
-
-    			@Override
-    			public void onScannerError() {
-                    //扫描出错
-    			}
-    		});
-    		
-    		
-#### 新的调用方式
- 	 BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(10*1000)
-                     .addNameFilter("name1","name1")
-                     .addUUIDFilter(UUDI1,UUID2)
-                     .builder();
-                    
-     BLEScanner.get().startScanner(scanCfg, new BLEScanListener())
- 	
+            @Override
+            public boolean isRemove() {
+                //可选,默认返回true，扫描结束移除此listener
+                return super.isRemove();
+            }
+        });
+        
+####3.2 停止蓝牙搜索
+        //停止扫描
+        BLEScanner.get().stopScan();
 
 
 
 ### 四、蓝牙交互
 
 #### 1、添加事件监听
-
-             BLEControl.get().setBleConnectListener(bleConnectionListener);
-		     BLEControl.get().setBleStateChangedListener(stateChangeListener);
-		     BLEControl.get().setBleTransportListener(transportListener);
+        BLEControl.get().setBleConnectListener(bleConnectionListener);
+        BLEControl.get().setBleStateChangedListener(stateChangeListener);
+        BLEControl.get().setBleTransportListener(transportListener);
 
 #### 2、设备连接
 
@@ -138,21 +127,19 @@
 
 #### 3、启用Notify特性
 
-             BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
-        				.setAddress(address)
-        				.setDescriptorUUID(descriptorUui)
-        				.setEnable(isListenerNotice).builder();
-
-             BLEControl.get().enableNotify(bleUuid);
+        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+			        .setAddress(address)
+			        .setDescriptorUUID(descriptorUui)
+			        .setEnable(isListenerNotice).builder();
+			        
+        BLEControl.get().enableNotify(bleUuid);
 
 
 #### 4、发送数据
-
-
-             BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
-      				.setAddress(address).setDataBuffer(bytes).builder();
-
-             BLEControl.get().sendData(bleUuid);
+        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+                .setAddress(address).setDataBuffer(bytes).builder();
+                
+        BLEControl.get().sendData(bleUuid);
 
 
 

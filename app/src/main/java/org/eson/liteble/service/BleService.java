@@ -4,13 +4,16 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.e.ble.bean.BLECharacter;
 import com.e.ble.bean.BLEUuid;
 import com.e.ble.control.BLEControl;
 import com.e.ble.control.listener.BLEConnListener;
+import com.e.ble.control.listener.BLEReadRssiListener;
 import com.e.ble.control.listener.BLEStateChangeListener;
 import com.e.ble.control.listener.BLETransportListener;
 import com.e.ble.util.BLEConstant;
@@ -20,6 +23,12 @@ import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
 import org.eson.liteble.util.LogUtil;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -30,6 +39,7 @@ import java.util.UUID;
 
 public class BleService extends Service {
 
+    private static final String TAG = "BleService";
     private static BleService bleService = null;
 
 
@@ -47,6 +57,7 @@ public class BleService extends Service {
         BLEControl.get().setBleConnectListener(bleConnectionListener);
         BLEControl.get().setBleStateChangedListener(stateChangeListener);
         BLEControl.get().setBleTransportListener(transportListener);
+        BLEControl.get().setBleReadRssiListener(mBLEReadRssiListener);
     }
 
     public static BleService get() {
@@ -195,6 +206,61 @@ public class BleService extends Service {
     };
 
 
+    BLEReadRssiListener mBLEReadRssiListener = new BLEReadRssiListener() {
+        @Override
+        public void onReadRssi(String address, int rssi) {
+
+
+            saveRssi(address, rssi);
+
+        }
+
+        @Override
+        public void onReadRssiError(String address, int errorCode) {
+
+        }
+    };
+
+    private File mFile;
+    private String info;
+    private StringBuffer mBuffer = new StringBuffer();
+
+    private void saveRssi(String address, int rssi) {
+        Log.e(TAG, "saveRssi  " + address + " ," + rssi);
+        if (!isFileExit()) {
+            return;
+        }
+
+        String time = getCurrentTime();
+
+
+        try {
+            mBuffer.setLength(0);
+
+
+            mBuffer.append(time).append(",")
+                    .append(String.valueOf(rssi)).append(",")
+                    .append("\r\n");
+            info =  mBuffer.toString();
+            //第二个参数意义是说是否以append方式添加内容
+            BufferedWriter bw = new BufferedWriter(new FileWriter(mFile, true));
+            bw.write(info);
+            bw.flush();
+            Log.e(TAG, "写入成功" + info);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    String sd = Environment.getExternalStorageDirectory().getPath() + "/LiteBle/rssi";
+    String fileName = sd + "/rssi.csv";
+
+    private boolean isFileExit() {
+        mFile = new File(fileName);
+        return mFile.exists();
+    }
+
     /**
      * 发送蓝牙状态
      */
@@ -205,5 +271,12 @@ public class BleService extends Service {
         RxBus.getInstance().send(bundle);
     }
 
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+    private String getCurrentTime() {
+        String currentTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        return currentTime;
+    }
 
 }

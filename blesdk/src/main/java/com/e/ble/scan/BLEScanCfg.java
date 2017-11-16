@@ -16,9 +16,12 @@
 
 package com.e.ble.scan;
 
+import android.os.ParcelUuid;
+
 import java.util.UUID;
 
 /**
+ * @author xiaoyunfei
  * @package_name com.e.ble.scan
  * @name ${BLEScanCfg}
  * <p>
@@ -26,10 +29,16 @@ import java.util.UUID;
  * @description
  */
 public class BLEScanCfg {
-    //999999999
+    /**
+     * 扫描时长
+     */
     private int scanTime = -1;
     private String[] nameFilter = null;
     private UUID[] uuidFilter = null;
+
+    BLEScanCfg() {
+        //私有方法，不允许外包调用
+    }
 
     public int getScanTime() {
         return scanTime;
@@ -55,6 +64,21 @@ public class BLEScanCfg {
         this.uuidFilter = uuidFilter;
     }
 
+    public ParcelUuid[] getParcelUuidFilters() {
+        if (uuidFilter == null || uuidFilter.length == 0) {
+            return null;
+        }
+        int length = uuidFilter.length;
+        ParcelUuid[] filters = new ParcelUuid[length];
+        for (int i = 0; i < length; i++) {
+            filters[i] = new ParcelUuid(uuidFilter[i]);
+        }
+        return filters;
+    }
+
+    /**
+     * BLEScanCfg 的 构造器
+     */
     public static class ScanCfgBuilder {
         private BLEScanCfg mBLEScanCfg = new BLEScanCfg();
 

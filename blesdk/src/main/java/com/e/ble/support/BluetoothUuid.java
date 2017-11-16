@@ -28,16 +28,8 @@ import java.util.UUID;
  *
  *
  * Static helper methods and constants to decode the ParcelUuid of remote devices.
- *  @hide
  */
-@Deprecated
-  class BluetoothUuid {
-    /* See Bluetooth Assigned Numbers document - SDP section, to get the values of UUIDs
-     * for the various services.
-     *
-     * The following 128 bit values are calculated as:
-     *  uuid * 2^96 + BASE_UUID
-     */
+  public final class BluetoothUuid {
     public static final ParcelUuid AudioSink =
             ParcelUuid.fromString("0000110B-0000-1000-8000-00805F9B34FB");
     public static final ParcelUuid AudioSource =
@@ -80,7 +72,6 @@ import java.util.UUID;
             ParcelUuid.fromString("00001132-0000-1000-8000-00805F9B34FB");
     public static final ParcelUuid SAP =
             ParcelUuid.fromString("0000112D-0000-1000-8000-00805F9B34FB");
-
     public static final ParcelUuid BASE_UUID =
             ParcelUuid.fromString("00000000-0000-1000-8000-00805F9B34FB");
     /** Length of bytes for 16 bit UUID */
@@ -144,12 +135,16 @@ import java.util.UUID;
      * @param uuid
      */
     public static boolean isUuidPresent(ParcelUuid[] uuidArray, ParcelUuid uuid) {
-        if ((uuidArray == null || uuidArray.length == 0) && uuid == null)
+        if ((uuidArray == null || uuidArray.length == 0) && uuid == null) {
             return true;
-        if (uuidArray == null)
+        }
+        if (uuidArray == null) {
             return false;
-        for (ParcelUuid element: uuidArray) {
-            if (element.equals(uuid)) return true;
+        }
+        for (ParcelUuid element : uuidArray) {
+            if (element.equals(uuid)) {
+                return true;
+            }
         }
         return false;
     }
@@ -158,19 +153,22 @@ import java.util.UUID;
      *
      * @param uuidA - List of ParcelUuids
      * @param uuidB - List of ParcelUuids
-     *
      */
     public static boolean containsAnyUuid(ParcelUuid[] uuidA, ParcelUuid[] uuidB) {
-        if (uuidA == null && uuidB == null) return true;
+        if (uuidA == null && uuidB == null) {
+            return true;
+        }
         if (uuidA == null) {
             return uuidB.length == 0;
         }
         if (uuidB == null) {
             return uuidA.length == 0;
         }
-        HashSet<ParcelUuid> uuidSet = new HashSet<ParcelUuid> (Arrays.asList(uuidA));
-        for (ParcelUuid uuid: uuidB) {
-            if (uuidSet.contains(uuid)) return true;
+        HashSet<ParcelUuid> uuidSet = new HashSet<ParcelUuid>(Arrays.asList(uuidA));
+        for (ParcelUuid uuid : uuidB) {
+            if (uuidSet.contains(uuid)) {
+                return true;
+            }
         }
         return false;
     }
@@ -180,17 +178,22 @@ import java.util.UUID;
      *
      * @param uuidA - Array of ParcelUuidsA
      * @param uuidB - Array of ParcelUuidsB
-     *
      */
     public static boolean containsAllUuids(ParcelUuid[] uuidA, ParcelUuid[] uuidB) {
-        if (uuidA == null && uuidB == null) return true;
+        if (uuidA == null && uuidB == null) {
+            return true;
+        }
         if (uuidA == null) {
             return uuidB.length == 0;
         }
-        if (uuidB == null) return true;
-        HashSet<ParcelUuid> uuidSet = new HashSet<ParcelUuid> (Arrays.asList(uuidA));
-        for (ParcelUuid uuid: uuidB) {
-            if (!uuidSet.contains(uuid)) return false;
+        if (uuidB == null) {
+            return true;
+        }
+        HashSet<ParcelUuid> uuidSet = new HashSet<ParcelUuid>(Arrays.asList(uuidA));
+        for (ParcelUuid uuid : uuidB) {
+            if (!uuidSet.contains(uuid)) {
+                return false;
+            }
         }
         return true;
     }
@@ -198,13 +201,14 @@ import java.util.UUID;
      * Extract the Service Identifier or the actual uuid from the Parcel Uuid.
      * For example, if 0000110B-0000-1000-8000-00805F9B34FB is the parcel Uuid,
      * this function will return 110B
+     *
      * @param parcelUuid
      * @return the service identifier.
      */
     public static int getServiceIdentifierFromParcelUuid(ParcelUuid parcelUuid) {
         UUID uuid = parcelUuid.getUuid();
-        long value = (uuid.getMostSignificantBits() & 0x0000FFFF00000000L) >>> 32;
-        return (int)value;
+        long value = (uuid.getMostSignificantBits() & 0xFFFFFFFF00000000L) >>> 32;
+        return (int) value;
     }
     /**
      * Parse UUID from bytes. The {@code uuidBytes} can represent a 16-bit, 32-bit or 128-bit UUID,
@@ -220,8 +224,8 @@ import java.util.UUID;
             throw new IllegalArgumentException("uuidBytes cannot be null");
         }
         int length = uuidBytes.length;
-        if (length != UUID_BYTES_16_BIT && length != UUID_BYTES_32_BIT &&
-                length != UUID_BYTES_128_BIT) {
+        if (length != UUID_BYTES_16_BIT && length != UUID_BYTES_32_BIT
+                && length != UUID_BYTES_128_BIT) {
             throw new IllegalArgumentException("uuidBytes length invalid - " + length);
         }
         // Construct a 128 bit UUID.
@@ -238,7 +242,7 @@ import java.util.UUID;
             shortUuid = uuidBytes[0] & 0xFF;
             shortUuid += (uuidBytes[1] & 0xFF) << 8;
         } else {
-            shortUuid = uuidBytes[0] & 0xFF ;
+            shortUuid = uuidBytes[0] & 0xFF;
             shortUuid += (uuidBytes[1] & 0xFF) << 8;
             shortUuid += (uuidBytes[2] & 0xFF) << 16;
             shortUuid += (uuidBytes[3] & 0xFF) << 24;
@@ -248,8 +252,8 @@ import java.util.UUID;
         return new ParcelUuid(new UUID(msb, lsb));
     }
     /**
-     * Parse UUID to bytes. The returned value is shortest representation, a 16-bit, 32-bit or 128-bit UUID,
-     * Note returned value is little endian (Bluetooth).
+     * Parse UUID to bytes. The returned value is shortest representation, a 16-bit, 32-bit or
+     * 128-bit UUID, Note returned value is little endian (Bluetooth).
      *
      * @param uuid uuid to parse.
      * @return shortest representation of {@code uuid} as bytes.
@@ -262,17 +266,17 @@ import java.util.UUID;
         if (is16BitUuid(uuid)) {
             byte[] uuidBytes = new byte[UUID_BYTES_16_BIT];
             int uuidVal = getServiceIdentifierFromParcelUuid(uuid);
-            uuidBytes[0] = (byte)(uuidVal & 0xFF);
-            uuidBytes[1] = (byte)((uuidVal & 0xFF00) >> 8);
+            uuidBytes[0] = (byte) (uuidVal & 0xFF);
+            uuidBytes[1] = (byte) ((uuidVal & 0xFF00) >> 8);
             return uuidBytes;
         }
         if (is32BitUuid(uuid)) {
             byte[] uuidBytes = new byte[UUID_BYTES_32_BIT];
             int uuidVal = getServiceIdentifierFromParcelUuid(uuid);
-            uuidBytes[0] = (byte)(uuidVal & 0xFF);
-            uuidBytes[1] = (byte)((uuidVal & 0xFF00) >> 8);
-            uuidBytes[2] = (byte)((uuidVal & 0xFF0000) >> 16);
-            uuidBytes[3] = (byte)((uuidVal & 0xFF000000) >> 24);
+            uuidBytes[0] = (byte) (uuidVal & 0xFF);
+            uuidBytes[1] = (byte) ((uuidVal & 0xFF00) >> 8);
+            uuidBytes[2] = (byte) ((uuidVal & 0xFF0000) >> 16);
+            uuidBytes[3] = (byte) ((uuidVal & 0xFF000000) >> 24);
             return uuidBytes;
         }
         // Construct a 128 bit UUID.

@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -20,13 +22,15 @@ import com.e.ble.util.BLE_UUID_Util;
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.adapter.DeviceDetailAdapter;
+import org.eson.liteble.bean.CharacterBean;
 import org.eson.liteble.bean.DescriptorBean;
 import org.eson.liteble.bean.ServiceBean;
-import org.eson.liteble.bean.CharacterBean;
 import org.eson.liteble.common.ConnectedDevice;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.LogUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +54,7 @@ public class BleDetailActivity extends BaseBleActivity {
     private TextView textView;
     private TextView name;
     private Button disConnect;
+    private Button readRssiBtn;
     private ListView detailList;
 
     private List<ServiceBean> serviceBeanList;
@@ -59,6 +64,7 @@ public class BleDetailActivity extends BaseBleActivity {
     private boolean isConnect = true;
     private ProgressDialog m_pDialog;
 
+    private boolean isReadStart = false;
 
     @Override
     protected int getRootLayout() {
@@ -71,6 +77,7 @@ public class BleDetailActivity extends BaseBleActivity {
         textView = (TextView) findViewById(R.id.text);
         name = (TextView) findViewById(R.id.name);
         disConnect = (Button) findViewById(R.id.disconnect);
+        readRssiBtn = (Button) findViewById(R.id.readRssiBtn);
         detailList = (ListView) findViewById(R.id.detailList);
     }
 
@@ -94,7 +101,29 @@ public class BleDetailActivity extends BaseBleActivity {
                 }
             }
         });
+
+        readRssiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isReadStart) {
+
+                    isReadStart = false;
+                    readRssiBtn.setText("开始读取信号值");
+                    stopReadTimer();
+
+                } else {
+                    isReadStart = true;
+                    createFile();
+                    readRssiBtn.setText("停止读取信号值");
+                    startReadTimer();
+                }
+            }
+        });
     }
+
+
+
 
     @Override
     protected void process(Bundle savedInstanceState) {
@@ -105,6 +134,24 @@ public class BleDetailActivity extends BaseBleActivity {
         name.setText(devName);
         getMessage();
 
+    }
+
+    private void createFile() {
+        String sd = Environment.getExternalStorageDirectory().getPath()+"/LiteBle/rssi";
+        String fileName = sd+ "/rssi.csv";
+        File file = new File(sd);
+        if (!file.exists()){
+            file.mkdirs();
+        }
+        file = new File(fileName);
+        if (file.exists()){
+            file.delete();
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -161,6 +208,8 @@ public class BleDetailActivity extends BaseBleActivity {
                 isConnect = true;
                 disConnect.setText("断开连接");
                 getMessage();
+                break;
+            default:
                 break;
         }
 
@@ -312,8 +361,45 @@ public class BleDetailActivity extends BaseBleActivity {
         serviceBeanList = ConnectedDevice.get().getServiceList(connectMac);
         mDeviceDetailAdapter = new DeviceDetailAdapter(mContext, serviceBeanList);
         detailList.setAdapter(mDeviceDetailAdapter);
+    }
 
+
+    private Thread mThread;
+
+    private void startReadTimer() {
+        final String connectMac = MyApplication.getInstance().getCurrentShowDevice();
+        if (mThread == null) {
+            mThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    while (isReadStart) {
+
+                        if (TextUtils.isEmpty(connectMac)) {
+                            break;
+                        }
+                        BLEControl.get().readGattRssi(connectMac);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            mThread.start();
+        }
+    }
+
+    private void stopReadTimer() {
+        try {
+            mThread.interrupt();
+            mThread = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
 
 }
