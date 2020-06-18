@@ -25,7 +25,7 @@ package org.eson.ble_common.support;
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class ScanResult implements Parcelable {
 	// Remote bluetooth device.

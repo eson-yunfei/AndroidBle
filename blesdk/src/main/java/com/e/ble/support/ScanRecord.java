@@ -17,7 +17,7 @@
 package com.e.ble.support;
 
 import android.os.ParcelUuid;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.SparseArray;

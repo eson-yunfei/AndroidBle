@@ -1,7 +1,7 @@
 package org.e.ble.scan.support;
 
 import android.os.ParcelUuid;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 

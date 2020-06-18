@@ -2,10 +2,8 @@ package org.e.ble.scan.support;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.support.annotation.RequiresPermission;
+import androidx.annotation.RequiresPermission;
 import android.util.SparseArray;
-
-import org.e.ble.scan.support.Objects;
 
 import java.util.Arrays;
 import java.util.Iterator;

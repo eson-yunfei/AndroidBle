@@ -4,7 +4,7 @@ import android.Manifest;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.RequiresPermission;
+import androidx.annotation.RequiresPermission;
 
 import org.e.ble.scan.callback.ScanCallback;
 import org.e.ble.scan.support.ScanFilter;

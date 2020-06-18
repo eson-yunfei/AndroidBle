@@ -18,10 +18,9 @@ package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.scan.BLEScanCfg;
@@ -42,7 +41,6 @@ import org.eson.liteble.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import kale.adapter.CommonRcvAdapter;
 import kale.adapter.item.AdapterItem;

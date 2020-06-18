@@ -3,7 +3,7 @@ package org.eson.liteble;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.ParcelUuid;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import org.e.ble.scan.BleScannerCompat;

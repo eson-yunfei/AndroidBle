@@ -1,7 +1,7 @@
 package org.eson.ble_common.support;
 
 import android.os.ParcelUuid;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 
