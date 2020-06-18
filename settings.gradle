@@ -1,1 +1,1 @@
-include ':app', ':blesdk' //, ':sdk'
+include ':app', ':blesdk', ':ble_common', ':ble_scanner' //, ':sdk'

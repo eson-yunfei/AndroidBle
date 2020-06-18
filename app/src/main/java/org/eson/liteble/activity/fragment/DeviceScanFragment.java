@@ -74,7 +74,7 @@ public class DeviceScanFragment extends BaseFragment {
 
         mListView = findView(R.id.listview);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mListView.setItemAnimator(new DefaultItemAnimator());
+//        mListView.setItemAnimator(new DefaultItemAnimator());
         scanBLEAdapter = new CommonRcvAdapter<BLEDevice>(deviceList) {
             @NonNull
             @Override
@@ -158,7 +158,7 @@ public class DeviceScanFragment extends BaseFragment {
         showProgress("搜索设备中。。。。");
         BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(
                 MyApplication.getInstance().getConfigShare().getConnectTime())
-                .addUUIDFilter(UUID.fromString("6E401892-B5A3-F393-E0A9-E50E24DCCA9E"))
+//                .addUUIDFilter(UUID.fromString("6E401892-B5A3-F393-E0A9-E50E24DCCA9E"))
                 .builder();
         BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
             @Override

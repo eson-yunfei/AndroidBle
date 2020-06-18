@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.e.ble.BLESdk;
@@ -26,7 +27,7 @@ import java.util.List;
  * @chang time
  * @class describe
  */
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
 
 	protected static Context mContext;
 	@SuppressLint("StaticFieldLeak")

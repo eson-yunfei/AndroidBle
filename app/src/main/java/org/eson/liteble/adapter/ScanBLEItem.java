@@ -64,7 +64,7 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
         deviceName.setText(name);
         deviceMac.setText(mac);
 
-        scanRet.setVisibility(View.GONE);
+        scanRet.setVisibility(View.INVISIBLE);
 
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
