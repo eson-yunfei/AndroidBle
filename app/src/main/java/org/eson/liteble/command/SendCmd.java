@@ -14,12 +14,11 @@ public class SendCmd extends BaseCommand<String> {
 
     @Override
     public Message getSendCmd() {
-        return new Message() {
-            @Override
-            public byte[] getBytes() {
-                return new byte[]{1,2,3,4,5};
-            }
-        };
+
+        Message message = new Message();
+        message.setObject(1);
+
+        return message;
     }
 
     @Override
