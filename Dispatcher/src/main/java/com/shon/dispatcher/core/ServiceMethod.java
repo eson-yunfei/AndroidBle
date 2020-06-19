@@ -27,7 +27,7 @@ public class ServiceMethod<RequestT, ResultT> {
 
     public ServiceMethod(Transmitter transmitter, Method method, Object[] args) {
         this.transmitter = transmitter;
-        create(method);
+        create(method, args);
     }
 
     public Transmitter getTransmitter() {
@@ -42,7 +42,7 @@ public class ServiceMethod<RequestT, ResultT> {
         return callAdapter;
     }
 
-    private void create(Method method) {
+    private void create(Method method,Object[] args) {
 
         Type returnType = method.getGenericReturnType();
         Type type = Utils.getRawType(returnType);
@@ -52,6 +52,13 @@ public class ServiceMethod<RequestT, ResultT> {
         if (annotations.length == 0) {
             return;
         }
+        if (args != null){
+            for (int i = 0; i < args.length; i++) {
+                Object arg = args[i];
+                TransLog.e("args  : " +i + " ; type :" + arg.getClass());
+            }
+        }
+
         for (Annotation annotation : annotations) {
             TransLog.e("annotation : " + annotation.getClass());
             if (annotation instanceof API) {

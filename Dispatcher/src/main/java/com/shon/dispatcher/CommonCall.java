@@ -13,9 +13,9 @@ import com.shon.dispatcher.imp.OnCallback;
 final class CommonCall<T> implements TransCall<T> {
 
     private Transmitter transmitter;
-    private ServiceMethod<Object, TransCall<?>> serviceMethod;
+    private ServiceMethod<Object, Object> serviceMethod;
 
-    public CommonCall(ServiceMethod<Object, TransCall<?>> serviceMethod, T args) {
+    public CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args) {
         transmitter = serviceMethod.getTransmitter();
         this.serviceMethod = serviceMethod;
     }

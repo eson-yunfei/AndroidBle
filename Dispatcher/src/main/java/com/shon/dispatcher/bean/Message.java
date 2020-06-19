@@ -1,6 +1,5 @@
 package com.shon.dispatcher.bean;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 /**

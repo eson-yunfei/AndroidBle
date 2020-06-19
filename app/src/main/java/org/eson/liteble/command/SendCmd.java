@@ -1,6 +1,7 @@
 package org.eson.liteble.command;
 
 import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Message;
 
 /**
  * Auth : xiao.yunfei
@@ -9,8 +10,14 @@ import com.shon.dispatcher.bean.BaseCommand;
  * Des :
  */
 public class SendCmd extends BaseCommand {
+
     @Override
-    public byte[] getSendCmd() {
-        return new byte[]{1,2,3,4,5};
+    public Message getSendCmd() {
+        return new Message() {
+            @Override
+            public byte[] getBytes() {
+                return new byte[]{1,2,3,4,5};
+            }
+        };
     }
 }
