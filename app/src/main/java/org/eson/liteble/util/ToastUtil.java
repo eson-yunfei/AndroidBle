@@ -1,6 +1,8 @@
 package org.eson.liteble.util;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 /**
@@ -9,6 +11,7 @@ import android.widget.Toast;
 public class ToastUtil {
 
 	private static Toast toast;
+	private Context context;
 
 	/**
 	 * 短时间显示  Toast
@@ -78,6 +81,7 @@ public class ToastUtil {
 		toast.show();
 
 	}
+
 
 	/**
 	 * 隐藏toast

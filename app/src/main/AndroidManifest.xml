@@ -24,8 +24,19 @@
         android:theme="@style/AppTheme"
         >
 
+<!--        <activity-->
+<!--            android:name=".TestA"-->
+<!--            android:label="@string/app_name"-->
+<!--            android:theme="@style/AppTheme">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN"/>-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+
         <activity
-            android:name=".TestA"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -34,17 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <!--<activity-->
-            <!--android:name=".activity.MainActivity"-->
-            <!--android:label="@string/app_name"-->
-            <!--android:theme="@style/AppTheme">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
         <activity
             android:name=".activity.SettingActivity"
             android:label="Setting"/>
@@ -61,7 +61,7 @@
         <activity
             android:name=".activity.CharacteristicActivity"
             android:label="Characteristic"/>
-        <activity android:name=".activity.BaseBleActivity"/>
+        <activity android:name=".activity.base.BaseBleActivity"/>
 
         <service android:name=".service.BleService">
 

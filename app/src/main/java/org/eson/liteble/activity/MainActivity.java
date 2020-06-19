@@ -1,12 +1,13 @@
 package org.eson.liteble.activity;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,6 +16,7 @@ import com.e.ble.check.BLECheckListener;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
+import org.eson.liteble.activity.base.BaseBleActivity;
 import org.eson.liteble.activity.fragment.BondedDevicesFragment;
 import org.eson.liteble.activity.fragment.DeviceScanFragment;
 import org.eson.liteble.util.LogUtil;
@@ -48,7 +50,8 @@ public class MainActivity extends BaseBleActivity {
     protected void initView() {
 
         mActionBar = getSupportActionBar();
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21 && mActionBar != null) {
+
             mActionBar.setElevation(0);
         }
 
@@ -57,7 +60,7 @@ public class MainActivity extends BaseBleActivity {
         mScanFragment = new DeviceScanFragment();
         mDevicesFragment = new BondedDevicesFragment();
 
-        mFragmentManager = getFragmentManager();
+        mFragmentManager = getSupportFragmentManager();
         mTransaction = mFragmentManager.beginTransaction();
         mTransaction.add(R.id.containerLayout, mScanFragment);
         mTransaction.commit();

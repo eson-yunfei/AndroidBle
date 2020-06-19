@@ -7,17 +7,26 @@ android {
         applicationId "org.eson.liteble"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 10
-        versionName "2.0"
+        versionCode 11
+        versionName "2.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
+
+        buildFeatures{
+            viewBinding = true
+        }
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

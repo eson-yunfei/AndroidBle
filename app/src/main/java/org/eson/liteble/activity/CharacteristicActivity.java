@@ -12,6 +12,7 @@ import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
+import org.eson.liteble.activity.base.BaseBleActivity;
 import org.eson.liteble.adapter.BleDataAdapter;
 import org.eson.liteble.bean.BleDataBean;
 import org.eson.liteble.bean.CharacterBean;

@@ -8,6 +8,8 @@ import android.widget.EditText;
 
 import org.eson.liteble.MyApplication;
 import com.e.ble.util.BLEByteUtil;
+
+import org.eson.liteble.activity.base.BaseBleActivity;
 import org.eson.liteble.service.BleService;
 
 import java.util.UUID;

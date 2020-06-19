@@ -18,6 +18,8 @@ package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,8 +35,10 @@ import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.activity.BleDetailActivity;
 import org.eson.liteble.activity.MainActivity;
+import org.eson.liteble.activity.base.BaseFragment;
 import org.eson.liteble.adapter.ScanBLEItem;
 import org.eson.liteble.service.BleService;
+import org.eson.liteble.share.ConfigShare;
 import org.eson.liteble.util.BondedDeviceBean;
 import org.eson.liteble.util.BondedDeviceUtil;
 import org.eson.liteble.util.ToastUtil;
@@ -62,6 +66,7 @@ public class DeviceScanFragment extends BaseFragment {
 
     private BLEDevice selectDevice = null;
 
+    private boolean isFilterNoName;
     @Override
     protected int getLayoutID() {
         return R.layout.fragment_scan_device;
@@ -95,6 +100,12 @@ public class DeviceScanFragment extends BaseFragment {
         }
     };
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ConfigShare configShare = new ConfigShare(getActivity());
+        isFilterNoName = configShare.getFilterNoName();
+    }
 
     @Override
     public void onPause() {
@@ -168,6 +179,7 @@ public class DeviceScanFragment extends BaseFragment {
 
             @Override
             public void onScannerStop() {
+                hideProgress();
                 try {
                     ((MainActivity) getActivity()).reSetMenu();
                     ToastUtil.showShort(getActivity(), "扫描结束");
@@ -194,6 +206,10 @@ public class DeviceScanFragment extends BaseFragment {
 
     public void addScanBLE(final BLEDevice bleDevice) {
 
+        if (isFilterNoName && TextUtils.isEmpty(bleDevice.getName())){
+            //开启过滤无名称设备，并且设备名称为空，不添加设备
+            return;
+        }
         if (isExitDevice(bleDevice)) {
             updateDevice(bleDevice);
             scanBLEAdapter.notifyDataSetChanged();

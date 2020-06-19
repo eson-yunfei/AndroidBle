@@ -29,6 +29,7 @@ import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.activity.BleDetailActivity;
 import org.eson.liteble.activity.MainActivity;
+import org.eson.liteble.activity.base.BaseFragment;
 import org.eson.liteble.adapter.BondedDevAdapter;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.BondedDeviceBean;

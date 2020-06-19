@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="10dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="搜索设备搜索时长："
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
 
         <EditText
             android:id="@+id/timeOutEdit"
@@ -27,13 +27,39 @@
             android:hint="单位：s"
             android:inputType="numberSigned"
             android:maxLength="10"
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:background="#cccccc"/>
+        android:background="#cccccc" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="过滤无名称设备"
+            android:textSize="@dimen/text_size" />
+
+        <Switch
+            android:id="@+id/filter_no_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="#cccccc" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="允许连接多个设备"
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
 
         <Switch
             android:id="@+id/switchBtn"
@@ -53,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -68,7 +94,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="最大连接设备个数："
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
 
         <EditText
             android:id="@+id/maxNumber"
@@ -79,7 +105,7 @@
             android:hint="1-5个"
             android:inputType="number"
             android:maxLength="10"
-            android:textSize="@dimen/text_size"/>
+            android:textSize="@dimen/text_size" />
     </RelativeLayout>
 
     <Button
@@ -87,5 +113,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="@string/save_setting"/>
+        android:text="@string/save_setting" />
 </LinearLayout>

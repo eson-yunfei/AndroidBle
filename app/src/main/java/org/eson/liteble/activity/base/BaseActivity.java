@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.eson.liteble.activity;
+package org.eson.liteble.activity.base;
 
 import android.content.Context;
 import android.os.Bundle;

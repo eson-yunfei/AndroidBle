@@ -18,14 +18,13 @@ package org.eson.liteble.activity;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.TextView;
+import android.view.View;
 
 import com.e.ble.BuildConfig;
 
 import org.eson.liteble.R;
+import org.eson.liteble.activity.base.ViewBindActivity;
+import org.eson.liteble.databinding.ActivityAboutBinding;
 
 /**
  * @package_name org.eson.liteble.activity
@@ -35,26 +34,25 @@ import org.eson.liteble.R;
  * @description
  */
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends ViewBindActivity {
 
-    private TextView appVerTV;
-    private TextView sdkVerTV;
-    private BuildConfig sdkConfig;
+
+    private ActivityAboutBinding aboutBinding;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-
-        appVerTV = (TextView) findViewById(R.id.appVerTV);
-        sdkVerTV = (TextView) findViewById(R.id.sdkVerTV);
-
-        String appVersion = getVersionName(this) + "(" + getVersionCode(this) + ")";
-        appVerTV.setText(getString(R.string.app_version, appVersion));
-        String sdkVersion = BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ")";
-        sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
-
+    protected View getBindViewRoot() {
+        aboutBinding = ActivityAboutBinding.inflate(getLayoutInflater());
+        return aboutBinding.getRoot();
     }
+    @Override
+    protected void onProcess() {
+        String appVersion = getVersionName(this) + "(" + getVersionCode(this) + ")";
+        aboutBinding.appVerTV.setText(getString(R.string.app_version, appVersion));
+        String sdkVersion = BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ")";
+        aboutBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
+    }
+
+
 
     //获取版本号
     private String getVersionName(Context context) {

@@ -1,4 +1,4 @@
-package org.eson.liteble.activity;
+package org.eson.liteble.activity.base;
 
 import android.os.Bundle;
 
