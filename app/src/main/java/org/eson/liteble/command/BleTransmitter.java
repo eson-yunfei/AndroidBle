@@ -14,6 +14,18 @@ import org.eson.liteble.util.LogUtil;
  */
 public class BleTransmitter extends Transmitter {
 
+    private static BleTransmitter bleTransmitter;
+    private BleTransmitter(){}
+    public static BleTransmitter getTransmitter(){
+        if (bleTransmitter == null){
+            synchronized (BleTransmitter.class){
+                if (bleTransmitter == null){
+                    bleTransmitter = new BleTransmitter();
+                }
+            }
+        }
+        return bleTransmitter;
+    }
     @Override
     public void sendData(Message sendData) {
 //        BleService.get().sendData("","","",sendData.getBytes());

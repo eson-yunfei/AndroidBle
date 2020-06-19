@@ -1,6 +1,7 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.bean.Message;
+import com.shon.dispatcher.utils.TransLog;
 
 /**
  * Auth : xiao.yunfei
@@ -13,5 +14,7 @@ public abstract class Transmitter {
 
     public void receiverData(Message receivedData){
 
+        TransLog.e("receiverData : " + receivedData.toString());
+        Dispatcher.getInstance().receiverData(receivedData);
     }
 }

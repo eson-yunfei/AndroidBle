@@ -1,8 +1,9 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.bean.BaseCommand;
-import com.shon.dispatcher.core.ServiceMethod;
+import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.imp.OnCallback;
+import com.shon.dispatcher.utils.TransLog;
 
 /**
  * Auth : xiao.yunfei
@@ -12,22 +13,41 @@ import com.shon.dispatcher.imp.OnCallback;
  */
 final class CommonCall<T> implements TransCall<T> {
 
+    private int i = 1;
     private Transmitter transmitter;
+    private OnCallback<T> onCallback;
     private ServiceMethod<Object, Object> serviceMethod;
 
-    public CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args) {
+     CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args) {
         transmitter = serviceMethod.getTransmitter();
         this.serviceMethod = serviceMethod;
+         TransLog.e("current i : " + i);
     }
 
     @Override
     public void execute(OnCallback<T> onCallback) {
 
+         i = i + 1;
+        TransLog.e("current i : " + i);
+         this.onCallback = onCallback;
          BaseCommand baseCommand = serviceMethod.getCommand();
          if (baseCommand == null){
              return;
          }
         transmitter.sendData(baseCommand.getSendCmd());
-        onCallback.onDataReceived((T) "已执行");
+//        onCallback.onDataReceived((T) "已执行");
+    }
+
+    @Override
+    public void cancel() {
+
+    }
+
+    void onDataCallback(Object object, Message message){
+        i = i + 1;
+        TransLog.e("current i : " + i);
+         if (onCallback != null){
+             onCallback.onDataReceived((T) object,message);
+         }
     }
 }

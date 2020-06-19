@@ -8,8 +8,10 @@ import java.util.Arrays;
  * Package name : com.shon.dispatcher.bean
  * Des :
  */
-public abstract class Message {
-    private byte[] bytes;
+public  class Message {
+
+    private byte[] bytes;  //实际数据
+    private String tag;   //
 
     private Object object;
 
@@ -21,6 +23,13 @@ public abstract class Message {
         this.bytes = bytes;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public Object getObject() {
         return object;
@@ -34,7 +43,10 @@ public abstract class Message {
     public String toString() {
         return "Message{" +
                 "bytes=" + Arrays.toString(bytes) +
+                ", tag=" + tag +
                 ", object=" + object +
                 '}';
     }
+
+
 }

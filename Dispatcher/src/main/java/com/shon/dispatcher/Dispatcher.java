@@ -1,13 +1,15 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.annotation.API;
-import com.shon.dispatcher.core.ServiceMethod;
+import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.utils.TransLog;
-import com.shon.dispatcher.utils.Utils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Auth : xiao.yunfei
@@ -21,7 +23,11 @@ public class Dispatcher {
 
     private DispatcherConfig dispatcherConfig;
 
+    private HashMap<Method,ServiceMethod<Object, Object>> serviceMethodHashMap;
     private Dispatcher() {
+        if (serviceMethodHashMap == null){
+            serviceMethodHashMap = new HashMap<>();
+        }
     }
 
     public static void init(DispatcherConfig dispatcherConfig) {
@@ -58,22 +64,71 @@ public class Dispatcher {
                 invocationHandler);
     }
 
-
     private InvocationHandler invocationHandler = new InvocationHandler() {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
 
+
+            ServiceMethod<Object, Object> serviceMethod =  getServiceMethod(method);
+            if (serviceMethod != null){
+                return serviceMethod.getCallAdapter().getCall();
+            }
             TransLog.e("invocationHandler : name  : " + method.getName());
             API api = method.getAnnotation(API.class);
             if (api == null) {
                 throw new Exception("unSupport method");
             }
 
-            ServiceMethod<Object, Object> serviceMethod = new ServiceMethod<>(dispatcherConfig.getTransmitter(), method, args);
+            serviceMethod = new ServiceMethod<>(dispatcherConfig.getTransmitter(), method, args);
             CommonCall<Object> commonCall = new CommonCall<>(serviceMethod, args);
-            return serviceMethod.getCallAdapter().adapt(commonCall);
+            TransCall<?> transCall = serviceMethod.getCallAdapter().adapt(commonCall);
+            TransLog.e("transCall : " + transCall.getClass().getName());
+            serviceMethodHashMap.put(method,serviceMethod);
+            return transCall;
         }
     };
+
+    private ServiceMethod<Object, Object> getServiceMethod(Method method){
+        if (serviceMethodHashMap == null){
+            return null;
+        }
+        if (serviceMethodHashMap.containsKey(method)){
+            return serviceMethodHashMap.get(method);
+        }
+        return null;
+    }
+    public void receiverData(Message receivedData) {
+
+        if (serviceMethodHashMap == null){
+            return;
+        }
+
+        for (Map.Entry<Method, ServiceMethod<Object, Object>> serviceMethodEntry : serviceMethodHashMap.entrySet()) {
+            ServiceMethod<Object, Object> serviceMethod = serviceMethodEntry.getValue();
+            if (serviceMethod == null){
+                continue;
+            }
+
+            BaseCommand<?> baseCommand = serviceMethod.getCommand();
+
+            if (baseCommand == null){
+                return;
+            }
+            Object result = baseCommand.handlerMessage(receivedData);
+            TransLog.e("handler result : " + result);
+            if (result != null){
+
+                CommonCall<Object> commonCall = (CommonCall<Object>) serviceMethod.getCallAdapter().getCall();
+                TransLog.e("commonCall : " + commonCall.getClass().getName());
+                commonCall.onDataCallback(result,receivedData);
+                serviceMethodHashMap.remove(serviceMethodEntry.getKey());
+                break;
+            }
+
+        }
+
+
+    }
 }

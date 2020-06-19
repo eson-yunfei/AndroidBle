@@ -14,6 +14,7 @@ import com.e.ble.BLESdk;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.DispatcherConfig;
 import com.shon.dispatcher.TransCall;
+import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.imp.OnCallback;
 
 import org.eson.liteble.command.BleTransmitter;
@@ -68,7 +69,7 @@ public class MyApplication extends MultiDexApplication {
 
         DispatcherConfig dispatcherConfig = new DispatcherConfig.Builder()
                 .setApiInterface(Command.class)
-                .setTransmitter(new BleTransmitter())
+                .setTransmitter(BleTransmitter.getTransmitter())
                 .build();
         Dispatcher.init(dispatcherConfig);
 
@@ -78,7 +79,10 @@ public class MyApplication extends MultiDexApplication {
         LogUtil.e("transCall : " + transCall);
         if (transCall != null)
 
-            transCall.execute(s -> LogUtil.e("s = " + s));
+            transCall.execute((s, message) -> {
+                LogUtil.e("s = " + s);
+                LogUtil.e("message = " + message.toString());
+            });
     }
 
 

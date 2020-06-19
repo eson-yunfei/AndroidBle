@@ -8,7 +8,7 @@ import com.shon.dispatcher.bean.Message;
  * Package name : com.shon.dispatcher
  * Des :
  */
-public class DefaultTransmitter extends Transmitter {
+ class DefaultTransmitter extends Transmitter {
 
     @Override
     public void sendData(Message sendData) {

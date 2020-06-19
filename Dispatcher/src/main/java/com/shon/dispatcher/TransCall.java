@@ -10,4 +10,5 @@ import com.shon.dispatcher.imp.OnCallback;
  */
 public interface TransCall<T> {
     void execute(OnCallback<T> onCallback);
+    void cancel();
 }
