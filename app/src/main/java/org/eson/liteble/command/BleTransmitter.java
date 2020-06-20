@@ -29,6 +29,10 @@ public class BleTransmitter extends Transmitter {
     @Override
     public void sendData(Message sendData) {
 //        BleService.get().sendData("","","",sendData.getBytes());
+        byte[] bytes = sendData.getBytes();
+        if (bytes == null || bytes.length == 0){
+            return;
+        }
         LogUtil.e("接收到发送数据的指令：" + BLEByteUtil.getString(sendData.getBytes()));
     }
 }

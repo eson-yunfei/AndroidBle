@@ -23,8 +23,9 @@ public abstract class ViewBindActivity extends AppCompatActivity {
 
         onProcess();
     }
+    protected abstract View getBindViewRoot() ;
 
     protected abstract void onProcess();
 
-    protected abstract View getBindViewRoot() ;
+
 }

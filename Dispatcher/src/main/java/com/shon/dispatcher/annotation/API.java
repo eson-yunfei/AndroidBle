@@ -1,6 +1,6 @@
 package com.shon.dispatcher.annotation;
 
-import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Sender;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,5 +16,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface API {
-    Class<? extends BaseCommand> name();
+    Class<? extends Sender> name();
+
+    long timeout() default 3 * 1000;
 }

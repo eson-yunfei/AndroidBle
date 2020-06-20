@@ -169,11 +169,10 @@ public class CharacteristicActivity extends BaseBleActivity {
     //***************************************************************************************************//
     //***************************************************************************************************//
 
-    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("HH:mm:ss, SSS", Locale.getDefault());
+    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("HH:mm:ss ,  SSS", Locale.getDefault());
 
     private String getCurrentTime() {
-        String currentTime = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        return currentTime;
+        return simpleDateFormat.format(new Date(System.currentTimeMillis()));
     }
 
     /**

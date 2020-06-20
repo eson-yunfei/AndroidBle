@@ -1,7 +1,7 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.annotation.API;
-import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.utils.TransLog;
 
 import java.lang.annotation.Annotation;
@@ -18,7 +18,7 @@ class ServiceMethod<RequestT, ResultT> {
 
     private Transmitter transmitter;
 
-    private BaseCommand baseCommand;
+    private Sender sender;
 
     private CallAdapter<Object, TransCall<?>> callAdapter;
 
@@ -31,8 +31,8 @@ class ServiceMethod<RequestT, ResultT> {
         return transmitter;
     }
 
-    BaseCommand getCommand() {
-        return baseCommand;
+    Sender getCommand() {
+        return sender;
     }
 
     CallAdapter<Object, TransCall<?>> getCallAdapter() {
@@ -63,9 +63,9 @@ class ServiceMethod<RequestT, ResultT> {
                 if (api == null) {
                     continue;
                 }
-                Class<? extends BaseCommand> cls = api.name();
+                Class<? extends Sender> cls = api.name();
                 try {
-                    baseCommand = cls.newInstance();
+                    sender = cls.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

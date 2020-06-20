@@ -27,8 +27,6 @@ import org.eson.liteble.util.ToastUtil;
  */
 public class MainActivity extends BaseBleActivity {
 
-    private ActionBar mActionBar;
-    private TabLayout mTabLayout;
     private FragmentManager mFragmentManager;
     private FragmentTransaction mTransaction;
 
@@ -49,13 +47,13 @@ public class MainActivity extends BaseBleActivity {
     @Override
     protected void initView() {
 
-        mActionBar = getSupportActionBar();
+        ActionBar mActionBar = getSupportActionBar();
         if (Build.VERSION.SDK_INT >= 21 && mActionBar != null) {
 
             mActionBar.setElevation(0);
         }
 
-        mTabLayout = findView(R.id.tabLayout);
+        TabLayout mTabLayout = findView(R.id.tabLayout);
 
         mScanFragment = new DeviceScanFragment();
         mDevicesFragment = new BondedDevicesFragment();
@@ -68,25 +66,46 @@ public class MainActivity extends BaseBleActivity {
         mTabLayout.addTab(mTabLayout.newTab().setText("Scanner"), true);
         mTabLayout.addTab(mTabLayout.newTab().setText("Bonded"));
 
-
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                onTabChanged(tab);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        mTabLayout.addOnTabSelectedListener(onTabSelectedListener);
     }
 
+    @Override
+    protected void process(Bundle savedInstanceState) {
+        super.process(savedInstanceState);
+
+        checkBLEState();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reSetMenu();
+    }
+
+    /**
+     *
+     */
+    private TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            onTabChanged(tab);
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
+    };
+
+    /**
+     *
+     * @param tab
+     */
     private void onTabChanged(TabLayout.Tab tab) {
         currentIndex = tab.getPosition();
         mTransaction = mFragmentManager.beginTransaction();
@@ -106,19 +125,6 @@ public class MainActivity extends BaseBleActivity {
         mTransaction.commit();
 
 
-    }
-
-    @Override
-    protected void process(Bundle savedInstanceState) {
-        super.process(savedInstanceState);
-
-        checkBLEState();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        reSetMenu();
     }
 
     public void reSetMenu() {

@@ -60,6 +60,16 @@ public class BLEDevice implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return "BLEDevice{" +
+                "name='" + name + '\'' +
+                ", mac='" + mac + '\'' +
+                ", rssi=" + rssi +
+                ", scanRecord=" + scanRecord +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

@@ -2,6 +2,7 @@ package org.eson.liteble.command;
 
 import com.shon.dispatcher.TransCall;
 import com.shon.dispatcher.annotation.API;
+import com.shon.dispatcher.annotation.Notice;
 
 /**
  * Auth : xiao.yunfei
@@ -15,4 +16,6 @@ public interface Command {
     @API(name = SendCmd.class)
     TransCall<String> sendCmd(String cmd);
 
+    @Notice(name = CmdListener.class)
+    TransCall<String> startListener();
 }

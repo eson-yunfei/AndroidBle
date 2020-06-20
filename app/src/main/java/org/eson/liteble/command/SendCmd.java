@@ -1,6 +1,6 @@
 package org.eson.liteble.command;
 
-import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.utils.TransLog;
 
@@ -10,14 +10,14 @@ import com.shon.dispatcher.utils.TransLog;
  * Package name : org.eson.liteble.command
  * Des :
  */
-public class SendCmd extends BaseCommand<String> {
+public class SendCmd extends Sender<String> {
 
     @Override
     public Message getSendCmd() {
 
         Message message = new Message();
         message.setObject(1);
-
+        message.setBytes(new byte[]{1,2,3,4,5,6});
         return message;
     }
 

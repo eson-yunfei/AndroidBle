@@ -69,7 +69,7 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnClickListener.onItemClick(position);
+                mOnClickListener.onItemClick(device);
             }
         });
 
@@ -100,6 +100,6 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
     }
 
     public interface ItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(BLEDevice bleDevice);
     }
 }

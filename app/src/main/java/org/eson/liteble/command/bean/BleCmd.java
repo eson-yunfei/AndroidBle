@@ -14,4 +14,28 @@ public class BleCmd {
     private UUID characteristicUuid;
 
 
+
+    public int getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(int msgType) {
+        this.msgType = msgType;
+    }
+
+    public UUID getServiceUuid() {
+        return serviceUuid;
+    }
+
+    public void setServiceUuid(UUID serviceUuid) {
+        this.serviceUuid = serviceUuid;
+    }
+
+    public UUID getCharacteristicUuid() {
+        return characteristicUuid;
+    }
+
+    public void setCharacteristicUuid(UUID characteristicUuid) {
+        this.characteristicUuid = characteristicUuid;
+    }
 }

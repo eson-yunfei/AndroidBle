@@ -73,16 +73,16 @@ public class MyApplication extends MultiDexApplication {
                 .build();
         Dispatcher.init(dispatcherConfig);
 
-        Command command = Dispatcher.getInstance().getApi();
-
-        TransCall<String> transCall = command.sendCmd("123456");
-        LogUtil.e("transCall : " + transCall);
-        if (transCall != null)
-
-            transCall.execute((s, message) -> {
-                LogUtil.e("s = " + s);
-                LogUtil.e("message = " + message.toString());
-            });
+//        Command command = Dispatcher.getInstance().getApi();
+//
+//        TransCall<String> transCall = command.sendCmd("123456");
+//        LogUtil.e("transCall : " + transCall);
+//        if (transCall != null)
+//
+//            transCall.execute((s, message) -> {
+//                LogUtil.e("s = " + s);
+//                LogUtil.e("message = " + message.toString());
+//            });
     }
 
 

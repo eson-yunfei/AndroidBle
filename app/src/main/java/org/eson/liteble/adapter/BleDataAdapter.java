@@ -69,7 +69,7 @@ public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
         String dataString = getDataString(bleDataBean.getBuffer());
 
 
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(time + dataString);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(time + "\n\n"+dataString);
 
         spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.BLACK),
                 0, time.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

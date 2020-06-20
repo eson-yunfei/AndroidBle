@@ -1,7 +1,7 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.annotation.API;
-import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.utils.TransLog;
 
@@ -111,12 +111,12 @@ public class Dispatcher {
                 continue;
             }
 
-            BaseCommand<?> baseCommand = serviceMethod.getCommand();
+            Sender<?> sender = serviceMethod.getCommand();
 
-            if (baseCommand == null){
+            if (sender == null){
                 return;
             }
-            Object result = baseCommand.handlerMessage(receivedData);
+            Object result = sender.handlerMessage(receivedData);
             TransLog.e("handler result : " + result);
             if (result != null){
 

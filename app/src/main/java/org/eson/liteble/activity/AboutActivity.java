@@ -16,7 +16,6 @@
 
 package org.eson.liteble.activity;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.view.View;
 
@@ -44,29 +43,52 @@ public class AboutActivity extends ViewBindActivity {
         aboutBinding = ActivityAboutBinding.inflate(getLayoutInflater());
         return aboutBinding.getRoot();
     }
+
     @Override
     protected void onProcess() {
-        String appVersion = getVersionName(this) + "(" + getVersionCode(this) + ")";
+
+        String appVersion = formatVersion(getVersionName(), getVersionCode());
+        String sdkVersion = formatVersion(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+
+
         aboutBinding.appVerTV.setText(getString(R.string.app_version, appVersion));
-        String sdkVersion = BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ")";
         aboutBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
     }
 
 
+    /**
+     * 格式化 版本
+     *
+     * @param versionName versionName
+     * @param versionCode versionCode
+     * @return 格式化文字
+     */
+    private String formatVersion(String versionName, int versionCode) {
+        return versionName + "（ " + versionCode + " ) ";
+    }
 
-    //获取版本号
-    private String getVersionName(Context context) {
+
+    /**
+     * 获取版本 名称
+     *
+     * @return versionName
+     */
+    private String getVersionName() {
         try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             return "";
         }
     }
 
-    //获取版本号
-    private int getVersionCode(Context context) {
+    /**
+     * 获取版本号
+     *
+     * @return versionCode
+     */
+    private int getVersionCode() {
         try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+            return getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             return 0;
         }

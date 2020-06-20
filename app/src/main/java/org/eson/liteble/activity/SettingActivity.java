@@ -19,7 +19,7 @@ import static java.lang.Integer.parseInt;
  * @class describe
  * @anthor xujianbo E-mail: xuarbo@qq.com
  * @time 2017/2/22 18:21
- * @change    新增过滤无名称设备
+ * @change 新增过滤无名称设备
  * @chang 2020-06-19
  * @class describe
  */
@@ -27,7 +27,6 @@ public class SettingActivity extends ViewBindActivity {
 
     private ConfigShare configShare;
     private ActivitySettingBinding settingBinding;
-
 
     @Override
     protected View getBindViewRoot() {
@@ -62,6 +61,8 @@ public class SettingActivity extends ViewBindActivity {
         });
 
         settingBinding.filterNoName.setChecked(configShare.getFilterNoName());
+
+
         settingBinding.filterNoName.setOnCheckedChangeListener((buttonView, isChecked) -> configShare.setFilterNoName(isChecked));
 
         settingBinding.saveBtn.setOnClickListener(v -> saveSettingInfo());
@@ -75,10 +76,12 @@ public class SettingActivity extends ViewBindActivity {
             ToastUtil.showShort(this, "超时时间不能为空");
             return;
         }
-        int value = parseInt(text);
+
+        int value = parseInt(text) ;
         if (value < -1) {
             value = -1;
         }
+
         configShare.setConnectTime(value);
 
         String maxConnect = settingBinding.switchBtn.isChecked() ? settingBinding.maxNumber.getText().toString() : "1";
@@ -91,5 +94,7 @@ public class SettingActivity extends ViewBindActivity {
         configShare.setMaxConnect(size);
 
         BLESdk.get().setMaxConnect(size);
+        ToastUtil.showShort(this, "保存成功");
+        finish();
     }
 }

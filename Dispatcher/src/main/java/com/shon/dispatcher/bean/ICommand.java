@@ -6,14 +6,13 @@ package com.shon.dispatcher.bean;
  * Package name : com.shon.dispatcher.bean
  * Des :
  */
-interface IMessage<T> {
+interface ICommand<T> {
 
 
     /**
      * 处理消息，如果处理,返回数据， 不处理 null
      * @param message
-     * @param <T>
      * @return
      */
-    <T> T handlerMessage(Message message);
+     T handlerMessage(Message message);
 }

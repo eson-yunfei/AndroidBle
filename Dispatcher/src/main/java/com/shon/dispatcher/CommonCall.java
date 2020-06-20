@@ -1,6 +1,6 @@
 package com.shon.dispatcher;
 
-import com.shon.dispatcher.bean.BaseCommand;
+import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.imp.OnCallback;
 import com.shon.dispatcher.utils.TransLog;
@@ -30,11 +30,11 @@ final class CommonCall<T> implements TransCall<T> {
          i = i + 1;
         TransLog.e("current i : " + i);
          this.onCallback = onCallback;
-         BaseCommand baseCommand = serviceMethod.getCommand();
-         if (baseCommand == null){
+         Sender sender = serviceMethod.getCommand();
+         if (sender == null){
              return;
          }
-        transmitter.sendData(baseCommand.getSendCmd());
+        transmitter.sendData(sender.getSendCmd());
 //        onCallback.onDataReceived((T) "已执行");
     }
 
