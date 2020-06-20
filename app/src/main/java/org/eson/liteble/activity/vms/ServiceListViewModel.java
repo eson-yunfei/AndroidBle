@@ -88,22 +88,7 @@ public class ServiceListViewModel extends ViewModel {
             characterBean.setCharacterUUID(characterString);
             characterBean.setServiceUUID(serviceUUID.toString());
 
-            int characterValue = BLE_UUID_Util.getValue(character);
-
-            LogUtil.e("character:" + character);
-            LogUtil.e("characterValue:" + Integer.toHexString(characterValue));
-
-            int properties = gattCharacteristic.getProperties();    //用于区分特性用途（读、写、通知）
-
-            if ((properties & PROPERTY_READ) != 0) {
-                characterBean.setRead(true);
-            }
-            if ((properties & PROPERTY_WRITE) != 0) {
-                characterBean.setWrite(true);
-            }
-            if ((properties & PROPERTY_NOTIFY) != 0) {
-                characterBean.setNotify(true);
-            }
+            setEnableFunction(characterBean, gattCharacteristic, character);
 
             List<BluetoothGattDescriptor> descriptorList = gattCharacteristic.getDescriptors();
 
@@ -116,6 +101,24 @@ public class ServiceListViewModel extends ViewModel {
             characterBeanList.add(characterBean);
         }
         return characterBeanList;
+    }
+
+    private void setEnableFunction(CharacterBean characterBean, BluetoothGattCharacteristic gattCharacteristic,
+                                   UUID character) {
+        int characterValue = BLE_UUID_Util.getValue(character);
+        LogUtil.e("characterValue:" + Integer.toHexString(characterValue));
+
+        int properties = gattCharacteristic.getProperties();    //用于区分特性用途（读、写、通知）
+
+        if ((properties & PROPERTY_READ) != 0) {
+            characterBean.setRead(true);
+        }
+        if ((properties & PROPERTY_WRITE) != 0) {
+            characterBean.setWrite(true);
+        }
+        if ((properties & PROPERTY_NOTIFY) != 0) {
+            characterBean.setNotify(true);
+        }
     }
 
     private List<DescriptorBean> getDescriptors(@NonNull List<BluetoothGattDescriptor> gattDescriptors){
