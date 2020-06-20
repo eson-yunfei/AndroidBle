@@ -1,24 +1,16 @@
 package org.eson.liteble.activity;
 
-import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
 
-import org.eson.liteble.activity.base.ViewBindActivity;
-import org.eson.liteble.databinding.ActivityDeviceBinding;
+import android.os.Bundle;
 
-public class DeviceActivity extends ViewBindActivity {
+import org.eson.liteble.R;
 
-    private ActivityDeviceBinding deviceBinding;
-
-
+public class DeviceActivity extends AppCompatActivity {
 
     @Override
-    protected View getBindViewRoot() {
-        deviceBinding = ActivityDeviceBinding.inflate(getLayoutInflater());
-        return deviceBinding.getRoot();
-    }
-
-    @Override
-    protected void onProcess() {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_device);
     }
 }

@@ -19,6 +19,7 @@ import com.e.ble.control.listener.BLETransportListener;
 import com.e.ble.util.BLEConstant;
 import com.shon.dispatcher.bean.Message;
 
+import org.eson.liteble.LittleBleViewModel;
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
@@ -276,12 +277,13 @@ public class BleService extends Service {
     /**
      * 发送蓝牙状态
      */
-    private void sendBleState(int state, String name) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(BLEConstant.Type.TYPE_STATE, state);
-        bundle.putString(BLEConstant.Type.TYPE_NAME, name);
-        RxBus.getInstance().send(bundle);
+    private void sendBleState(int state, String deviceMac) {
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(BLEConstant.Type.TYPE_STATE, state);
+//        bundle.putString(BLEConstant.Type.TYPE_NAME, name);
+//        RxBus.getInstance().send(bundle);
 
+        LittleBleViewModel.getViewModel().updateDeviceState(deviceMac,state);
 
     }
 

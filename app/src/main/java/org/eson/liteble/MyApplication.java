@@ -58,7 +58,7 @@ public class MyApplication extends MultiDexApplication {
         super.onCreate();
         mContext = this;
         instance = this;
-
+        LittleBleViewModel.iniViewModel(this);
         BLESdk.get().init(mContext);
         BLESdk.get().setMaxConnect(3);
         configShare = new ConfigShare(mContext);

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/connected_device"
     app:startDestination="@id/serviceListFragment">
     <fragment
         android:id="@+id/serviceListFragment"
         android:name="org.eson.liteble.activity.fragment.ServiceListFragment"
-        android:label="ServiceListFragment" >
+        android:label="ServiceListFragment"
+        tools:layout="@layout/activity_detail">
         <action
             android:id="@+id/action_serviceListFragment_to_serviceInfoFragment"
             app:destination="@id/serviceInfoFragment" />
@@ -14,7 +16,8 @@
     <fragment
         android:id="@+id/serviceInfoFragment"
         android:name="org.eson.liteble.activity.fragment.ServiceInfoFragment"
-        android:label="ServiceInfoFragment" >
+        android:label="ServiceInfoFragment"
+        tools:layout="@layout/activity_characteristic">
         <action
             android:id="@+id/action_serviceInfoFragment_to_sendDataFragment"
             app:destination="@id/sendDataFragment" />
@@ -22,5 +25,6 @@
     <fragment
         android:id="@+id/sendDataFragment"
         android:name="org.eson.liteble.activity.fragment.SendDataFragment"
-        android:label="SendDataFragment" />
+        android:label="SendDataFragment"
+        tools:layout="@layout/activity_send_data" />
 </navigation>

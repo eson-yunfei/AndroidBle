@@ -2,30 +2,30 @@ package org.eson.liteble.activity;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.Menu;
-import android.view.MenuItem;
-
 import com.e.ble.check.BLECheck;
 import com.e.ble.check.BLECheckListener;
+import com.google.android.material.tabs.TabLayout;
 
-import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
-import org.eson.liteble.activity.base.BaseBleActivity;
+import org.eson.liteble.activity.base.ViewBindActivity;
 import org.eson.liteble.activity.fragment.BondedDevicesFragment;
 import org.eson.liteble.activity.fragment.DeviceScanFragment;
+import org.eson.liteble.databinding.ActivityMainBinding;
 import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.ToastUtil;
 
 /**
  * 主界面，蓝牙状态检测，蓝牙搜索界面
  */
-public class MainActivity extends BaseBleActivity {
+public class MainActivity extends ViewBindActivity {
 
     private FragmentManager mFragmentManager;
     private FragmentTransaction mTransaction;
@@ -36,24 +36,22 @@ public class MainActivity extends BaseBleActivity {
     private MenuItem menuRefresh;
     private MenuItem menuScan;
 
-    private int currentIndex = 0;
+    private ActivityMainBinding mainBinding;
+
 
     @Override
-    protected int getRootLayout() {
-        return R.layout.activity_main;
+    protected View getBindViewRoot() {
+        mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        return mainBinding.getRoot();
     }
 
-
     @Override
-    protected void initView() {
-
+    protected void onProcess() {
         ActionBar mActionBar = getSupportActionBar();
         if (Build.VERSION.SDK_INT >= 21 && mActionBar != null) {
 
             mActionBar.setElevation(0);
         }
-
-        TabLayout mTabLayout = findView(R.id.tabLayout);
 
         mScanFragment = new DeviceScanFragment();
         mDevicesFragment = new BondedDevicesFragment();
@@ -63,18 +61,17 @@ public class MainActivity extends BaseBleActivity {
         mTransaction.add(R.id.containerLayout, mScanFragment);
         mTransaction.commit();
 
-        mTabLayout.addTab(mTabLayout.newTab().setText("Scanner"), true);
-        mTabLayout.addTab(mTabLayout.newTab().setText("Bonded"));
+        TabLayout.Tab scanTab = mainBinding.tabLayout.newTab().setText("Scanner");
+        TabLayout.Tab bondTab = mainBinding.tabLayout.newTab().setText("Bonded");
 
-        mTabLayout.addOnTabSelectedListener(onTabSelectedListener);
-    }
+        mainBinding.tabLayout.addTab(scanTab, true);
+        mainBinding.tabLayout.addTab(bondTab);
 
-    @Override
-    protected void process(Bundle savedInstanceState) {
-        super.process(savedInstanceState);
+        mainBinding.tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
         checkBLEState();
     }
+
 
     @Override
     protected void onPause() {
@@ -103,11 +100,10 @@ public class MainActivity extends BaseBleActivity {
     };
 
     /**
-     *
-     * @param tab
+     * @param tab tab
      */
     private void onTabChanged(TabLayout.Tab tab) {
-        currentIndex = tab.getPosition();
+        int currentIndex = tab.getPosition();
         mTransaction = mFragmentManager.beginTransaction();
 
         reSetMenu();
@@ -138,7 +134,7 @@ public class MainActivity extends BaseBleActivity {
     }
 
     private void checkBLEState() {
-        BLECheck.get().checkBleState(mContext, new BLECheckListener() {
+        BLECheck.get().checkBleState(this, new BLECheckListener() {
             @Override
             public void noBluetoothPermission() {
                 //没有蓝牙权限，申请
@@ -147,7 +143,7 @@ public class MainActivity extends BaseBleActivity {
 
             @Override
             public void notSupportBle() {
-                ToastUtil.showShort(mContext, "Sorry,UnSupport BLE !");
+                ToastUtil.showShort(MainActivity.this, "Sorry,UnSupport BLE !");
                 finish();
             }
 
@@ -161,25 +157,6 @@ public class MainActivity extends BaseBleActivity {
                 //DO NOTHING
             }
         });
-    }
-
-    @Override
-    protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
-        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
-            return;
-        }
-        super.changeBleData(uuid, buffer, deviceAddress);
-    }
-
-    @Override
-    protected void changerBleState(String mac, int state) {
-        super.changerBleState(mac, state);
-
-        if (currentIndex == 0) {
-            mScanFragment.onBleStateChange(mac, state);
-        } else {
-            mDevicesFragment.onBleStateChange(mac, state);
-        }
     }
 
     @Override
@@ -241,15 +218,16 @@ public class MainActivity extends BaseBleActivity {
                 return;
             }
 
-            ToastUtil.showShort(mContext, "获取蓝牙权限成功");
+            ToastUtil.showShort(this, "获取蓝牙权限成功");
             checkBLEState();
         } else if (requestCode == 0x02) {
             if (resultCode != RESULT_OK) {
                 return;
             }
-            ToastUtil.showShort(mContext, "打开蓝牙成功");
+            ToastUtil.showShort(this, "打开蓝牙成功");
             checkBLEState();
         }
     }
+
 
 }

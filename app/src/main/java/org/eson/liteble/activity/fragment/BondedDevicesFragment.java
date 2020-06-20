@@ -18,19 +18,19 @@ package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.ViewGroup;
 
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.R;
 import org.eson.liteble.activity.BleDetailActivity;
 import org.eson.liteble.activity.MainActivity;
-import org.eson.liteble.activity.base.BaseFragment;
+import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.adapter.BondedDevAdapter;
+import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
 import org.eson.liteble.service.BleService;
 import org.eson.liteble.util.BondedDeviceBean;
 import org.eson.liteble.util.BondedDeviceUtil;
@@ -46,62 +46,51 @@ import java.util.List;
  * @description
  */
 
-public class BondedDevicesFragment extends BaseFragment {
+public class BondedDevicesFragment extends BaseObserveFragment {
 
     private ProgressDialog m_pDialog;
-    private ListView bondedDeviceList;
-    private BondedDevAdapter mBondedDevAdapter;
     private List<BondedDeviceBean> mDeviceBeanList;
 
     private BondedDeviceBean selectDevice = null;
 
+    private FragmentBondedDeviceBinding bondedDeviceBinding;
 
     @Override
-    protected int getLayoutID() {
-        return R.layout.fragment_bonded_device;
+    protected View getView(LayoutInflater inflater, ViewGroup container) {
+        bondedDeviceBinding = FragmentBondedDeviceBinding.inflate(inflater, container, false);
+        return bondedDeviceBinding.getRoot();
     }
 
     @Override
-    protected void initViews() {
-        bondedDeviceList = findView(R.id.bondedDeviceList);
-    }
+    protected void initListener() {
+        bondedDeviceBinding.bondedDeviceList.setOnItemClickListener((parent, view, position, id) -> {
 
-    @Override
-    protected void initViewsListener() {
-        super.initViewsListener();
-        bondedDeviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                selectDevice = mDeviceBeanList.get(position);
-                showProgress("正在连接设备：" + selectDevice.getName());
-                MyApplication.getInstance().setCurrentShowDevice(selectDevice.getAddress());
-                BLEScanner.get().stopScan();
-                BleService.get().connectionDevice(getActivity(), selectDevice.getAddress());
-            }
+            selectDevice = mDeviceBeanList.get(position);
+            showProgress("正在连接设备：" + selectDevice.getName());
+            MyApplication.getInstance().setCurrentShowDevice(selectDevice.getAddress());
+            BLEScanner.get().stopScan();
+            BleService.get().connectionDevice(getActivity(), selectDevice.getAddress());
         });
     }
 
-    @Override
-    protected void onProcess() {
-        super.onProcess();
 
+    @Override
+    public void onDeviceStateChange(String deviceMac, int currentState) {
+        onBleStateChange(deviceMac, currentState);
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         mDeviceBeanList = BondedDeviceUtil.get().getBondedList();
-        mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
-        bondedDeviceList.setAdapter(mBondedDevAdapter);
-
+        BondedDevAdapter mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
+        bondedDeviceBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
 
     }
 
 
-    @Override
     public void onBleStateChange(String mac, int state) {
-        super.onBleStateChange(mac, state);
 
         switch (state) {
             case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
@@ -164,7 +153,7 @@ public class BondedDevicesFragment extends BaseFragment {
         }
 
         m_pDialog.setMessage(msg);
-        getActivity().runOnUiThread(new Runnable() {
+        requireActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 m_pDialog.show();
@@ -178,7 +167,7 @@ public class BondedDevicesFragment extends BaseFragment {
         if (m_pDialog == null) {
             return;
         }
-        getActivity().runOnUiThread(new Runnable() {
+        requireActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 m_pDialog.dismiss();
@@ -186,7 +175,6 @@ public class BondedDevicesFragment extends BaseFragment {
         });
 
     }
-
 
 
 }
