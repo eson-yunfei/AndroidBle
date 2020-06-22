@@ -94,14 +94,18 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         setData();
     }
 
+    public void startListener() {
+        Command command = Dispatcher.getInstance().getApi();
+        command.startListener().execute((s, message) -> {
+            BleDataBean bleDataBean = (BleDataBean) message.getObject();
+            changeBleData(bleDataBean.getUuid().toString(), message.getBytes(), s);
+        });
+    }
+
     @Override
     public void onDeviceStateChange(String deviceMac, int currentState) {
 
-        Command command = Dispatcher.getInstance().getApi();
-//        command.startListener().execute((s, message) -> {
-//            BleDataBean bleDataBean = (BleDataBean) message.getObject();
-//            changeBleData(bleDataBean.getUuid().toString(), message.getBytes(), s);
-//        });
+
     }
 
     @Override
@@ -150,6 +154,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
                 UUID.fromString(serviceUUID),
                 UUID.fromString(characterUUID), des, isListenerNotice);
+        startListener();
     }
 
     protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {

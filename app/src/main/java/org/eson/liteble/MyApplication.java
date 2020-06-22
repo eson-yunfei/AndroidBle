@@ -74,7 +74,14 @@ public class MyApplication extends MultiDexApplication {
         Dispatcher.init(dispatcherConfig);
 
 //        Command command = Dispatcher.getInstance().getApi();
+//        command.startListener().execute(new OnCallback<String>() {
+//            @Override
+//            public void onDataReceived(String s, Message message) {
 //
+//                LogUtil.e("MyApplication -->> onDataReceived : s " +s);
+//            }
+//        });
+////
 //        TransCall<String> transCall = command.sendCmd("123456");
 //        LogUtil.e("transCall : " + transCall);
 //        if (transCall != null)
@@ -86,29 +93,29 @@ public class MyApplication extends MultiDexApplication {
     }
 
 
-    /**
-     * 判断某个界面是否在前台
-     * 需添加权限
-     * <uses-permission android:name="android.permission.GET_TASKS"/>
-     *
-     * @param className 某个界面名称
-     */
-    public boolean isForeground(String className) {
-        if (mContext == null || TextUtils.isEmpty(className)) {
-            return false;
-        }
-
-        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
-        if (list == null || list.size() == 0) {
-            return false;
-
-        }
-        ComponentName cpn = list.get(0).topActivity;
-        String currentName = cpn.getClassName();
-        LogUtil.e("currentName--->>" + currentName);
-        return className.equals(currentName);
-    }
+//    /**
+//     * 判断某个界面是否在前台
+//     * 需添加权限
+//     * <uses-permission android:name="android.permission.GET_TASKS"/>
+//     *
+//     * @param className 某个界面名称
+//     */
+//    public boolean isForeground(String className) {
+//        if (mContext == null || TextUtils.isEmpty(className)) {
+//            return false;
+//        }
+//
+//        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
+//        if (list == null || list.size() == 0) {
+//            return false;
+//
+//        }
+//        ComponentName cpn = list.get(0).topActivity;
+//        String currentName = cpn.getClassName();
+//        LogUtil.e("currentName--->>" + currentName);
+//        return className.equals(currentName);
+//    }
 
 
     public String getCurrentShowDevice() {

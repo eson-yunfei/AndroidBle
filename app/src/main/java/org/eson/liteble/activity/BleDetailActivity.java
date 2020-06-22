@@ -178,9 +178,9 @@ public class BleDetailActivity extends BaseBleActivity {
     @Override
     protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
 
-        if (!MyApplication.getInstance().isForeground(BleDetailActivity.class.getName())) {
-            return;
-        }
+//        if (!MyApplication.getInstance().isForeground(BleDetailActivity.class.getName())) {
+//            return;
+//        }
         super.changeBleData(uuid, buffer, deviceAddress);
     }
 

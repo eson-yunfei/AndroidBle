@@ -1,6 +1,8 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.annotation.API;
+import com.shon.dispatcher.annotation.Notice;
+import com.shon.dispatcher.bean.Listener;
 import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.utils.TransLog;
 
@@ -20,6 +22,7 @@ class ServiceMethod<RequestT, ResultT> {
 
     private Sender sender;
 
+    private Listener listener;
     private CallAdapter<Object, TransCall<?>> callAdapter;
 
     ServiceMethod(Transmitter transmitter, Method method, Object[] args) {
@@ -33,6 +36,10 @@ class ServiceMethod<RequestT, ResultT> {
 
     Sender getCommand() {
         return sender;
+    }
+
+     Listener getListener() {
+        return listener;
     }
 
     CallAdapter<Object, TransCall<?>> getCallAdapter() {
@@ -66,6 +73,17 @@ class ServiceMethod<RequestT, ResultT> {
                 Class<? extends Sender> cls = api.name();
                 try {
                     sender = cls.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else if (annotation instanceof Notice){
+                Notice notice = method.getAnnotation(Notice.class);
+                if (notice == null) {
+                    continue;
+                }
+                Class<? extends Listener> cls = notice.name();
+                try {
+                    listener = cls.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

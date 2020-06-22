@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.e.ble.BLESdk;
 import com.e.ble.control.BLEControl;
 import com.e.ble.util.BLEConstant;
 import com.e.ble.util.BLE_UUID_Util;
@@ -73,10 +72,10 @@ public class ServiceListFragment extends BaseObserveFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (!BLESdk.get().isPermitConnectMore()) {
-            BLEControl.get().disconnect(mac);
-        }
-        ConnectedDevice.get().removeConnectMap(mac);
+//        if (!BLESdk.get().isPermitConnectMore()) {
+//            BLEControl.get().disconnect(mac);
+//        }
+//        ConnectedDevice.get().removeConnectMap(mac);
     }
 
     @Override

@@ -124,9 +124,9 @@ public class BondedDevicesFragment extends BaseObserveFragment {
     }
 
     private void startToNext() {
-        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
-            return;
-        }
+//        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
+//            return;
+//        }
         hideProgress();
 
         ToastUtil.showShort(getActivity(), "连接成功");

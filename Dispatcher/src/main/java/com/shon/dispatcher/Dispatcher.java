@@ -2,6 +2,7 @@ package com.shon.dispatcher;
 
 import com.shon.dispatcher.annotation.API;
 import com.shon.dispatcher.annotation.Notice;
+import com.shon.dispatcher.bean.Listener;
 import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.utils.TransLog;
@@ -24,9 +25,10 @@ public class Dispatcher {
 
     private DispatcherConfig dispatcherConfig;
 
-    private HashMap<Method,ServiceMethod<Object, Object>> serviceMethodHashMap;
+    private HashMap<Method, ServiceMethod<Object, Object>> serviceMethodHashMap;
+
     private Dispatcher() {
-        if (serviceMethodHashMap == null){
+        if (serviceMethodHashMap == null) {
             serviceMethodHashMap = new HashMap<>();
         }
     }
@@ -72,8 +74,8 @@ public class Dispatcher {
                 throws Throwable {
 
 
-            ServiceMethod<Object, Object> serviceMethod =  getServiceMethod(method);
-            if (serviceMethod != null){
+            ServiceMethod<Object, Object> serviceMethod = getServiceMethod(method);
+            if (serviceMethod != null) {
                 return serviceMethod.getCallAdapter().getCall();
             }
             TransLog.e("invocationHandler : name  : " + method.getName());
@@ -90,50 +92,77 @@ public class Dispatcher {
             CommonCall<Object> commonCall = new CommonCall<>(serviceMethod, args);
             TransCall<?> transCall = serviceMethod.getCallAdapter().adapt(commonCall);
             TransLog.e("transCall : " + transCall.getClass().getName());
-            serviceMethodHashMap.put(method,serviceMethod);
+            serviceMethodHashMap.put(method, serviceMethod);
             return transCall;
         }
     };
 
-    private ServiceMethod<Object, Object> getServiceMethod(Method method){
-        if (serviceMethodHashMap == null){
+    private ServiceMethod<Object, Object> getServiceMethod(Method method) {
+        if (serviceMethodHashMap == null) {
             return null;
         }
-        if (serviceMethodHashMap.containsKey(method)){
+        if (serviceMethodHashMap.containsKey(method)) {
             return serviceMethodHashMap.get(method);
         }
         return null;
     }
-    public void receiverData(Message receivedData) {
 
-        if (serviceMethodHashMap == null){
+    public void receiverData(Message receivedData) {
+        TransLog.e("Dispatcher -->>  receiverData  : " + receivedData.toString());
+        if (serviceMethodHashMap == null) {
             return;
         }
 
         for (Map.Entry<Method, ServiceMethod<Object, Object>> serviceMethodEntry : serviceMethodHashMap.entrySet()) {
             ServiceMethod<Object, Object> serviceMethod = serviceMethodEntry.getValue();
-            if (serviceMethod == null){
+            if (serviceMethod == null) {
                 continue;
             }
 
             Sender<?> sender = serviceMethod.getCommand();
 
-            if (sender == null){
-                return;
+            if (sender != null) {
+                if (handlerSender(receivedData, serviceMethodEntry, serviceMethod, sender)) break;
             }
-            Object result = sender.handlerMessage(receivedData);
-            TransLog.e("handler result : " + result);
-            if (result != null){
+            Listener<?> listener = serviceMethod.getListener();
+            if (listener != null) {
+                boolean result = handlerListener(receivedData, serviceMethodEntry, serviceMethod, listener);
 
-                CommonCall<Object> commonCall = (CommonCall<Object>) serviceMethod.getCallAdapter().getCall();
-                TransLog.e("commonCall : " + commonCall.getClass().getName());
-                commonCall.onDataCallback(result,receivedData);
-                serviceMethodHashMap.remove(serviceMethodEntry.getKey());
-                break;
+                if (result) {
+                    break;
+                }
             }
 
         }
 
 
+    }
+
+    private boolean handlerListener(Message receivedData, Map.Entry<Method, ServiceMethod<Object, Object>> serviceMethodEntry, ServiceMethod<Object, Object> serviceMethod, Listener<?> listener) {
+        Object result = listener.handlerMessage(receivedData);
+        TransLog.e("handlerListener result : " + result);
+        if (result != null) {
+
+            CommonCall<Object> commonCall = (CommonCall<Object>) serviceMethod.getCallAdapter().getCall();
+            TransLog.e("handlerListener commonCall : " + commonCall.getClass().getName());
+            commonCall.onDataCallback(result, receivedData);
+
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handlerSender(Message receivedData, Map.Entry<Method, ServiceMethod<Object, Object>> serviceMethodEntry, ServiceMethod<Object, Object> serviceMethod, Sender<?> sender) {
+        Object result = sender.handlerMessage(receivedData);
+        TransLog.e("handlerSender result : " + result);
+        if (result != null) {
+
+            CommonCall<Object> commonCall = (CommonCall<Object>) serviceMethod.getCallAdapter().getCall();
+            TransLog.e("commonCall : " + commonCall.getClass().getName());
+            commonCall.onDataCallback(result, receivedData);
+            serviceMethodHashMap.remove(serviceMethodEntry.getKey());
+            return true;
+        }
+        return false;
     }
 }

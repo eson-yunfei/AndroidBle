@@ -181,11 +181,11 @@ public class BleService extends Service {
         @Override
         public void onCharacterRead(BLECharacter bleCharacter) {
 
-            Bundle bundle = new Bundle();
+//            Bundle bundle = new Bundle();
             BleDataBean dataBean = new BleDataBean(bleCharacter.getDeviceAddress(),
                     bleCharacter.getCharacteristicUUID(), bleCharacter.getDataBuffer());
-            bundle.putSerializable(BLEConstant.Type.TYPE_NOTICE, dataBean);
-            RxBus.getInstance().send(bundle);
+//            bundle.putSerializable(BLEConstant.Type.TYPE_NOTICE, dataBean);
+//            RxBus.getInstance().send(bundle);
 
             Message message = new Message();
             message.setBytes(bleCharacter.getDataBuffer());

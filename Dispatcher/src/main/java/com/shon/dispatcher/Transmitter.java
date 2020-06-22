@@ -14,7 +14,7 @@ public abstract class Transmitter {
 
     public void receiverData(Message receivedData){
 
-        TransLog.e("receiverData : " + receivedData.toString());
+        TransLog.e("Transmitter -->> receiverData : " + receivedData.toString());
         Dispatcher.getInstance().receiverData(receivedData);
     }
 }

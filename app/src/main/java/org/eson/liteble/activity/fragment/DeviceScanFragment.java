@@ -221,9 +221,9 @@ public class DeviceScanFragment extends BaseObserveFragment {
      * 跳转的详情界面
      */
     private void startToNext() {
-        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
-            return;
-        }
+//        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
+//            return;
+//        }
         hideProgress();
 
 

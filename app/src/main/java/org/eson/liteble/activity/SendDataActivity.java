@@ -82,9 +82,9 @@ public class SendDataActivity extends BaseBleActivity {
 
 	@Override
 	protected void changerBleState(String mac, int state) {
-		if (!MyApplication.getInstance().isForeground(SendDataActivity.class.getName())) {
-			return;
-		}
+//		if (!MyApplication.getInstance().isForeground(SendDataActivity.class.getName())) {
+//			return;
+//		}
 		super.changerBleState(mac, state);
 
 	}
