@@ -25,7 +25,7 @@ import org.eson.liteble.ble.bean.ServiceBean;
 import org.eson.liteble.ble.ConnectedDevice;
 import org.eson.liteble.databinding.ActivityDetailBinding;
 import org.eson.liteble.ble.BleService;
-import org.eson.liteble.util.BondedDeviceUtil;
+import org.eson.liteble.ble.util.BondedDeviceUtil;
 import org.eson.liteble.util.LogUtil;
 
 import java.io.File;

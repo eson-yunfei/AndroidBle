@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.eson.liteble.util;
+package org.eson.liteble.ble.util;
 
 /**
  * @package_name org.eson.liteble.util

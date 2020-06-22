@@ -2,8 +2,6 @@ package org.eson.liteble.share;
 
 import android.content.Context;
 
-import org.eson.liteble.util.CommonShare;
-
 /**
  * @ author       xiaoyunfei
  * @ date:        2017/3/9
