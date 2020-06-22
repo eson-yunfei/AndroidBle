@@ -66,9 +66,10 @@ public class ServiceListFragment extends BaseObserveFragment {
 
 
     @Override
-    public void onPause() {
-        super.onPause();
+    protected void onProcess() {
+        super.onProcess();
         serviceListViewModel = getDefaultViewModelProviderFactory().create(ServiceListViewModel.class);
+
     }
 
     @Override
@@ -153,9 +154,6 @@ public class ServiceListFragment extends BaseObserveFragment {
         }
         serviceListViewModel.getServiceList(gatt)
                 .observe(this, this::setAdapter);
-
-//
-
 
     }
 
