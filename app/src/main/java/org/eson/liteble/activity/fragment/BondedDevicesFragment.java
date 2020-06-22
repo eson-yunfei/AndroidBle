@@ -26,8 +26,7 @@ import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.activity.BleDetailActivity;
-import org.eson.liteble.activity.MainActivity;
+import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.adapter.BondedDevAdapter;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
@@ -124,16 +123,11 @@ public class BondedDevicesFragment extends BaseObserveFragment {
     }
 
     private void startToNext() {
-//        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
-//            return;
-//        }
         hideProgress();
 
         ToastUtil.showShort(getActivity(), "连接成功");
-        Intent intent = new Intent(getActivity(), BleDetailActivity.class);
-        intent.putExtra("mac", selectDevice.getAddress());
-        intent.putExtra("name", selectDevice.getName());
-        startActivity(intent);
+
+        startActivity(new Intent(getActivity(), DeviceActivity.class));
     }
 
     /**

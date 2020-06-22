@@ -3,11 +3,11 @@ package org.eson.liteble.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import androidx.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.e.ble.bean.BLECharacter;
 import com.e.ble.bean.BLEUuid;
@@ -21,7 +21,6 @@ import com.shon.dispatcher.bean.Message;
 
 import org.eson.liteble.LittleBleViewModel;
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.RxBus;
 import org.eson.liteble.bean.BleDataBean;
 import org.eson.liteble.command.BleTransmitter;
 import org.eson.liteble.util.LogUtil;
@@ -201,14 +200,8 @@ public class BleService extends Service {
 
         @Override
         public void onCharacterNotify(BLECharacter bleCharacter) {
-
-
-            Bundle bundle = new Bundle();
-
             BleDataBean dataBean = new BleDataBean(bleCharacter.getDeviceAddress(),
                     bleCharacter.getCharacteristicUUID(), bleCharacter.getDataBuffer());
-            bundle.putSerializable(BLEConstant.Type.TYPE_NOTICE, dataBean);
-            RxBus.getInstance().send(bundle);
 
             Message message = new Message();
             message.setBytes(bleCharacter.getDataBuffer());
@@ -278,11 +271,6 @@ public class BleService extends Service {
      * 发送蓝牙状态
      */
     private void sendBleState(int state, String deviceMac) {
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(BLEConstant.Type.TYPE_STATE, state);
-//        bundle.putString(BLEConstant.Type.TYPE_NAME, name);
-//        RxBus.getInstance().send(bundle);
-
         LittleBleViewModel.getViewModel().updateDeviceState(deviceMac,state);
 
     }

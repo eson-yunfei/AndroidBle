@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 
 import com.e.ble.util.BLEByteUtil;
 
-import org.eson.liteble.R;
-import org.eson.liteble.activity.base.BaseFragment;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.databinding.ActivitySendDataBinding;
 import org.eson.liteble.service.BleService;
@@ -24,7 +22,7 @@ import java.util.UUID;
  * Package name : org.eson.liteble.activity.fragment
  * Des :
  */
-class SendDataFragment extends BaseObserveFragment {
+public class SendDataFragment extends BaseObserveFragment {
     private ActivitySendDataBinding sendDataBinding;
 
     private String serviceUUID;

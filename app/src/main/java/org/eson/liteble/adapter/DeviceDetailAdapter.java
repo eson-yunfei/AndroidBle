@@ -1,20 +1,17 @@
 package org.eson.liteble.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
-import org.eson.liteble.activity.CharacteristicActivity;
-import org.eson.liteble.bean.ServiceBean;
 import org.eson.liteble.bean.CharacterBean;
+import org.eson.liteble.bean.ServiceBean;
 
 import java.util.List;
 import java.util.UUID;
@@ -68,32 +65,22 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
         if (characterBeanList != null) {
             UUIDAdapter uuidAdapter = new UUIDAdapter(context, characterBeanList);
             viewHolder.mListView.setAdapter(uuidAdapter);
-            setItemClickListener(viewHolder.mListView, position, serviceBean.getServiceUUID(), characterBeanList);
+            setItemClickListener(viewHolder.mListView, position);
         }
         return view;
     }
 
-    private void setItemClickListener(ListView listView, final int parentPosition,
-                                      final String serviceUUID,
-                                      final List<CharacterBean> characterBeanList) {
+    private void setItemClickListener(ListView listView, final int parentPosition) {
         listView.setOnItemClickListener((parent, view, position, id) -> {
-//                CharacterBean characterBean = characterBeanList.get(position);
 
-            if (onItemClick != null){
-                onItemClick.onItemClick(parentPosition,position);
-            }else {
-                Intent intent = new Intent(context, CharacteristicActivity.class);
-//                intent.putExtra("character", characterBean);
-                intent.putExtra("parentPosition", parentPosition);
-                intent.putExtra("position", position);
-
-                context.startActivity(intent);
+            if (onItemClick != null) {
+                onItemClick.onItemClick(parentPosition, position);
             }
         });
     }
 
-    public interface OnItemClick{
-        void onItemClick(int parentPosition,int position);
+    public interface OnItemClick {
+        void onItemClick(int parentPosition, int position);
     }
 
     private class ViewHolder {

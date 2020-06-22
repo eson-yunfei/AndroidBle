@@ -3,7 +3,6 @@ package com.shon.dispatcher;
 import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.imp.OnCallback;
-import com.shon.dispatcher.utils.TransLog;
 
 /**
  * Auth : xiao.yunfei
@@ -13,7 +12,6 @@ import com.shon.dispatcher.utils.TransLog;
  */
 final class CommonCall<T> implements TransCall<T> {
 
-    private int i = 1;
     private Transmitter transmitter;
     private OnCallback<T> onCallback;
     private ServiceMethod<Object, Object> serviceMethod;
@@ -21,7 +19,6 @@ final class CommonCall<T> implements TransCall<T> {
     CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args) {
         transmitter = serviceMethod.getTransmitter();
         this.serviceMethod = serviceMethod;
-        TransLog.e("current i : " + i);
     }
 
     Transmitter getTransmitter() {
@@ -39,8 +36,6 @@ final class CommonCall<T> implements TransCall<T> {
     @Override
     public void execute(OnCallback<T> onCallback) {
 
-        i = i + 1;
-        TransLog.e("current i : " + i);
         this.onCallback = onCallback;
 
 //        TransRunnable transRunnable = new TransRunnable(this);
@@ -53,8 +48,6 @@ final class CommonCall<T> implements TransCall<T> {
     }
 
     void onDataCallback(Object object, Message message) {
-        i = i + 1;
-        TransLog.e("current i : " + i);
         if (onCallback != null) {
             onCallback.onDataReceived((T) object, message);
         }
