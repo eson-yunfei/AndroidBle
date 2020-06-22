@@ -1,4 +1,4 @@
-package org.eson.liteble.adapter;
+package org.eson.liteble.activity.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
-import org.eson.liteble.bean.CharacterBean;
-import org.eson.liteble.bean.ServiceBean;
+import org.eson.liteble.ble.bean.CharacterBean;
+import org.eson.liteble.ble.bean.ServiceBean;
 
 import java.util.List;
 import java.util.UUID;

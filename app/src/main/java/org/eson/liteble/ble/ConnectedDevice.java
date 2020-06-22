@@ -1,6 +1,6 @@
-package org.eson.liteble.common;
+package org.eson.liteble.ble;
 
-import org.eson.liteble.bean.ServiceBean;
+import org.eson.liteble.ble.bean.ServiceBean;
 
 import java.util.HashMap;
 import java.util.List;

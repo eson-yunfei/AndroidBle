@@ -1,11 +1,11 @@
-package org.eson.liteble.command.bean;
+package org.eson.liteble.ble.command.bean;
 
 import java.util.UUID;
 
 /**
  * Auth : xiao_yun_fei
  * Date : 2020/6/19 22:49
- * Package name : org.eson.liteble.command.bean
+ * Package name : org.eson.liteble.ble.command.bean
  * Des :
  */
 public class BleCmd {

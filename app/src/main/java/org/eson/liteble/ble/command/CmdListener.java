@@ -1,4 +1,4 @@
-package org.eson.liteble.command;
+package org.eson.liteble.ble.command;
 
 import com.e.ble.util.BLEByteUtil;
 import com.shon.dispatcher.bean.Listener;
@@ -9,7 +9,7 @@ import org.eson.liteble.util.LogUtil;
 /**
  * Auth : xiao.yunfei
  * Date : 2020/6/20 13:55
- * Package name : org.eson.liteble.command
+ * Package name : org.eson.liteble.ble.command
  * Des :
  */
 public class CmdListener extends Listener<String> {

@@ -49,7 +49,7 @@
             android:label="About" />
 
 
-        <service android:name=".service.BleService"></service>
+        <service android:name=".ble.BleService"></service>
 
         <receiver android:name="com.e.ble.receiver.BLEStateReceiver">
             <intent-filter>

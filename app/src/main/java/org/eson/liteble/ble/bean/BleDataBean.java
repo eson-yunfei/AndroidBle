@@ -1,4 +1,4 @@
-package org.eson.liteble.bean;
+package org.eson.liteble.ble.bean;
 
 import java.io.Serializable;
 import java.util.UUID;

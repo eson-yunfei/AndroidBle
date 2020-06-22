@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.eson.liteble.adapter;
+package org.eson.liteble.activity.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -30,12 +30,12 @@ import com.e.ble.util.BLEByteUtil;
 import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
-import org.eson.liteble.bean.BleDataBean;
+import org.eson.liteble.ble.bean.BleDataBean;
 
 import java.util.List;
 
 /**
- * @package_name org.eson.liteble.adapter
+ * @package_name org.eson.liteble.activity.adapter
  * @name ${name}
  * <p>
  * Created by xiaoyunfei on 2017/5/17.

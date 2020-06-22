@@ -1,4 +1,4 @@
-package org.eson.liteble.command;
+package org.eson.liteble.ble.command;
 
 import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
@@ -7,7 +7,7 @@ import com.shon.dispatcher.utils.TransLog;
 /**
  * Auth : xiao.yunfei
  * Date : 2020/6/19 11:26
- * Package name : org.eson.liteble.command
+ * Package name : org.eson.liteble.ble.command
  * Des :
  */
 public class SendCmd extends Sender<String> {

@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.e.ble.util.BLE_UUID_Util;
 
-import org.eson.liteble.bean.CharacterBean;
-import org.eson.liteble.bean.DescriptorBean;
-import org.eson.liteble.bean.ServiceBean;
+import org.eson.liteble.ble.bean.CharacterBean;
+import org.eson.liteble.ble.bean.DescriptorBean;
+import org.eson.liteble.ble.bean.ServiceBean;
 import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;

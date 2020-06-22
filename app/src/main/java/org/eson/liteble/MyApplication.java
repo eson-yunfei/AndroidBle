@@ -1,29 +1,19 @@
 package org.eson.liteble;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
 import androidx.multidex.MultiDexApplication;
 
-import android.text.TextUtils;
-
 import com.e.ble.BLESdk;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.DispatcherConfig;
-import com.shon.dispatcher.TransCall;
-import com.shon.dispatcher.bean.Message;
-import com.shon.dispatcher.imp.OnCallback;
 
-import org.eson.liteble.command.BleTransmitter;
-import org.eson.liteble.command.Command;
-import org.eson.liteble.service.BleService;
+import org.eson.liteble.ble.command.BleTransmitter;
+import org.eson.liteble.ble.command.Command;
+import org.eson.liteble.ble.BleService;
 import org.eson.liteble.share.ConfigShare;
-import org.eson.liteble.util.LogUtil;
-
-import java.util.List;
 
 /**
  * @name AndroidBle

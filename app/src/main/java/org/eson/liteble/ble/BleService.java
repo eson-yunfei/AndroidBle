@@ -1,4 +1,4 @@
-package org.eson.liteble.service;
+package org.eson.liteble.ble;
 
 import android.app.Service;
 import android.content.Context;
@@ -21,8 +21,8 @@ import com.shon.dispatcher.bean.Message;
 
 import org.eson.liteble.LittleBleViewModel;
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.bean.BleDataBean;
-import org.eson.liteble.command.BleTransmitter;
+import org.eson.liteble.ble.bean.BleDataBean;
+import org.eson.liteble.ble.command.BleTransmitter;
 import org.eson.liteble.util.LogUtil;
 
 import java.io.BufferedWriter;

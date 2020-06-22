@@ -12,7 +12,7 @@ import com.e.ble.util.BLEByteUtil;
 
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.databinding.ActivitySendDataBinding;
-import org.eson.liteble.service.BleService;
+import org.eson.liteble.ble.BleService;
 
 import java.util.UUID;
 

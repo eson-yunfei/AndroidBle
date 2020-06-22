@@ -1,4 +1,4 @@
-package org.eson.liteble.adapter;
+package org.eson.liteble.activity.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * @name AndroidBle
- * @class name：org.eson.liteble.adapter
+ * @class name：org.eson.liteble.activity.adapter
  * @class describe
  * @anthor xujianbo E-mail: xuarbo@qq.com
  * @time 2017/2/22 15:38

@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.eson.liteble.adapter;
+package org.eson.liteble.activity.adapter;
 
 import android.content.Context;
 import android.view.View;
