@@ -1,9 +1,6 @@
 package org.eson.liteble.activity.fragment;
 
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -11,11 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.lifecycle.Observer;
-
 import com.e.ble.control.BLEControl;
 import com.e.ble.util.BLEConstant;
-import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
@@ -23,22 +17,14 @@ import org.eson.liteble.activity.adapter.DeviceDetailAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.vms.ServiceListViewModel;
 import org.eson.liteble.ble.BleService;
-import org.eson.liteble.ble.bean.CharacterBean;
-import org.eson.liteble.ble.bean.DescriptorBean;
 import org.eson.liteble.ble.bean.ServiceBean;
 import org.eson.liteble.ble.util.BondedDeviceUtil;
 import org.eson.liteble.databinding.ActivityDetailBinding;
-import org.eson.liteble.util.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 
 /**
  * Auth : xiao.yunfei
