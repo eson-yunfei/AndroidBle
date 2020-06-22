@@ -13,16 +13,15 @@ import com.shon.dispatcher.Dispatcher;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
-import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.adapter.BleDataAdapter;
+import org.eson.liteble.activity.base.BaseObserveFragment;
+import org.eson.liteble.ble.BleService;
 import org.eson.liteble.ble.bean.BleDataBean;
 import org.eson.liteble.ble.bean.CharacterBean;
 import org.eson.liteble.ble.bean.DescriptorBean;
 import org.eson.liteble.ble.bean.ServiceBean;
 import org.eson.liteble.ble.command.Command;
-import org.eson.liteble.ble.ConnectedDevice;
 import org.eson.liteble.databinding.ActivityCharacteristicBinding;
-import org.eson.liteble.ble.BleService;
 import org.eson.liteble.util.UUIDFormat;
 
 import java.text.SimpleDateFormat;
@@ -73,11 +72,10 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         if (bundle == null) {
             return;
         }
-        int parentPosition = bundle.getInt("parentPosition");
+        ServiceBean serviceBean  = bundle.getParcelable("serviceBean");
         int position = bundle.getInt("position");
 
         String connectMac = MyApplication.getInstance().getCurrentShowDevice();
-        ServiceBean serviceBean = ConnectedDevice.get().getServiceList(connectMac).get(parentPosition);
 
         characterBean = serviceBean.getUUIDBeen().get(position);
         serviceUUID = characterBean.getServiceUUID();

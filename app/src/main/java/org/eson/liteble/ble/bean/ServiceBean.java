@@ -1,5 +1,8 @@
 package org.eson.liteble.ble.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -8,11 +11,42 @@ import java.util.List;
  * @Description： Service UUID
  */
 
-public class ServiceBean {
+public class ServiceBean  implements Parcelable {
     private String serviceUUID;
     private String serviceType;
 
     private List<CharacterBean> mUUIDBeen;
+
+    public ServiceBean(){}
+    protected ServiceBean(Parcel in) {
+        serviceUUID = in.readString();
+        serviceType = in.readString();
+        mUUIDBeen = in.createTypedArrayList(CharacterBean.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(serviceUUID);
+        dest.writeString(serviceType);
+        dest.writeTypedList(mUUIDBeen);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ServiceBean> CREATOR = new Creator<ServiceBean>() {
+        @Override
+        public ServiceBean createFromParcel(Parcel in) {
+            return new ServiceBean(in);
+        }
+
+        @Override
+        public ServiceBean[] newArray(int size) {
+            return new ServiceBean[size];
+        }
+    };
 
     public String getServiceUUID() {
         return serviceUUID;

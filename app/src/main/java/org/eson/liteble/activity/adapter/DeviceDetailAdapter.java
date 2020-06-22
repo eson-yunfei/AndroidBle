@@ -46,7 +46,7 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        ServiceBean serviceBean = dataList.get(position);
+       final ServiceBean serviceBean = dataList.get(position);
         String uuid = serviceBean.getServiceUUID();
         if (TextUtils.isEmpty(uuid)) {
             return view;
@@ -65,22 +65,22 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
         if (characterBeanList != null) {
             UUIDAdapter uuidAdapter = new UUIDAdapter(context, characterBeanList);
             viewHolder.mListView.setAdapter(uuidAdapter);
-            setItemClickListener(viewHolder.mListView, position);
+            setItemClickListener(viewHolder.mListView, serviceBean);
         }
         return view;
     }
 
-    private void setItemClickListener(ListView listView, final int parentPosition) {
+    private void setItemClickListener(ListView listView,ServiceBean serviceBean) {
         listView.setOnItemClickListener((parent, view, position, id) -> {
 
             if (onItemClick != null) {
-                onItemClick.onItemClick(parentPosition, position);
+                onItemClick.onItemClick(serviceBean, position);
             }
         });
     }
 
     public interface OnItemClick {
-        void onItemClick(int parentPosition, int position);
+        void onItemClick(ServiceBean serviceBean, int position);
     }
 
     private class ViewHolder {

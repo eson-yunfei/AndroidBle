@@ -1,8 +1,5 @@
 package org.eson.liteble.activity.base;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
 import org.eson.liteble.LittleBleViewModel;
 
 /**

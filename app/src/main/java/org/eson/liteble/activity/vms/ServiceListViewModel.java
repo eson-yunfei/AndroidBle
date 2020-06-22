@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.e.ble.util.BLE_UUID_Util;
@@ -31,15 +32,15 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
  */
 public class ServiceListViewModel extends ViewModel {
 
-    public List<ServiceBean> getServiceList(BluetoothGatt bluetoothGatt) {
-
+    private MutableLiveData<List<ServiceBean>> mutableLiveData;
+    public MutableLiveData<List<ServiceBean>>  getServiceList(BluetoothGatt bluetoothGatt) {
+        mutableLiveData = new MutableLiveData<>();
 
         List<BluetoothGattService> serviceArrayList = bluetoothGatt.getServices();
 
         if (serviceArrayList == null || serviceArrayList.size() == 0) {
-            return null;
+            return mutableLiveData;
         }
-
 
         List<ServiceBean> serviceBeanList = new ArrayList<>();
 
@@ -64,7 +65,8 @@ public class ServiceListViewModel extends ViewModel {
             serviceBeanList.add(serviceBean);
         }
 
-        return serviceBeanList;
+        mutableLiveData.postValue(serviceBeanList);
+        return mutableLiveData;
     }
 
     private String getServerType(ServiceBean serviceBean, BluetoothGattService service, UUID serviceUUID) {

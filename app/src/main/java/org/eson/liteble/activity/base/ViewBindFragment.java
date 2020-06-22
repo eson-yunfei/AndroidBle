@@ -34,12 +34,19 @@ public abstract class ViewBindFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initListener();
+
+        onProcess();
     }
+
+
 
     protected abstract View getView(LayoutInflater inflater, ViewGroup container);
 
     protected abstract void initListener();
 
+    protected void onProcess() {
+
+    }
     /**
      * 导航返回
      */
