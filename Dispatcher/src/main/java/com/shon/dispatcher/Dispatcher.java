@@ -1,6 +1,7 @@
 package com.shon.dispatcher;
 
 import com.shon.dispatcher.annotation.API;
+import com.shon.dispatcher.annotation.Notice;
 import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
 import com.shon.dispatcher.utils.TransLog;
@@ -78,8 +79,12 @@ public class Dispatcher {
             TransLog.e("invocationHandler : name  : " + method.getName());
             API api = method.getAnnotation(API.class);
             if (api == null) {
-                throw new Exception("unSupport method");
+                Notice notice = method.getAnnotation(Notice.class);
+                if (notice == null) {
+                    throw new Exception("unSupport method");
+                }
             }
+
 
             serviceMethod = new ServiceMethod<>(dispatcherConfig.getTransmitter(), method, args);
             CommonCall<Object> commonCall = new CommonCall<>(serviceMethod, args);

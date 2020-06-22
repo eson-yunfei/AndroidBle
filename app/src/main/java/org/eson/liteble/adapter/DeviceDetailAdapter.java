@@ -27,8 +27,14 @@ import java.util.UUID;
 
 public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
 
+    private OnItemClick onItemClick;
+
     public DeviceDetailAdapter(Context context, List<ServiceBean> dataList) {
         super(context, dataList);
+    }
+
+    public void setOnItemClickListener(OnItemClick onItemClick) {
+        this.onItemClick = onItemClick;
     }
 
     @Override
@@ -70,11 +76,12 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
     private void setItemClickListener(ListView listView, final int parentPosition,
                                       final String serviceUUID,
                                       final List<CharacterBean> characterBeanList) {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        listView.setOnItemClickListener((parent, view, position, id) -> {
 //                CharacterBean characterBean = characterBeanList.get(position);
 
+            if (onItemClick != null){
+                onItemClick.onItemClick(parentPosition,position);
+            }else {
                 Intent intent = new Intent(context, CharacteristicActivity.class);
 //                intent.putExtra("character", characterBean);
                 intent.putExtra("parentPosition", parentPosition);
@@ -83,6 +90,10 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
                 context.startActivity(intent);
             }
         });
+    }
+
+    public interface OnItemClick{
+        void onItemClick(int parentPosition,int position);
     }
 
     private class ViewHolder {

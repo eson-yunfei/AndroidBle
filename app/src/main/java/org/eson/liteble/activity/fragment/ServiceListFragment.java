@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.e.ble.util.BLEConstant;
 import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.MyApplication;
+import org.eson.liteble.R;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.adapter.DeviceDetailAdapter;
 import org.eson.liteble.bean.CharacterBean;
@@ -41,7 +43,7 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
  * Auth : xiao.yunfei
  * Date : 2020/6/20 14:12
  * Package name : org.eson.liteble.activity.fragment
- * Des :
+ * Des : 支持服务列表界面
  */
 public class ServiceListFragment extends BaseObserveFragment {
 
@@ -140,8 +142,7 @@ public class ServiceListFragment extends BaseObserveFragment {
         List<ServiceBean> serviceBeanList = ConnectedDevice.get().getServiceList(connectMac);
 
         if (serviceBeanList != null) {
-            mDeviceDetailAdapter = new DeviceDetailAdapter(getActivity(), serviceBeanList);
-            detailBinding.detailList.setAdapter(mDeviceDetailAdapter);
+            setAdapter(serviceBeanList);
             return;
         }
 
@@ -237,7 +238,21 @@ public class ServiceListFragment extends BaseObserveFragment {
 
         ConnectedDevice.get().addConnectMap(mac, serviceBeanList);
         serviceBeanList = ConnectedDevice.get().getServiceList(connectMac);
+        setAdapter(serviceBeanList);
+    }
+
+    /**
+     *
+     * @param serviceBeanList
+     */
+    private void setAdapter(List<ServiceBean> serviceBeanList) {
         mDeviceDetailAdapter = new DeviceDetailAdapter(getActivity(), serviceBeanList);
+        mDeviceDetailAdapter.setOnItemClickListener((parentPosition, position) -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("parentPosition", parentPosition);
+            bundle.putInt("position", position);
+            navigateNext(R.id.action_serviceListFragment_to_serviceInfoFragment,bundle);
+        });
         detailBinding.detailList.setAdapter(mDeviceDetailAdapter);
     }
 

@@ -1,7 +1,7 @@
 package com.shon.dispatcher;
 
-import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.bean.Message;
+import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.imp.OnCallback;
 import com.shon.dispatcher.utils.TransLog;
 
@@ -18,24 +18,33 @@ final class CommonCall<T> implements TransCall<T> {
     private OnCallback<T> onCallback;
     private ServiceMethod<Object, Object> serviceMethod;
 
-     CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args) {
+    CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args) {
         transmitter = serviceMethod.getTransmitter();
         this.serviceMethod = serviceMethod;
-         TransLog.e("current i : " + i);
+        TransLog.e("current i : " + i);
+    }
+
+    Transmitter getTransmitter() {
+        return transmitter;
+    }
+
+    public void sendData() {
+        Sender sender = serviceMethod.getCommand();
+        if (sender == null) {
+            return;
+        }
+        transmitter.sendData(sender.getSendCmd());
     }
 
     @Override
     public void execute(OnCallback<T> onCallback) {
 
-         i = i + 1;
+        i = i + 1;
         TransLog.e("current i : " + i);
-         this.onCallback = onCallback;
-         Sender sender = serviceMethod.getCommand();
-         if (sender == null){
-             return;
-         }
-        transmitter.sendData(sender.getSendCmd());
-//        onCallback.onDataReceived((T) "已执行");
+        this.onCallback = onCallback;
+
+//        TransRunnable transRunnable = new TransRunnable(this);
+//        new Thread(transRunnable).start();
     }
 
     @Override
@@ -43,11 +52,11 @@ final class CommonCall<T> implements TransCall<T> {
 
     }
 
-    void onDataCallback(Object object, Message message){
+    void onDataCallback(Object object, Message message) {
         i = i + 1;
         TransLog.e("current i : " + i);
-         if (onCallback != null){
-             onCallback.onDataReceived((T) object,message);
-         }
+        if (onCallback != null) {
+            onCallback.onDataReceived((T) object, message);
+        }
     }
 }

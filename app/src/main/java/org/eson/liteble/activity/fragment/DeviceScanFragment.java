@@ -25,17 +25,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.e.ble.annotation.BLESate;
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
-import org.eson.liteble.activity.BleDetailActivity;
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.MainActivity;
 import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.activity.base.ViewBindFragment;
 import org.eson.liteble.activity.vms.ScannerViewModel;
 import org.eson.liteble.activity.vms.data.ScanLiveData;
 import org.eson.liteble.adapter.ScanBLEItem;
