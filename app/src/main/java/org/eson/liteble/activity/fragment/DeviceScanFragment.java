@@ -39,7 +39,7 @@ import org.eson.liteble.activity.adapter.ScanBLEItem;
 import org.eson.liteble.databinding.FragmentScanDeviceBinding;
 import org.eson.liteble.ble.BleService;
 import org.eson.liteble.share.ConfigShare;
-import org.eson.liteble.ble.util.BondedDeviceBean;
+import org.eson.liteble.ble.bean.BondedDeviceBean;
 import org.eson.liteble.ble.util.BondedDeviceUtil;
 import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.ToastUtil;
@@ -68,7 +68,7 @@ public class DeviceScanFragment extends BaseObserveFragment {
     private boolean isFilterNoName;
     private int scanTime;
 
-    FragmentScanDeviceBinding scanDeviceBinding;
+    private FragmentScanDeviceBinding scanDeviceBinding;
 
     @Override
     protected View getView(LayoutInflater inflater, ViewGroup container) {
@@ -221,18 +221,10 @@ public class DeviceScanFragment extends BaseObserveFragment {
      * 跳转的详情界面
      */
     private void startToNext() {
-//        if (!MyApplication.getInstance().isForeground(MainActivity.class.getName())) {
-//            return;
-//        }
         hideProgress();
 
 
         ToastUtil.showShort(getActivity(), "连接成功");
-//        Intent intent = new Intent(getActivity(), BleDetailActivity.class);
-//        intent.putExtra("mac", selectDevice.getMac());
-//        intent.putExtra("name", selectDevice.getName());
-//        startActivity(intent);
-
         startActivity(new Intent(getActivity(), DeviceActivity.class));
     }
 

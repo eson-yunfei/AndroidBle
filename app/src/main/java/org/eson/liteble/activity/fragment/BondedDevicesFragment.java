@@ -31,7 +31,7 @@ import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.adapter.BondedDevAdapter;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
 import org.eson.liteble.ble.BleService;
-import org.eson.liteble.ble.util.BondedDeviceBean;
+import org.eson.liteble.ble.bean.BondedDeviceBean;
 import org.eson.liteble.ble.util.BondedDeviceUtil;
 import org.eson.liteble.util.ToastUtil;
 

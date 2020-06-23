@@ -41,31 +41,13 @@ import java.util.UUID;
  * @description
  */
 
-class BLEUtil {
+public class BLEUtil {
 
     public static boolean isConnected(String address) {
         BluetoothManager manager = BLESdk.get().getBluetoothManager();
         if (manager == null) {
             return false;
         }
-//        List<BluetoothDevice> bindList = getBindDevices();
-//        if (bindList == null) {
-//            return false;
-//        }
-////        BLELog.i("--->>>bindList::" + bindList.size());
-//
-//        BluetoothDevice device = null;
-//        for (BluetoothDevice bluetoothDevice : bindList) {
-//            String bindDevice = bluetoothDevice.getAddress();
-//
-//            if (TextUtils.equals(bindDevice, address)) {
-//                device = bluetoothDevice;
-////                BLELog.i("--->>>contain bindDevice::" + bindDevice);
-//            }
-//        }
-//        if (device == null) {
-//            return false;
-//        }
         BluetoothAdapter adapter = BLESdk.get().getBluetoothAdapter();
         if (adapter == null) {
             return false;

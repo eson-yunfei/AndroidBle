@@ -16,6 +16,8 @@
 
 package org.eson.liteble.ble.util;
 
+import org.eson.liteble.ble.bean.BondedDeviceBean;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

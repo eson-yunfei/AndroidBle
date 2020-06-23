@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.eson.liteble.R;
-import org.eson.liteble.ble.util.BondedDeviceBean;
+import org.eson.liteble.ble.bean.BondedDeviceBean;
 
 import java.util.List;
 

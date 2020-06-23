@@ -51,9 +51,9 @@ public class BleService extends Service {
         return bleService;
     }
 
-    public void connectionDevice(Context context, String bleMac) {
+    public void connectionDevice(String bleMac) {
 
-        BLEControl.get().connectDevice(context, bleMac);
+        BLEControl.get().connectDevice(getApplicationContext(), bleMac);
     }
 
     /**
