@@ -1,5 +1,6 @@
 package com.e.ble.core;
 
+import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -12,7 +13,7 @@ import android.content.Context;
  */
 public class BleTool {
 
-    private Context context;
+    private Application context;
     private Controller controller;
     private BluetoothManager bluetoothManager;
     private BluetoothAdapter bluetoothAdapter;
@@ -30,7 +31,7 @@ public class BleTool {
         return bleTool;
     }
 
-    public void init(Context context) {
+    public void init(Application context) {
         this.context = context;
     }
 
@@ -50,11 +51,29 @@ public class BleTool {
     }
 
 
+    /**
+     * @return
+     */
     public BluetoothManager getBluetoothManager() {
+        if (context == null) {
+            return null;
+        }
+        if (bluetoothManager == null) {
+            bluetoothManager = (BluetoothManager) context.getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
+        }
         return bluetoothManager;
     }
 
+    /**
+     * @return
+     */
     public BluetoothAdapter getBluetoothAdapter() {
+        if (bluetoothManager == null) {
+            return null;
+        }
+        if (bluetoothAdapter == null) {
+            bluetoothAdapter = bluetoothManager.getAdapter();
+        }
         return bluetoothAdapter;
     }
 }
