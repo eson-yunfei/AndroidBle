@@ -7,6 +7,7 @@ import android.content.Intent;
 import androidx.multidex.MultiDexApplication;
 
 import com.e.ble.BLESdk;
+import com.e.ble.core.BleTool;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.DispatcherConfig;
 
@@ -48,6 +49,7 @@ public class MyApplication extends MultiDexApplication {
         mContext = this;
         instance = this;
         LittleBleViewModel.iniViewModel(this);
+        BleTool.getInstance().init(this);
         BLESdk.get().init(mContext);
         BLESdk.get().setMaxConnect(3);
         ConfigShare configShare = new ConfigShare(mContext);

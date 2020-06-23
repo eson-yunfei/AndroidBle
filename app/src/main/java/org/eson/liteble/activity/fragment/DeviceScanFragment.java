@@ -108,7 +108,7 @@ public class DeviceScanFragment extends BaseObserveFragment {
     private ScanBLEItem.ItemClickListener mOnClickListener = device -> {
         selectDevice = device;
 
-        BleService.get().connectionDevice(getActivity(), selectDevice.getMac());
+        BleService.get().connectionDevice(selectDevice.getMac());
 
         showProgress("正在连接设备：" + selectDevice.getName());
     };

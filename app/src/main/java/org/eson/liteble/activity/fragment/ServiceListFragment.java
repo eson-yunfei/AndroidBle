@@ -78,7 +78,7 @@ public class ServiceListFragment extends BaseObserveFragment {
                 BLEControl.get().disconnect(mac);
                 isConnect = false;
             } else {
-                BleService.get().connectionDevice(getActivity(), mac);
+                BleService.get().connectionDevice(mac);
             }
         });
 
