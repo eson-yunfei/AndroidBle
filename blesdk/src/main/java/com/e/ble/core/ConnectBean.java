@@ -16,7 +16,8 @@ class ConnectBean {
     private BluetoothGatt gatt;
 
     public ConnectBean(String address, OnConnectListener connListener) {
-
+        this.address = address;
+        this.connListener = connListener;
     }
 
     public void setGatt(BluetoothGatt gatt) {
@@ -26,11 +27,21 @@ class ConnectBean {
     public BluetoothGatt getGatt() {
         return gatt;
     }
+
     public String getAddress() {
         return address;
     }
 
     public OnConnectListener getConnListener() {
         return connListener;
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectBean{" +
+                "address='" + address + '\'' +
+                ", connListener=" + connListener +
+                ", gatt=" + gatt +
+                '}';
     }
 }

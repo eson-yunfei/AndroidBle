@@ -43,7 +43,7 @@ public class BleTool {
         if (controller == null) {
             synchronized (BleTool.class) {
                 if (controller == null) {
-                    controller = new Controller(this);
+                    controller = new Controller(bleTool);
                 }
             }
         }
@@ -69,6 +69,9 @@ public class BleTool {
      */
     public BluetoothAdapter getBluetoothAdapter() {
         if (bluetoothManager == null) {
+            bluetoothManager = getBluetoothManager();
+        }
+        if (bluetoothManager == null){
             return null;
         }
         if (bluetoothAdapter == null) {

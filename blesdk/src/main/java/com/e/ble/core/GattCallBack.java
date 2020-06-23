@@ -30,25 +30,35 @@ final class GattCallBack extends BluetoothGattCallback {
                 }
             }
         }
-        return null;
-    }
-
-    public static GattCallBack gattCallBack(ConnectBean connectBean) {
-
-        if (gattCallBack == null) {
-            gattCallBack = gattCallBack();
-            assert gattCallBack != null;
-            gattCallBack.addConnectBean(connectBean);
-        } else {
-            gattCallBack.addConnectBean(connectBean);
-        }
-
         return gattCallBack;
     }
+
+//    public static GattCallBack gattCallBack(ConnectBean connectBean) {
+//
+//        if (gattCallBack == null) {
+//            gattCallBack = gattCallBack();
+//            assert gattCallBack != null;
+//            gattCallBack.addConnectBean(connectBean);
+//        } else {
+//            gattCallBack.addConnectBean(connectBean);
+//        }
+//
+//        return gattCallBack;
+//    }
 
     public GattCallBack() {
         super();
 
+    }
+
+    public boolean addConnectBean(ConnectBean connectBean) {
+
+        if (stateChanged == null) {
+            stateChanged = new StateChangedImpl(connectBean);
+            return true;
+        } else {
+           return stateChanged.addConnectBean(connectBean);
+        }
     }
 
     public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener) {
@@ -63,14 +73,7 @@ final class GattCallBack extends BluetoothGattCallback {
     }
 
 
-    private void addConnectBean(ConnectBean connectBean) {
 
-        if (stateChanged == null) {
-            stateChanged = new StateChangedImpl(connectBean);
-        } else {
-            stateChanged.addConnectBean(connectBean);
-        }
-    }
 
 
     @Override

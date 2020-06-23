@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.e.ble.bean.BLEDevice;
+import com.e.ble.core.BleTool;
+import com.e.ble.core.imp.OnConnectListener;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
@@ -108,9 +110,24 @@ public class DeviceScanFragment extends BaseObserveFragment {
     private ScanBLEItem.ItemClickListener mOnClickListener = device -> {
         selectDevice = device;
 
-        BleService.get().connectionDevice(selectDevice.getMac());
 
-        showProgress("正在连接设备：" + selectDevice.getName());
+        BleTool.getInstance().getController().connectDevice(selectDevice.getMac()
+                , new OnConnectListener() {
+                    @Override
+                    public void onConnectSate(int status, int newState) {
+                        LogUtil.e("current tread : " + Thread.currentThread().getName());
+                        LogUtil.e("onConnectSate : status = " + status + " ;  newState = " + newState);
+                    }
+
+                    @Override
+                    public void onServicesDiscovered(String address) {
+                        LogUtil.e("current tread : " + Thread.currentThread().getName());
+                        LogUtil.e("onServicesDiscovered : address : " + address);
+                    }
+                });
+//        BleService.get().connectionDevice(selectDevice.getMac());
+
+//        showProgress("正在连接设备：" + selectDevice.getName());
     };
 
 
@@ -173,6 +190,7 @@ public class DeviceScanFragment extends BaseObserveFragment {
             scanBLEAdapter.notifyDataSetChanged();
         });
     }
+
     @Override
     public void onDeviceStateChange(String deviceMac, int currentState) {
 
@@ -238,7 +256,6 @@ public class DeviceScanFragment extends BaseObserveFragment {
         scanBLEAdapter.notifyDataSetChanged();
         searchDevice();
     }
-
 
 
 }

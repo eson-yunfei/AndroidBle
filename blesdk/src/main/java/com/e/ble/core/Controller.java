@@ -20,7 +20,14 @@ public class Controller {
     }
 
 
-    void connectDevice(String address, OnConnectListener bleConnListener) {
+    /**
+     * 连接到指定 的蓝牙设备
+     *
+     * @param address
+     * @param bleConnListener
+     */
+    public void connectDevice(String address, OnConnectListener bleConnListener) {
+
         ConnectBean connectBean = new ConnectBean(address, bleConnListener);
 
         if (connector == null) {
@@ -30,16 +37,16 @@ public class Controller {
         connector.addConnect(connectBean);
     }
 
-     void setSateChangeListener(OnStateChangeListener onStateChangeListener) {
+    public void setSateChangeListener(OnStateChangeListener onStateChangeListener) {
         GattCallBack gattCallBack = GattCallBack.gattCallBack();
         if (gattCallBack != null) {
             gattCallBack.setOnStateChangeListener(onStateChangeListener);
         }
     }
 
-    void readInfo(ReadMessage readMessage, OnReadMessage onReadMessage){
+    public void readInfo(ReadMessage readMessage, OnReadMessage onReadMessage) {
         GattCallBack gattCallBack = GattCallBack.gattCallBack();
-        if (gattCallBack != null){
+        if (gattCallBack != null) {
             gattCallBack.setReadListener(onReadMessage);
         }
     }
