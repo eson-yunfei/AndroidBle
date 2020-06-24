@@ -1,8 +1,9 @@
 package org.eson.liteble.ble.command;
 
-import com.shon.dispatcher.TransCall;
 import com.shon.dispatcher.annotation.API;
 import com.shon.dispatcher.annotation.Notice;
+import com.shon.dispatcher.call.ListenerCall;
+import com.shon.dispatcher.call.SenderCall;
 
 /**
  * Auth : xiao.yunfei
@@ -14,8 +15,8 @@ public interface Command {
 
 
     @API(name = SendCmd.class)
-    TransCall<String> sendCmd(String cmd);
+    SenderCall<String> sendCmd(String cmd);
 
     @Notice(name = CmdListener.class)
-    TransCall<String> startListener();
+    ListenerCall<String> startListener();
 }

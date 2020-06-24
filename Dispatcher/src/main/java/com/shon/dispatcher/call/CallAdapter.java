@@ -1,4 +1,4 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.call;
 
 import java.lang.reflect.Type;
 
@@ -8,13 +8,13 @@ import java.lang.reflect.Type;
  * Package name : com.shon.dispatcher.core
  * Des :
  */
- interface CallAdapter<R, T> {
+ public interface CallAdapter<R, T> {
 
     Type responseType();
 
 
-    T adapt(TransCall<R> call);
+    T adapt(ICall<R> call);
 
-    TransCall<R> getCall();
+    ICall<R> getCall();
 
 }

@@ -4,6 +4,8 @@ import com.shon.dispatcher.annotation.API;
 import com.shon.dispatcher.annotation.Notice;
 import com.shon.dispatcher.bean.Listener;
 import com.shon.dispatcher.bean.Sender;
+import com.shon.dispatcher.call.CallAdapter;
+import com.shon.dispatcher.call.ICall;
 import com.shon.dispatcher.utils.TransLog;
 
 import java.lang.annotation.Annotation;
@@ -23,7 +25,7 @@ class ServiceMethod<RequestT, ResultT> {
     private Sender sender;
 
     private Listener listener;
-    private CallAdapter<Object, TransCall<?>> callAdapter;
+    private CallAdapter<Object, ICall<?>> callAdapter;
 
     ServiceMethod(Transmitter transmitter, Method method, Object[] args) {
         this.transmitter = transmitter;
@@ -38,11 +40,11 @@ class ServiceMethod<RequestT, ResultT> {
         return sender;
     }
 
-     Listener getListener() {
+    Listener getListener() {
         return listener;
     }
 
-    CallAdapter<Object, TransCall<?>> getCallAdapter() {
+    CallAdapter<Object, ICall<?>> getCallAdapter() {
         return callAdapter;
     }
 
@@ -76,7 +78,7 @@ class ServiceMethod<RequestT, ResultT> {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else if (annotation instanceof Notice){
+            } else if (annotation instanceof Notice) {
                 Notice notice = method.getAnnotation(Notice.class);
                 if (notice == null) {
                     continue;
@@ -89,14 +91,14 @@ class ServiceMethod<RequestT, ResultT> {
                 }
             }
         }
-        callAdapter = (CallAdapter<Object, TransCall<?>>) createCallAdapter(method);
+        callAdapter = (CallAdapter<Object, ICall<?>>) createCallAdapter(method);
     }
 
 
-    private CallAdapter<Object, TransCall<?>> createCallAdapter(Method method) {
+    private CallAdapter<Object, ICall<?>> createCallAdapter(Method method) {
         final Type result = method.getGenericReturnType();
-        return new CallAdapter<Object, TransCall<?>>() {
-            private TransCall<Object> transCall;
+        return new CallAdapter<Object, ICall<?>>() {
+            private ICall<Object> transCall;
 
             @Override
             public Type responseType() {
@@ -104,13 +106,13 @@ class ServiceMethod<RequestT, ResultT> {
             }
 
             @Override
-            public TransCall<Object> adapt(TransCall<Object> call) {
+            public ICall<Object> adapt(ICall<Object> call) {
                 transCall = call;
                 return transCall;
             }
 
             @Override
-            public TransCall<Object> getCall() {
+            public ICall<Object> getCall() {
                 return transCall;
             }
         };

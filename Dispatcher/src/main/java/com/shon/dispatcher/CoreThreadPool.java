@@ -1,4 +1,4 @@
-package com.shon.dispatcher.core;
+package com.shon.dispatcher;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

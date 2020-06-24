@@ -1,5 +1,7 @@
 package com.shon.dispatcher;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Auth : xiao.yunfei
  * Date : 2020/6/22 11:06
@@ -8,15 +10,31 @@ package com.shon.dispatcher;
  */
 class TransRunnable implements Runnable {
 
-    public CommonCall<?> commonCall;
+    private LinkedBlockingQueue<CommonCall> commonCallList;
 
-    public TransRunnable(CommonCall<?> commonCall) {
-        this.commonCall = commonCall;
+    public TransRunnable() {
+        commonCallList = new LinkedBlockingQueue<>();
     }
 
+    public <T> void addCall(CommonCall<T> commonCall) {
+        commonCallList.add(commonCall);
+    }
 
     @Override
     public void run() {
-        commonCall.sendData();
+        while (true) {
+            try {
+                CommonCall<?> commonCall = commonCallList.take();
+                if (commonCall.sendData()) {
+                    while (commonCall.isWaiting) {
+                        Thread.sleep(5);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+            }
+
+        }
     }
 }

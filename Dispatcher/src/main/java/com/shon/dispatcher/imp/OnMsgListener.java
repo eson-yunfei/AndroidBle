@@ -4,10 +4,10 @@ import com.shon.dispatcher.bean.Message;
 
 /**
  * Auth : xiao.yunfei
- * Date : 2020/6/19 16:04
+ * Date : 2020/6/24 17:48
  * Package name : com.shon.dispatcher.imp
  * Des :
  */
-public interface OnCallback<T> {
+public interface OnMsgListener<T> {
     void onDataReceived(T t, Message message);
 }

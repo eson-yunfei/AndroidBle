@@ -68,7 +68,7 @@ public class BondedDevicesFragment extends BaseObserveFragment {
             showProgress("正在连接设备：" + selectDevice.getName());
             MyApplication.getInstance().setCurrentShowDevice(selectDevice.getAddress());
             BLEScanner.get().stopScan();
-            BleService.get().connectionDevice( selectDevice.getAddress());
+            BleService.get().connectionDevice(selectDevice.getAddress());
         });
     }
 

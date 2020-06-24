@@ -94,7 +94,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
 
     public void startListener() {
         Command command = Dispatcher.getInstance().getApi();
-        command.startListener().execute((s, message) -> {
+        command.startListener().onListener((s, message) -> {
             BleDataBean bleDataBean = (BleDataBean) message.getObject();
             changeBleData(bleDataBean.getUuid().toString(), message.getBytes(), s);
         });
