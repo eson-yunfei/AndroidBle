@@ -1,4 +1,6 @@
-package com.shon.dispatcher.bean;
+package com.shon.dispatcher.command;
+
+import com.shon.dispatcher.TMessage;
 
 /**
  * Auth : xiao.yunfei
@@ -7,11 +9,13 @@ package com.shon.dispatcher.bean;
  * Des :
  */
 public abstract class Sender<T> implements ICommand<T> {
+
+
     /**
      * 获取需要发送的数据
      *
      * @return
      */
-    public abstract Message getSendCmd();
+    public abstract TMessage getSendCmd(TMessage sendTMessage);
 
 }

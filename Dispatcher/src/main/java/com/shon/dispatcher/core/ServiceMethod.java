@@ -1,12 +1,14 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.core;
 
+import com.shon.dispatcher.Transmitter;
 import com.shon.dispatcher.annotation.API;
 import com.shon.dispatcher.annotation.Notice;
-import com.shon.dispatcher.bean.Listener;
-import com.shon.dispatcher.bean.Sender;
 import com.shon.dispatcher.call.CallAdapter;
 import com.shon.dispatcher.call.ICall;
+import com.shon.dispatcher.command.Listener;
+import com.shon.dispatcher.command.Sender;
 import com.shon.dispatcher.utils.TransLog;
+import com.shon.dispatcher.utils.Utils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -22,25 +24,25 @@ class ServiceMethod<RequestT, ResultT> {
 
     private Transmitter transmitter;
 
-    private Sender sender;
+    private Sender<?> sender;
 
-    private Listener listener;
+    private Listener<?> listener;
     private CallAdapter<Object, ICall<?>> callAdapter;
 
-    ServiceMethod(Transmitter transmitter, Method method, Object[] args) {
+    ServiceMethod(Transmitter transmitter, Method method) {
         this.transmitter = transmitter;
-        create(method, args);
+        create(method);
     }
 
     Transmitter getTransmitter() {
         return transmitter;
     }
 
-    Sender getCommand() {
+    Sender<?> getCommand() {
         return sender;
     }
 
-    Listener getListener() {
+    Listener<?> getListener() {
         return listener;
     }
 
@@ -48,52 +50,50 @@ class ServiceMethod<RequestT, ResultT> {
         return callAdapter;
     }
 
-    private void create(Method method, Object[] args) {
-
+    private void create(Method method) {
         Type returnType = method.getGenericReturnType();
         Type type = Utils.getRawType(returnType);
         TransLog.e("invocationHandler : 返回类型 : " + type);
         Annotation[] annotations = method.getAnnotations();
-
-        if (annotations.length == 0) {
-            return;
-        }
-        if (args != null) {
-            for (int i = 0; i < args.length; i++) {
-                Object arg = args[i];
-                TransLog.e("args  : " + i + " ; type :" + arg.getClass());
-            }
-        }
-
         for (Annotation annotation : annotations) {
             TransLog.e("annotation : " + annotation.getClass());
             if (annotation instanceof API) {
-                API api = method.getAnnotation(API.class);
-                if (api == null) {
-                    continue;
-                }
-                Class<? extends Sender> cls = api.name();
-                try {
-                    sender = cls.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (annotation instanceof Notice) {
-                Notice notice = method.getAnnotation(Notice.class);
-                if (notice == null) {
-                    continue;
-                }
-                Class<? extends Listener> cls = notice.name();
-                try {
-                    listener = cls.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                createCall(method);
+            }
+            if (annotation instanceof Notice) {
+                createListener(method);
             }
         }
         callAdapter = (CallAdapter<Object, ICall<?>>) createCallAdapter(method);
+
     }
 
+    private void createCall(Method method) {
+
+        API api = method.getAnnotation(API.class);
+        if (api == null) {
+            return;
+        }
+        Class<? extends Sender> cls = api.name();
+        try {
+            sender = cls.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createListener(Method method) {
+        Notice notice = method.getAnnotation(Notice.class);
+        if (notice == null) {
+            return;
+        }
+        Class<? extends Listener> cls = notice.name();
+        try {
+            listener = cls.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private CallAdapter<Object, ICall<?>> createCallAdapter(Method method) {
         final Type result = method.getGenericReturnType();

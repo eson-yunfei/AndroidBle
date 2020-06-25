@@ -1,4 +1,7 @@
-package com.shon.dispatcher.bean;
+package com.shon.dispatcher.command;
+
+
+import com.shon.dispatcher.command.ICommand;
 
 /**
  * Auth : xiao.yunfei

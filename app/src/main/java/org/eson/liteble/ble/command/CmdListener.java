@@ -1,10 +1,8 @@
 package org.eson.liteble.ble.command;
 
 import com.e.ble.util.BLEByteUtil;
-import com.shon.dispatcher.bean.Listener;
-import com.shon.dispatcher.bean.Message;
-
-import org.eson.liteble.util.LogUtil;
+import com.shon.dispatcher.command.Listener;
+import com.shon.dispatcher.TMessage;
 
 /**
  * Auth : xiao.yunfei
@@ -14,9 +12,8 @@ import org.eson.liteble.util.LogUtil;
  */
 public class CmdListener extends Listener<String> {
     @Override
-    public String handlerMessage(Message message) {
-        LogUtil.e("CmdListener -->> message : " + message.toString());
+    public String handlerMessage(TMessage TMessage) {
 
-        return BLEByteUtil.getHexString(message.getBytes());
+        return BLEByteUtil.getHexString(TMessage.getBytes());
     }
 }

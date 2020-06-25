@@ -8,7 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.navigation.NavArgument;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.e.ble.control.BLEControl;
+import com.e.ble.core.BleTool;
+import com.e.ble.core.bean.ConnectBt;
 import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
@@ -18,13 +23,13 @@ import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.vms.ServiceListViewModel;
 import org.eson.liteble.ble.BleService;
 import org.eson.liteble.ble.bean.ServiceBean;
-import org.eson.liteble.ble.util.BondedDeviceUtil;
 import org.eson.liteble.databinding.ActivityDetailBinding;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Auth : xiao.yunfei
@@ -36,13 +41,13 @@ public class ServiceListFragment extends BaseObserveFragment {
 
     private ActivityDetailBinding detailBinding;
 
-    private String mac = "";
     private boolean isConnect = true;
 
     private boolean isReadStart = false;
     private DeviceDetailAdapter mDeviceDetailAdapter;
 
     private ServiceListViewModel serviceListViewModel;
+    private ConnectBt connectBt;
 
     @Override
     protected View getView(LayoutInflater inflater, ViewGroup container) {
@@ -56,13 +61,18 @@ public class ServiceListFragment extends BaseObserveFragment {
         super.onProcess();
         serviceListViewModel = getDefaultViewModelProviderFactory().create(ServiceListViewModel.class);
 
+        Map<String, NavArgument> map = NavHostFragment.findNavController(this).getGraph().getArguments();
+        NavArgument navArgument = map.get("connectBt");
+        if (navArgument == null){
+            return;
+        }
+        connectBt = (ConnectBt) navArgument.getDefaultValue();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mac = MyApplication.getInstance().getCurrentShowDevice();
-        String devName = BondedDeviceUtil.get().getDevice(mac).getName();
+        String devName = connectBt.getName();
         detailBinding.name.setText(devName);
 
 
@@ -75,10 +85,10 @@ public class ServiceListFragment extends BaseObserveFragment {
 
         detailBinding.disconnect.setOnClickListener(v -> {
             if (isConnect) {
-                BLEControl.get().disconnect(mac);
+                BLEControl.get().disconnect(connectBt.getAddress());
                 isConnect = false;
             } else {
-                BleService.get().connectionDevice(mac);
+                BleService.get().connectionDevice(connectBt.getAddress());
             }
         });
 
@@ -128,9 +138,10 @@ public class ServiceListFragment extends BaseObserveFragment {
      */
     private void getMessage() {
 
-        String connectMac = MyApplication.getInstance().getCurrentShowDevice();
+//        String connectMac = MyApplication.getInstance().getCurrentShowDevice();
 
-        BluetoothGatt gatt = BLEControl.get().getBluetoothGatt(connectMac);
+       ;
+        BluetoothGatt gatt =  BleTool.getInstance().getController().getGatt(connectBt.getAddress());
         if (gatt == null) {
             return;
         }
@@ -155,6 +166,7 @@ public class ServiceListFragment extends BaseObserveFragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable("serviceBean", serviceBean);
             bundle.putInt("position", position);
+            bundle.putString("address",connectBt.getAddress());
             navigateNext(R.id.action_serviceListFragment_to_serviceInfoFragment, bundle);
         });
         detailBinding.detailList.setAdapter(mDeviceDetailAdapter);

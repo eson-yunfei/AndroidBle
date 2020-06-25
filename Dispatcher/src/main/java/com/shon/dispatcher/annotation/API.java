@@ -1,6 +1,6 @@
 package com.shon.dispatcher.annotation;
 
-import com.shon.dispatcher.bean.Sender;
+import com.shon.dispatcher.command.Sender;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

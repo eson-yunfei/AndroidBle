@@ -69,6 +69,11 @@ class Connector extends Thread {
 
     }
 
+    /**
+     * 连接到指定的设备
+     *
+     * @param connectBean
+     */
     private void connect(ConnectBean connectBean) {
         BLELog.e("Connector -->> connect() ");
         if (bluetoothAdapter == null) {
@@ -82,11 +87,11 @@ class Connector extends Thread {
         }
 
         GattCallBack gattCallBack = GattCallBack.gattCallBack();
-        if (!gattCallBack.addConnectBean(connectBean)){
+        if (!gattCallBack.addConnectBean(connectBean)) {
             BLELog.e("Connector -->> gattCallBack  已存在 该任务");
             return;
         }
-        BluetoothGatt gatt = bluetoothDevice.connectGatt(context, false,gattCallBack);
+        BluetoothGatt gatt = bluetoothDevice.connectGatt(context, false, gattCallBack);
         if (gatt != null) {
             connectBean.setGatt(gatt);
         }

@@ -8,4 +8,13 @@ package com.e.ble.core.bean;
  */
 public class ReadMessage extends AMessage {
 
+    private byte[] bytes;
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
 }

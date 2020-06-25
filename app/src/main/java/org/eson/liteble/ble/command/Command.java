@@ -2,6 +2,7 @@ package org.eson.liteble.ble.command;
 
 import com.shon.dispatcher.annotation.API;
 import com.shon.dispatcher.annotation.Notice;
+import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.ListenerCall;
 import com.shon.dispatcher.call.SenderCall;
 
@@ -15,7 +16,7 @@ public interface Command {
 
 
     @API(name = SendCmd.class)
-    SenderCall<String> sendCmd(String cmd);
+    SenderCall<String> sendCmd(TMessage sendTMessage);
 
     @Notice(name = CmdListener.class)
     ListenerCall<String> startListener();

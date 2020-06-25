@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.core.BleTool;
+import com.e.ble.core.bean.ConnectBt;
 import com.e.ble.core.imp.OnConnectListener;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
@@ -59,7 +60,7 @@ import kale.adapter.item.AdapterItem;
  * @description 扫描设备界面
  */
 
-public class DeviceScanFragment extends BaseObserveFragment {
+public class ScanFragment extends BaseObserveFragment {
 
     private ScannerViewModel scannerViewModel;
     private CommonRcvAdapter<BLEDevice> scanBLEAdapter;
@@ -110,7 +111,7 @@ public class DeviceScanFragment extends BaseObserveFragment {
     private ScanBLEItem.ItemClickListener mOnClickListener = device -> {
         selectDevice = device;
 
-
+        showProgress("正在连接设备：" + selectDevice.getName());
         BleTool.getInstance().getController().connectDevice(selectDevice.getMac()
                 , new OnConnectListener() {
                     @Override
@@ -120,13 +121,19 @@ public class DeviceScanFragment extends BaseObserveFragment {
                     }
 
                     @Override
-                    public void onServicesDiscovered(String address) {
+                    public void onServicesDiscovered(ConnectBt connectBt) {
+
                         LogUtil.e("current tread : " + Thread.currentThread().getName());
-                        LogUtil.e("onServicesDiscovered : address : " + address);
+                        LogUtil.e("onServicesDiscovered : address : " + connectBt.getAddress());
+
+                        hideProgress();
+                        Intent intent = new Intent(getActivity(), DeviceActivity.class);
+                        intent.putExtra("connectBt", connectBt);
+                        startActivity(intent);
+
                     }
                 });
 //        BleService.get().connectionDevice(selectDevice.getMac());
-
 //        showProgress("正在连接设备：" + selectDevice.getName());
     };
 
@@ -244,6 +251,8 @@ public class DeviceScanFragment extends BaseObserveFragment {
 
         ToastUtil.showShort(getActivity(), "连接成功");
         startActivity(new Intent(getActivity(), DeviceActivity.class));
+
+
     }
 
     public void stopScanner() {

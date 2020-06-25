@@ -1,18 +1,19 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.core;
 
 import android.os.Handler;
 import android.os.Looper;
 
+import com.shon.dispatcher.InvocationHandler;
+import com.shon.dispatcher.Transmitter;
 import com.shon.dispatcher.annotation.API;
 import com.shon.dispatcher.annotation.Notice;
-import com.shon.dispatcher.bean.Listener;
-import com.shon.dispatcher.bean.Message;
-import com.shon.dispatcher.bean.Sender;
+import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.ICall;
 import com.shon.dispatcher.call.SenderCall;
+import com.shon.dispatcher.command.Listener;
+import com.shon.dispatcher.command.Sender;
 import com.shon.dispatcher.utils.TransLog;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,13 +24,13 @@ import java.util.Map;
  * Package name : com.shon.dispatcher
  * Des :
  */
-class Invocation implements InvocationHandler {
+class Invocation extends InvocationHandler {
 
     private HashMap<Method, ServiceMethod<Object, Object>> sendMethodMap;
     private HashMap<Method, ServiceMethod<Object, Object>> listenerMethodMap;
     private Transmitter transmitter;
     private ReadMessage readMessage;
-    private TransRunnable transRunnable;
+    private SendRunnable sendRunnable;
     private Handler handler;
 
     Invocation(Transmitter transmitter) {
@@ -38,24 +39,32 @@ class Invocation implements InvocationHandler {
         listenerMethodMap = new HashMap<>();
 
         readMessage = new ReadMessage(this);
-        transRunnable = new TransRunnable();
+        sendRunnable = new SendRunnable();
         handler = new Handler(Looper.getMainLooper());
-        ThreadPool  threadPool = ThreadPool.getThreadPool();
+        ThreadPool threadPool = ThreadPool.getThreadPool();
         threadPool.addTask(readMessage);
-        threadPool.addTask(transRunnable);
+        threadPool.addTask(sendRunnable);
     }
 
-    public void addMessage(Message receivedData) {
+    public void addMessage(TMessage receivedData) {
         if (readMessage != null) {
             readMessage.addMessage(receivedData);
         }
     }
 
+    public void sendSuccess(TMessage TMessage) {
+        sendRunnable.sendSuccess(TMessage);
+    }
+
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         ServiceMethod<Object, Object> serviceMethod = getServiceMethod(method);
         if (serviceMethod != null) {
-            return serviceMethod.getCallAdapter().getCall();
+
+            ICall<?> iCall = serviceMethod.getCallAdapter().getCall();
+            TransLog.e("transCall : " + iCall.getClass().getName());
+            return iCall;
         }
         TransLog.e("invocationHandler : name  : " + method.getName());
         ICall<?> call = null;
@@ -65,17 +74,27 @@ class Invocation implements InvocationHandler {
             if (notice == null) {
                 throw new Exception("unSupport method");
             }
-        }else {
 
+            serviceMethod = new ServiceMethod<>(transmitter, method);
+            CommListenerCall<Object> commonCall = new CommListenerCall<>(handler);
+            call = (ICall<?>) serviceMethod.getCallAdapter().adapt(commonCall);
+
+        } else {
+            serviceMethod = new ServiceMethod<>(transmitter, method);
+            CommonCall<Object> commonCall = new CommonCall<>(serviceMethod, args, handler, sendRunnable);
+            call = (ICall<?>) serviceMethod.getCallAdapter().adapt(commonCall);
+        }
+
+        if (args != null && args.length != 0) {
+            for (Object arg : args) {
+                TransLog.e("arg : " + arg.getClass().getName());
+            }
         }
 
 
-        serviceMethod = new ServiceMethod<>(transmitter, method, args);
-        CommonCall<Object> commonCall = new CommonCall<>(serviceMethod, args, handler, transRunnable);
-        SenderCall<?> transCall = (SenderCall<?>) serviceMethod.getCallAdapter().adapt(commonCall);
-        TransLog.e("transCall : " + transCall.getClass().getName());
+        TransLog.e("transCall : " + call.getClass().getName());
         sendMethodMap.put(method, serviceMethod);
-        return transCall;
+        return call;
     }
 
     private ServiceMethod<Object, Object> getServiceMethod(Method method) {
@@ -89,7 +108,7 @@ class Invocation implements InvocationHandler {
     }
 
 
-    public void handlerMessage(Message message) {
+    public void handlerMessage(TMessage TMessage) {
         for (Map.Entry<Method, ServiceMethod<Object, Object>> serviceMethodEntry : sendMethodMap.entrySet()) {
             ServiceMethod<Object, Object> serviceMethod = serviceMethodEntry.getValue();
             if (serviceMethod == null) {
@@ -102,9 +121,9 @@ class Invocation implements InvocationHandler {
                 if (listener == null) {
                     continue;
                 }
-                result = listener.handlerMessage(message);
+                result = listener.handlerMessage(TMessage);
             } else {
-                result = sender.handlerMessage(message);
+                result = sender.handlerMessage(TMessage);
             }
 
 
@@ -112,11 +131,14 @@ class Invocation implements InvocationHandler {
                 return;
             }
 
-            CommonCall<Object> commonCall = (CommonCall<Object>) serviceMethod.getCallAdapter().getCall();
-            TransLog.e("commonCall : " + commonCall.getClass().getName());
-            commonCall.onDataCallback(result, message);
-            commonCall.cancelTimeOut();
+            ICall<Object> commonCall = (ICall<Object>) serviceMethod.getCallAdapter().getCall();
+            TransLog.e("onDataCallback : " + TMessage.toString());
+            commonCall.onDataCallback(result, TMessage);
 
+            if (commonCall instanceof SenderCall<?>) {
+                ((SenderCall<?>) commonCall).cancelTimeOut();
+                sendMethodMap.remove(serviceMethodEntry.getKey());
+            }
 
         }
     }

@@ -8,6 +8,9 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
 
+import com.e.ble.core.BleTool;
+import com.e.ble.core.bean.ReadMessage;
+import com.e.ble.core.imp.OnReadMessage;
 import com.e.ble.util.BLE_UUID_Util;
 import com.shon.dispatcher.Dispatcher;
 
@@ -46,6 +49,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
     private String serviceUUID;
     private String characterUUID;
     private String characterName = "";
+    private String connectMac;
     private boolean isListenerNotice = false;
 
     private List<String> descriptors = new ArrayList<>();
@@ -75,7 +79,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         ServiceBean serviceBean  = bundle.getParcelable("serviceBean");
         int position = bundle.getInt("position");
 
-        String connectMac = MyApplication.getInstance().getCurrentShowDevice();
+         connectMac = bundle.getString("address");
 
         characterBean = serviceBean.getUUIDBeen().get(position);
         serviceUUID = characterBean.getServiceUUID();
@@ -132,6 +136,24 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
     private void readCharacter() {
         BleService.get().readCharacter(UUID.fromString(serviceUUID),
                 UUID.fromString(characterUUID));
+
+        ReadMessage readMessage = new ReadMessage();
+        readMessage.setAddress(connectMac);
+        readMessage.setServiceUUID(UUID.fromString(serviceUUID));
+        readMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
+        BleTool.getInstance().getController()
+                .readInfo(readMessage, new OnReadMessage() {
+                    @Override
+                    public void onReadMessage(ReadMessage readMessage) {
+                        changeBleData(readMessage.getCharacteristicUUID().toString()
+                        ,readMessage.getBytes(),readMessage.getAddress());
+                    }
+
+                    @Override
+                    public void onReadError() {
+
+                    }
+                });
     }
 
     /**

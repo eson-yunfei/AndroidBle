@@ -1,4 +1,4 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.utils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
@@ -13,9 +13,9 @@ import java.lang.reflect.WildcardType;
  * Package name : com.shon.dispatcher.utils
  * Des :
  */
-class Utils {
+public class Utils {
 
-    static <T> void validateServiceInterface(Class<T> service) {
+    public static <T> void validateServiceInterface(Class<T> service) {
         if (!service.isInterface()) {
             throw new IllegalArgumentException("API declarations must be interfaces.");
         }
@@ -25,7 +25,7 @@ class Utils {
         }
     }
 
-    static Class<?> getRawType(Type type) {
+    public static Class<?> getRawType(Type type) {
         if (type == null) throw new NullPointerException("type == null");
 
         if (type instanceof Class<?>) {

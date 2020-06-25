@@ -1,7 +1,7 @@
 package org.eson.liteble.ble.command;
 
-import com.shon.dispatcher.bean.Sender;
-import com.shon.dispatcher.bean.Message;
+import com.shon.dispatcher.TMessage;
+import com.shon.dispatcher.command.Sender;
 import com.shon.dispatcher.utils.TransLog;
 
 /**
@@ -13,17 +13,25 @@ import com.shon.dispatcher.utils.TransLog;
 public class SendCmd extends Sender<String> {
 
     @Override
-    public Message getSendCmd() {
+    public TMessage getSendCmd(TMessage TMessage) {
+//        Message message = new Message();
+//        String serviceUUID = (String) params.get("serviceUUID");
+//        String characterUUID = (String) params.get("characterUUID");
+//        byte[] buffer = (byte[]) params.get("buffer");
 
-        Message message = new Message();
-        message.setObject(1);
-        message.setBytes(new byte[]{1,2,3,4,5,6});
-        return message;
+//        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(UUID.fromString(serviceUUID),
+//                UUID.fromString(characterUUID))
+//                .setAddress(MyApplication.getInstance().getCurrentShowDevice())
+//                .setDataBuffer(buffer).builder();
+////
+//        message.setBytes(bleUuid.getDataBuffer());
+//        message.setObject(bleUuid);
+        return TMessage;
     }
 
     @Override
-    public String handlerMessage(Message message) {
-        TransLog.e("handlerMessage : " + message.toString());
+    public String handlerMessage(TMessage TMessage) {
+        TransLog.e("handlerMessage : " + TMessage.toString());
         return "返回的消息被我处理了";
     }
 

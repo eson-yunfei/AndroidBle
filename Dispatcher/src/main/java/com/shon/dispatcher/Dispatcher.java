@@ -1,7 +1,8 @@
 package com.shon.dispatcher;
 
-import com.shon.dispatcher.bean.Message;
+import com.shon.dispatcher.core.DispatcherConfig;
 import com.shon.dispatcher.utils.TransLog;
+import com.shon.dispatcher.utils.Utils;
 
 import java.lang.reflect.Proxy;
 
@@ -17,9 +18,6 @@ public class Dispatcher {
 
     private DispatcherConfig dispatcherConfig;
 
-
-
-    private Invocation invocation;
     private Dispatcher() {
     }
 
@@ -50,24 +48,24 @@ public class Dispatcher {
         if (dispatcherConfig == null || dispatcherConfig.getServerInterface() == null) {
             return null;
         }
-        if (invocation == null){
-            invocation = new Invocation(dispatcherConfig.getTransmitter());
-        }
+//        if (invocation == null){
+//            invocation = new Invocation(dispatcherConfig.getTransmitter());
+//        }
         Class<?> commandApi = dispatcherConfig.getServerInterface();
         Utils.validateServiceInterface(dispatcherConfig.getServerInterface());
 
         return (T) Proxy.newProxyInstance(commandApi.getClassLoader(), new Class<?>[]{commandApi},
-                invocation);
+                dispatcherConfig.getInvocation());
     }
 
 
-    public void receiverData(Message receivedData) {
-        TransLog.e("Dispatcher -->>  receiverData  : " + receivedData.toString());
+    void receiverData(TMessage receivedData) {
+        dispatcherConfig.getInvocation().addMessage(receivedData);
 
-        if (invocation == null){
-            return;
-        }
-        invocation.addMessage(receivedData);
     }
 
+    public void sendSuccess(TMessage TMessage) {
+
+        dispatcherConfig.getInvocation().sendSuccess(TMessage);
+    }
 }

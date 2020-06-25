@@ -1,4 +1,6 @@
-package com.shon.dispatcher.bean;
+package com.shon.dispatcher.command;
+
+import com.shon.dispatcher.TMessage;
 
 /**
  * Auth : xiao_yun_fei
@@ -11,8 +13,8 @@ interface ICommand<T> {
 
     /**
      * 处理消息，如果处理,返回数据， 不处理 null
-     * @param message
+     * @param TMessage
      * @return
      */
-     T handlerMessage(Message message);
+     T handlerMessage(TMessage TMessage);
 }

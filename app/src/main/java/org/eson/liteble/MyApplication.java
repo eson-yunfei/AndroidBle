@@ -9,7 +9,7 @@ import androidx.multidex.MultiDexApplication;
 import com.e.ble.BLESdk;
 import com.e.ble.core.BleTool;
 import com.shon.dispatcher.Dispatcher;
-import com.shon.dispatcher.DispatcherConfig;
+import com.shon.dispatcher.core.DispatcherConfig;
 
 import org.eson.liteble.ble.command.BleTransmitter;
 import org.eson.liteble.ble.command.Command;
@@ -63,7 +63,6 @@ public class MyApplication extends MultiDexApplication {
                 .setTransmitter(BleTransmitter.getTransmitter())
                 .build();
         Dispatcher.init(dispatcherConfig);
-
     }
 
     public String getCurrentShowDevice() {

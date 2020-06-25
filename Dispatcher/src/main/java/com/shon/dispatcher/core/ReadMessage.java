@@ -1,6 +1,6 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.core;
 
-import com.shon.dispatcher.bean.Message;
+import com.shon.dispatcher.TMessage;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -11,28 +11,29 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Des :
  */
 public class ReadMessage implements Runnable {
-    private LinkedBlockingQueue<Message> messages;
+    private LinkedBlockingQueue<TMessage> TMessages;
     private Invocation invocation;
 
     public ReadMessage(Invocation invocation) {
-        messages = new LinkedBlockingQueue<>();
+        TMessages = new LinkedBlockingQueue<>();
         this.invocation = invocation;
     }
 
-    public void addMessage(Message receivedData) {
-        messages.offer(receivedData);
+    public void addMessage(TMessage receivedData) {
+        TMessages.offer(receivedData);
     }
+
 
     @Override
     public void run() {
 
         while (true) {
             try {
-                Message message = messages.take();
+                TMessage TMessage = TMessages.take();
                 if (invocation == null) {
                     break;
                 }
-                invocation.handlerMessage(message);
+                invocation.handlerMessage(TMessage);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;

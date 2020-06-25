@@ -1,11 +1,12 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.core;
 
 import android.os.Handler;
 
-import com.shon.dispatcher.bean.Message;
-import com.shon.dispatcher.bean.Sender;
+import com.shon.dispatcher.Transmitter;
+import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.SenderCall;
 import com.shon.dispatcher.imp.OnMsgSendListener;
+import com.shon.dispatcher.command.Sender;
 
 /**
  * Auth : xiao.yunfei
@@ -19,15 +20,17 @@ final class CommonCall<T> implements SenderCall<T> {
     private OnMsgSendListener<T> onCallback;
     private ServiceMethod<Object, Object> serviceMethod;
     private Handler myHandler;
-    private TransRunnable transRunnable;
-
+    private SendRunnable sendRunnable;
+    private Object[] args;
+    private TMessage TMessage;
     boolean isWaiting;
 
-    CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args, Handler handler, TransRunnable transRunnable) {
+    CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args, Handler handler, SendRunnable sendRunnable) {
         transmitter = serviceMethod.getTransmitter();
         this.serviceMethod = serviceMethod;
+        this.args = args;
         this.myHandler = handler;
-        this.transRunnable = transRunnable;
+        this.sendRunnable = sendRunnable;
     }
 
 
@@ -40,19 +43,27 @@ final class CommonCall<T> implements SenderCall<T> {
         if (sender == null) {
             return false;
         }
-        transmitter.sendData(sender.getSendCmd());
-        return startTime(300);
+        if (args == null || args.length == 0) {
+            return false;
+        }
+
+         TMessage = sender.getSendCmd((TMessage) args[0]);
+
+        transmitter.sendData(TMessage);
+        return startTime(500);
+    }
+    public String getSendMsg(){
+        return TMessage.getBytes().toString();
     }
 
     @Override
     public void execute(OnMsgSendListener<T> onCallback) {
 
         this.onCallback = onCallback;
-        if (transRunnable != null) {
-            transRunnable.addCall(this);
+        if (sendRunnable != null) {
+            sendRunnable.addCall(this);
         }
     }
-
 
 
     boolean startTime(long timeout) {
@@ -61,10 +72,12 @@ final class CommonCall<T> implements SenderCall<T> {
         return true;
     }
 
-    void cancelTimeOut() {
+    @Override
+    public void cancelTimeOut() {
         isWaiting = false;
         myHandler.removeCallbacks(timeoutRunnable);
     }
+
 
     private Runnable timeoutRunnable = new Runnable() {
         @Override
@@ -77,13 +90,14 @@ final class CommonCall<T> implements SenderCall<T> {
         }
     };
 
-    void onDataCallback(final Object object, final Message message) {
+    @Override
+    public void onDataCallback(final Object object, final TMessage TMessage) {
         isWaiting = false;
         post(new Runnable() {
             @Override
             public void run() {
                 if (onCallback != null) {
-                    onCallback.onDataReceived((T) object, message);
+                    onCallback.onDataReceived((T) object, TMessage);
                 }
             }
         });

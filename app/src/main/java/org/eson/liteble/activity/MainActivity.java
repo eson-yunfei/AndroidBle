@@ -17,7 +17,7 @@ import com.google.android.material.tabs.TabLayout;
 import org.eson.liteble.R;
 import org.eson.liteble.activity.base.ViewBindActivity;
 import org.eson.liteble.activity.fragment.BondedDevicesFragment;
-import org.eson.liteble.activity.fragment.DeviceScanFragment;
+import org.eson.liteble.activity.fragment.ScanFragment;
 import org.eson.liteble.databinding.ActivityMainBinding;
 import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.ToastUtil;
@@ -30,7 +30,7 @@ public class MainActivity extends ViewBindActivity {
     private FragmentManager mFragmentManager;
     private FragmentTransaction mTransaction;
 
-    private DeviceScanFragment mScanFragment;
+    private ScanFragment mScanFragment;
     private BondedDevicesFragment mDevicesFragment;
 
     private MenuItem menuRefresh;
@@ -53,7 +53,7 @@ public class MainActivity extends ViewBindActivity {
             mActionBar.setElevation(0);
         }
 
-        mScanFragment = new DeviceScanFragment();
+        mScanFragment = new ScanFragment();
         mDevicesFragment = new BondedDevicesFragment();
 
         mFragmentManager = getSupportFragmentManager();

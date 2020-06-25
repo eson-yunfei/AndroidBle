@@ -1,6 +1,6 @@
 package com.shon.dispatcher.imp;
 
-import com.shon.dispatcher.bean.Message;
+import com.shon.dispatcher.TMessage;
 
 /**
  * Auth : xiao.yunfei
@@ -9,5 +9,5 @@ import com.shon.dispatcher.bean.Message;
  * Des :
  */
 public interface OnMsgListener<T> {
-    void onDataReceived(T t, Message message);
+    void onDataReceived(T t, TMessage TMessage);
 }

@@ -1,5 +1,8 @@
 package com.e.ble.core;
 
+import androidx.annotation.NonNull;
+
+import com.e.ble.core.bean.ConnectBt;
 import com.e.ble.core.bean.ReadMessage;
 import com.e.ble.core.imp.OnConnectListener;
 import com.e.ble.core.imp.OnReadMessage;
@@ -23,36 +26,47 @@ class Tes {
             }
 
             @Override
-            public void onServicesDiscovered(String address) {
+            public void onServicesDiscovered(ConnectBt connectBt) {
 
             }
         });
 
         controller.setSateChangeListener(new OnStateChangeListener() {
 
+
             @Override
-            public void onConnecting(String address) {
+            public void onConnecting(@NonNull String address) {
 
             }
 
             @Override
-            public void onConnected(String address) {
+            public void onConnected(@NonNull String address) {
 
             }
 
             @Override
-            public void onDisconnecting(String address) {
+            public void onDisconnecting(@NonNull String address) {
 
             }
 
             @Override
-            public void onDisconnected(String address) {
+            public void onDisconnected(@NonNull String address) {
 
             }
         });
 
         controller.readInfo(new ReadMessage(), new OnReadMessage() {
 
+
+            @Override
+            public void onReadMessage(ReadMessage readMessage) {
+
+            }
+
+            @Override
+            public void onReadError() {
+
+            }
         });
     }
 }

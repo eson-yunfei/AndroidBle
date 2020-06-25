@@ -2,10 +2,12 @@ package org.eson.liteble.ble.impl;
 
 import com.e.ble.bean.BLECharacter;
 import com.e.ble.control.listener.BLETransportListener;
-import com.shon.dispatcher.bean.Message;
+import com.e.ble.util.BLEByteUtil;
+import com.shon.dispatcher.TMessage;
 
 import org.eson.liteble.ble.bean.BleDataBean;
 import org.eson.liteble.ble.command.BleTransmitter;
+import org.eson.liteble.util.LogUtil;
 
 /**
  * Auth : xiao_yun_fei
@@ -33,16 +35,22 @@ public class BleTransportImpl implements BLETransportListener {
 //            bundle.putSerializable(BLEConstant.Type.TYPE_NOTICE, dataBean);
 //            RxBus.getInstance().send(bundle);
 
-        Message message = new Message();
-        message.setBytes(bleCharacter.getDataBuffer());
-        message.setObject(dataBean);
+        TMessage TMessage = new TMessage();
+        TMessage.setBytes(bleCharacter.getDataBuffer());
+        TMessage.setObject(dataBean);
 
-        BleTransmitter.getTransmitter().receiverData(message);
+        BleTransmitter.getTransmitter().receiverData(TMessage);
     }
 
     @Override
     public void onCharacterWrite(BLECharacter bleCharacter) {
 
+        LogUtil.e("onCharacterWrite : " + bleCharacter.getDeviceAddress() +
+                " ; "+ BLEByteUtil.getHexString(bleCharacter.getDataBuffer()));
+        TMessage TMessage = new TMessage();
+        TMessage.setBytes(bleCharacter.getDataBuffer());
+        TMessage.setObject(bleCharacter);
+        BleTransmitter.getTransmitter().sendSuccess(TMessage);
     }
 
     @Override
@@ -50,10 +58,10 @@ public class BleTransportImpl implements BLETransportListener {
         BleDataBean dataBean = new BleDataBean(bleCharacter.getDeviceAddress(),
                 bleCharacter.getCharacteristicUUID(), bleCharacter.getDataBuffer());
 
-        Message message = new Message();
-        message.setBytes(bleCharacter.getDataBuffer());
-        message.setObject(dataBean);
-        BleTransmitter.getTransmitter().receiverData(message);
+        TMessage TMessage = new TMessage();
+        TMessage.setBytes(bleCharacter.getDataBuffer());
+        TMessage.setObject(dataBean);
+        BleTransmitter.getTransmitter().receiverData(TMessage);
 
     }
 }

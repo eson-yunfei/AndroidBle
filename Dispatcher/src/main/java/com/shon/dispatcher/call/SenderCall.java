@@ -10,4 +10,7 @@ import com.shon.dispatcher.imp.OnMsgSendListener;
  */
 public interface SenderCall<T> extends ICall<T>{
     void execute(OnMsgSendListener<T> onCallback);
+
+    void cancelTimeOut();
+
 }

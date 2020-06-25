@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.e.ble.core.bean.ConnectBt;
 import com.e.ble.core.imp.OnConnectListener;
 import com.e.ble.core.imp.OnReadMessage;
 import com.e.ble.core.imp.OnStateChangeListener;
@@ -28,6 +29,7 @@ public class StateChangedImpl {
     private OnStateChangeListener onStateChangeListener;
 
 
+
     public StateChangedImpl() {
         if (handler == null) {
             handler = new Handler(Looper.getMainLooper());
@@ -39,6 +41,10 @@ public class StateChangedImpl {
             handler = new Handler(Looper.getMainLooper());
         }
         addConnectBean(connectBean);
+    }
+
+    public void setOnStateChangeListener(OnStateChangeListener listener) {
+        this.onStateChangeListener = listener;
     }
 
 
@@ -85,7 +91,9 @@ public class StateChangedImpl {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                onConnectListener.onServicesDiscovered(connectBean.getAddress());
+                ConnectBt connectBt = new ConnectBt(connectBean.getAddress());
+                connectBt.setName(gatt.getDevice().getName());
+                onConnectListener.onServicesDiscovered(connectBt);
             }
         });
 
@@ -204,8 +212,6 @@ public class StateChangedImpl {
         connListener.onConnectSate(status, newState);
     }
 
-    public void setOnStateChangeListener(OnStateChangeListener listener) {
-        this.onStateChangeListener = listener;
-    }
+
 
 }

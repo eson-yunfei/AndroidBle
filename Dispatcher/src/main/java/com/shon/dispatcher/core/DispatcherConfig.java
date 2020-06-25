@@ -1,4 +1,8 @@
-package com.shon.dispatcher;
+package com.shon.dispatcher.core;
+
+import com.shon.dispatcher.InvocationHandler;
+import com.shon.dispatcher.Transmitter;
+
 
 /**
  * Auth : xiao.yunfei
@@ -9,9 +13,9 @@ package com.shon.dispatcher;
 public class DispatcherConfig {
     private Class<?> serverInterface;
     private Transmitter transmitter;
+    private Invocation invocation;
 
     private DispatcherConfig() {
-
     }
 
     private <T> void setServerInterface(Class<T> server) {
@@ -28,6 +32,9 @@ public class DispatcherConfig {
 
     private void setTransmitter(Transmitter transmitter) {
         this.transmitter = transmitter;
+        if (invocation == null){
+            invocation = new Invocation(transmitter);
+        }
     }
 
     @Override
@@ -36,6 +43,10 @@ public class DispatcherConfig {
                 "serverInterface=" + serverInterface.getName() +
                 ", transmitter=" + transmitter.getClass().getName() +
                 '}';
+    }
+
+    public InvocationHandler getInvocation() {
+        return invocation;
     }
 
     public static class Builder {

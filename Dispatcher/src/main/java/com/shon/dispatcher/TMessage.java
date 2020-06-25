@@ -1,6 +1,4 @@
-package com.shon.dispatcher.bean;
-
-import java.util.Arrays;
+package com.shon.dispatcher;
 
 /**
  * Auth : xiao.yunfei
@@ -8,7 +6,7 @@ import java.util.Arrays;
  * Package name : com.shon.dispatcher.bean
  * Des :
  */
-public  class Message {
+public class TMessage {
 
     private byte[] bytes;  //实际数据
     private String tag;   //
@@ -41,12 +39,31 @@ public  class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
-                "bytes=" + Arrays.toString(bytes) +
+        return "TMessage{" +
+                "bytes=" + getHexString(bytes) +
                 ", tag=" + tag +
                 ", object=" + object +
                 '}';
     }
 
+
+
+    /**
+     * 十六进制打印数组
+     */
+    private  String getHexString(byte[] buffer) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (byte b : buffer) {
+            String intS = Integer.toHexString(b & 0xff);
+            if (intS.length() == 1) {
+                sb.append("  ").append("0").append(intS);
+            } else {
+                sb.append("  ").append(intS);
+            }
+        }
+        sb.append("  ]");
+        return sb.toString();
+    }
 
 }
