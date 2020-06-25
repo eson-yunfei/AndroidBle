@@ -18,14 +18,15 @@ import com.e.ble.util.BLELog;
  */
 class CharacteristicImpl {
     private OnReadMessage onReadMessage;
-     private Handler handler;
+    private Handler handler;
 
 
-     CharacteristicImpl(){
-         if (handler == null){
-             handler = new Handler(Looper.getMainLooper());
-         }
-     }
+    CharacteristicImpl() {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+    }
+
     public void setOnReadListener(OnReadMessage onReadMessage) {
         this.onReadMessage = onReadMessage;
     }
@@ -36,7 +37,7 @@ class CharacteristicImpl {
         }
 
         BLELog.e("CharacteristicImpl -->> onCharacteristicRead :: " + BLEByteUtil.getHexString(characteristic.getValue()));
-        if (onReadMessage == null){
+        if (onReadMessage == null) {
 
             return;
         }

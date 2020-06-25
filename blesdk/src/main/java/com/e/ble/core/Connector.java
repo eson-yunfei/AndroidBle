@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Package name : com.e.ble.core
  * Des : 连接器
  */
-class Connector extends Thread {
+class Connector implements Runnable {
     private BluetoothAdapter bluetoothAdapter;
     private Context context;
     private LinkedBlockingQueue<ConnectBean> connectBeans = new LinkedBlockingQueue<>();
