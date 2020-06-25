@@ -13,25 +13,13 @@ import com.shon.dispatcher.utils.TransLog;
 public class SendCmd extends Sender<String> {
 
     @Override
-    public TMessage getSendCmd(TMessage TMessage) {
-//        Message message = new Message();
-//        String serviceUUID = (String) params.get("serviceUUID");
-//        String characterUUID = (String) params.get("characterUUID");
-//        byte[] buffer = (byte[]) params.get("buffer");
-
-//        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(UUID.fromString(serviceUUID),
-//                UUID.fromString(characterUUID))
-//                .setAddress(MyApplication.getInstance().getCurrentShowDevice())
-//                .setDataBuffer(buffer).builder();
-////
-//        message.setBytes(bleUuid.getDataBuffer());
-//        message.setObject(bleUuid);
-        return TMessage;
+    public TMessage getSendCmd(TMessage message) {
+        return message;
     }
 
     @Override
-    public String handlerMessage(TMessage TMessage) {
-        TransLog.e("handlerMessage : " + TMessage.toString());
+    public String handlerMessage(TMessage message) {
+        TransLog.e("handlerMessage : " + message.toString());
         return "返回的消息被我处理了";
     }
 

@@ -1,6 +1,8 @@
 package org.eson.liteble.ble.command;
 
 import com.e.ble.bean.BLEUuid;
+import com.e.ble.core.BleTool;
+import com.e.ble.core.bean.SendMessage;
 import com.e.ble.util.BLEByteUtil;
 import com.shon.dispatcher.Transmitter;
 import com.shon.dispatcher.TMessage;
@@ -30,16 +32,14 @@ public class BleTransmitter extends Transmitter {
     }
     @Override
     public void sendData(TMessage sendData) {
-//        BleService.get().sendData("","","",sendData.getBytes());
         byte[] bytes = sendData.getBytes();
         if (bytes == null || bytes.length == 0){
             return;
         }
-        BLEUuid bleUuid = (BLEUuid) sendData.getObject();
+        SendMessage sendMessage = (SendMessage) sendData.getObject();
 
-        BleService.get().sendData(bleUuid.getServiceUUID(),
-                bleUuid.getCharacteristicUUID(),
-                sendData.getBytes());
+        BleTool.getInstance().getController()
+                .sendMessage(sendMessage);
         LogUtil.e("接收到发送数据的指令：" + BLEByteUtil.getHexString(sendData.getBytes()));
     }
 }

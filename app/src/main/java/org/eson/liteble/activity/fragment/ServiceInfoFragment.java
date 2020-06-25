@@ -9,22 +9,23 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.Nullable;
 
 import com.e.ble.core.BleTool;
+import com.e.ble.core.bean.NotifyState;
 import com.e.ble.core.bean.ReadMessage;
 import com.e.ble.core.imp.OnReadMessage;
+import com.e.ble.core.imp.OnUpdateNotify;
 import com.e.ble.util.BLE_UUID_Util;
 import com.shon.dispatcher.Dispatcher;
 
-import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.BleDataAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.ble.BleService;
 import org.eson.liteble.ble.bean.BleDataBean;
 import org.eson.liteble.ble.bean.CharacterBean;
 import org.eson.liteble.ble.bean.DescriptorBean;
 import org.eson.liteble.ble.bean.ServiceBean;
 import org.eson.liteble.ble.command.Command;
 import org.eson.liteble.databinding.ActivityCharacteristicBinding;
+import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.UUIDFormat;
 
 import java.text.SimpleDateFormat;
@@ -76,11 +77,14 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         if (bundle == null) {
             return;
         }
-        ServiceBean serviceBean  = bundle.getParcelable("serviceBean");
+        ServiceBean serviceBean = bundle.getParcelable("serviceBean");
+
         int position = bundle.getInt("position");
 
-         connectMac = bundle.getString("address");
-
+        connectMac = bundle.getString("address");
+        if (serviceBean == null) {
+            return;
+        }
         characterBean = serviceBean.getUUIDBeen().get(position);
         serviceUUID = characterBean.getServiceUUID();
         characterUUID = characterBean.getCharacterUUID();
@@ -118,6 +122,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
                 Bundle bundle = new Bundle();
                 bundle.putString("serviceUUID", serviceUUID);
                 bundle.putString("characterUUID", characterUUID);
+                bundle.putString("address",connectMac);
                 navigateNext(R.id.action_serviceInfoFragment_to_sendDataFragment, bundle);
                 break;
             case R.id.readBtn:
@@ -134,8 +139,8 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
     }
 
     private void readCharacter() {
-        BleService.get().readCharacter(UUID.fromString(serviceUUID),
-                UUID.fromString(characterUUID));
+//        BleService.get().readCharacter(UUID.fromString(serviceUUID),
+//                UUID.fromString(characterUUID));
 
         ReadMessage readMessage = new ReadMessage();
         readMessage.setAddress(connectMac);
@@ -146,7 +151,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
                     @Override
                     public void onReadMessage(ReadMessage readMessage) {
                         changeBleData(readMessage.getCharacteristicUUID().toString()
-                        ,readMessage.getBytes(),readMessage.getAddress());
+                                , readMessage.getBytes(), readMessage.getAddress());
                     }
 
                     @Override
@@ -161,6 +166,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
      */
     private void enableNotice() {
 
+
         isListenerNotice = !isListenerNotice;
         String text = isListenerNotice ? "取消监听" : "开始监听";
         characteristicBinding.notifyBtn.setText(text);
@@ -171,10 +177,36 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         } else {
             des = UUID.fromString(descriptors.get(0));
         }
-        BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
-                UUID.fromString(serviceUUID),
-                UUID.fromString(characterUUID), des, isListenerNotice);
-        startListener();
+
+        NotifyState notifyState = new NotifyState();
+        notifyState.setAddress(connectMac);
+        notifyState.setServiceUUID(UUID.fromString(serviceUUID));
+        notifyState.setCharacteristicUUID(UUID.fromString(characterUUID));
+        notifyState.setDesUUID(des);
+        notifyState.setEnable(isListenerNotice);
+
+        BleTool.getInstance().getController()
+                .updateNotify(notifyState, new OnUpdateNotify() {
+
+                    @Override
+                    public void onWriteDescriptorError() {
+                        LogUtil.e("NotifyState : onWriteDescriptorError ");
+                    }
+
+                    @Override
+                    public void onWriteDescriptor(NotifyState result) {
+
+                        LogUtil.e("NotifyState : " + result.isResult());
+                        if (result.isResult()) {
+                            startListener();
+                        }
+                    }
+                });
+
+//        BleService.get().enableNotify(MyApplication.getInstance().getCurrentShowDevice(),
+//                UUID.fromString(serviceUUID),
+//                UUID.fromString(characterUUID), des, isListenerNotice);
+//        startListener();
     }
 
     protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {

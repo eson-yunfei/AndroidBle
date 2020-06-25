@@ -5,8 +5,10 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 
+import com.e.ble.core.bean.NotifyState;
 import com.e.ble.core.imp.OnReadMessage;
 import com.e.ble.core.imp.OnStateChangeListener;
+import com.e.ble.core.imp.OnUpdateNotify;
 
 /**
  * Auth : xiao.yunfei
@@ -60,6 +62,15 @@ final class GattCallBack extends BluetoothGattCallback {
             characteristicImpl = new CharacteristicImpl();
         }
         characteristicImpl.setOnReadListener(onReadMessage);
+    }
+
+
+    public void setWriteDescriptor(NotifyState notifyState, OnUpdateNotify onUpdateNotify) {
+        if (characteristicImpl == null) {
+            characteristicImpl = new CharacteristicImpl();
+        }
+        characteristicImpl.setWriteDescriptor(notifyState,onUpdateNotify);
+
     }
 
     public BluetoothGatt getBluetoothGatt() {
@@ -127,6 +138,10 @@ final class GattCallBack extends BluetoothGattCallback {
 
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+
+        if (characteristicImpl != null){
+            characteristicImpl.onDescriptorWrite(gatt, descriptor, status);
+        }
         super.onDescriptorWrite(gatt, descriptor, status);
         updateBluetoothGatt(gatt);
     }

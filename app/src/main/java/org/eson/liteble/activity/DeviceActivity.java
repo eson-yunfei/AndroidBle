@@ -1,21 +1,15 @@
 package org.eson.liteble.activity;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.navigation.NavArgument;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.os.Bundle;
-import android.text.TextUtils;
-
-import com.e.ble.BLESdk;
-import com.e.ble.control.BLEControl;
 import com.e.ble.core.bean.ConnectBt;
 
-import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.util.LogUtil;
 
@@ -62,8 +56,8 @@ public class DeviceActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LogUtil.e("DeviceActivity -->> onPause");
-        if (!BLESdk.get().isPermitConnectMore()) {
-            BLEControl.get().disconnect(MyApplication.getInstance().getCurrentShowDevice());
-        }
+//        if (!BLESdk.get().isPermitConnectMore()) {
+//            BLEControl.get().disconnect(MyApplication.getInstance().getCurrentShowDevice());
+//        }
     }
 }

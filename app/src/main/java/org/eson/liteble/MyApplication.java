@@ -2,7 +2,6 @@ package org.eson.liteble;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 
 import androidx.multidex.MultiDexApplication;
 
@@ -13,8 +12,6 @@ import com.shon.dispatcher.core.DispatcherConfig;
 
 import org.eson.liteble.ble.command.BleTransmitter;
 import org.eson.liteble.ble.command.Command;
-import org.eson.liteble.ble.BleService;
-import org.eson.liteble.share.ConfigShare;
 
 /**
  * @name AndroidBle
@@ -28,35 +25,37 @@ import org.eson.liteble.share.ConfigShare;
  */
 public class MyApplication extends MultiDexApplication {
 
-    protected static Context mContext;
+//    protected static Context mContext;
     @SuppressLint("StaticFieldLeak")
-    private static MyApplication instance;
+//    private static MyApplication instance;
 
-    private String currentShowDevice = "";
+//    private String currentShowDevice = "";
 
 
-    public static MyApplication getInstance() {
-        return instance;
-    }
+//    public static MyApplication getInstance() {
+//        return instance;
+//    }
 
-    public static Context getContext() {
-        return mContext;
-    }
+//    public static Context getContext() {
+//        return mContext;
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = this;
-        instance = this;
+//        mContext = this;
+//        instance = this;
         LittleBleViewModel.iniViewModel(this);
         BleTool.getInstance().init(this);
-        BLESdk.get().init(mContext);
-        BLESdk.get().setMaxConnect(3);
-        ConfigShare configShare = new ConfigShare(mContext);
-        BLESdk.get().setMaxConnect(configShare.getMaxConnect());
+
+        BLESdk.get().init(this);
+//        BLESdk.get().setMaxConnect(3);
+//        ConfigShare configShare = new ConfigShare(mContext);
+//        BLESdk.get().setMaxConnect(configShare.getMaxConnect());
 //		BLESdk.get().setPermitConnectMore(configShare.isPermitConnectMore());
-        Intent bleServer = new Intent(mContext, BleService.class);
-        startService(bleServer);
+
+//        Intent bleServer = new Intent(mContext, BleService.class);
+//        startService(bleServer);
 
         DispatcherConfig dispatcherConfig = new DispatcherConfig.Builder()
                 .setApiInterface(Command.class)
@@ -65,12 +64,12 @@ public class MyApplication extends MultiDexApplication {
         Dispatcher.init(dispatcherConfig);
     }
 
-    public String getCurrentShowDevice() {
-        return currentShowDevice;
-    }
+//    public String getCurrentShowDevice() {
+//        return currentShowDevice;
+//    }
 
-    public void setCurrentShowDevice(String currentShowDevice) {
-        this.currentShowDevice = currentShowDevice;
-    }
+//    public void setCurrentShowDevice(String currentShowDevice) {
+//        this.currentShowDevice = currentShowDevice;
+//    }
 
 }

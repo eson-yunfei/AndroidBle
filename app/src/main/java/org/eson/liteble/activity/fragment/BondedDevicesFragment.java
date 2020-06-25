@@ -27,12 +27,11 @@ import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.activity.DeviceActivity;
-import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.adapter.BondedDevAdapter;
-import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
-import org.eson.liteble.ble.BleService;
+import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.ble.bean.BondedDeviceBean;
 import org.eson.liteble.ble.util.BondedDeviceUtil;
+import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
 import org.eson.liteble.util.ToastUtil;
 
 import java.util.List;
@@ -66,9 +65,9 @@ public class BondedDevicesFragment extends BaseObserveFragment {
 
             selectDevice = mDeviceBeanList.get(position);
             showProgress("正在连接设备：" + selectDevice.getName());
-            MyApplication.getInstance().setCurrentShowDevice(selectDevice.getAddress());
+//            MyApplication.getInstance().setCurrentShowDevice(selectDevice.getAddress());
             BLEScanner.get().stopScan();
-            BleService.get().connectionDevice(selectDevice.getAddress());
+//            BleService.get().connectionDevice(selectDevice.getAddress());
         });
     }
 

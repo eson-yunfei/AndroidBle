@@ -24,16 +24,16 @@ package com.e.ble.util;
 
 public class BLEConstant {
 
-	/**
-	 * 设备返回数据类型
-	 */
-	public static final class Type {
-		public static final String TYPE_STATE = "ble_state";
-		public static final String TYPE_NAME = "ble_mac";
-		public static final String TYPE_NOTICE = "ble_notice";
-		public static final String TYPE_RISS = "ble_rssi";
-		public static final String type_read = "ble_read";
-	}
+//	/**
+//	 * 设备返回数据类型
+//	 */
+//	public static final class Type {
+//		public static final String TYPE_STATE = "ble_state";
+//		public static final String TYPE_NAME = "ble_mac";
+//		public static final String TYPE_NOTICE = "ble_notice";
+//		public static final String TYPE_RISS = "ble_rssi";
+//		public static final String type_read = "ble_read";
+//	}
 
 	/**
 	 * 设备状态

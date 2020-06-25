@@ -1,22 +1,10 @@
 package org.eson.liteble.ble;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
-
-import com.e.ble.bean.BLEUuid;
-import com.e.ble.control.BLEControl;
-
-import org.eson.liteble.MyApplication;
-import org.eson.liteble.ble.impl.BleConnectionImpl;
-import org.eson.liteble.ble.impl.BleTransportImpl;
-import org.eson.liteble.ble.impl.ReadRssiImpl;
-import org.eson.liteble.ble.impl.StateChangeImpl;
-
-import java.util.UUID;
 
 /**
  * @作者 xiaoyunfei
@@ -41,20 +29,20 @@ public class BleService extends Service {
         super.onCreate();
         bleService = this;
 
-        BLEControl.get().setBleConnectListener(new BleConnectionImpl());
-        BLEControl.get().setBleStateChangedListener(new StateChangeImpl());
-        BLEControl.get().setBleTransportListener(new BleTransportImpl());
-        BLEControl.get().setBleReadRssiListener(new ReadRssiImpl());
+//        BLEControl.get().setBleConnectListener(new BleConnectionImpl());
+//        BLEControl.get().setBleStateChangedListener(new StateChangeImpl());
+//        BLEControl.get().setBleTransportListener(new BleTransportImpl());
+//        BLEControl.get().setBleReadRssiListener(new ReadRssiImpl());
     }
 
     public static BleService get() {
         return bleService;
     }
 
-    public void connectionDevice(String bleMac) {
-
-        BLEControl.get().connectDevice(getApplicationContext(), bleMac);
-    }
+//    public void connectionDevice(String bleMac) {
+//
+//        BLEControl.get().connectDevice(getApplicationContext(), bleMac);
+//    }
 
     /**
      * 启用通知
@@ -65,37 +53,37 @@ public class BleService extends Service {
      * @param descriptorUui
      * @param isListenerNotice
      */
-    public void enableNotify(String connectDevice, UUID serviceUuid, UUID characteristicUuid,
-                             UUID descriptorUui, boolean isListenerNotice) {
+//    public void enableNotify(String connectDevice, UUID serviceUuid, UUID characteristicUuid,
+//                             UUID descriptorUui, boolean isListenerNotice) {
+//
+//        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+//                .setAddress(connectDevice)
+//                .setDescriptorUUID(descriptorUui)
+//                .setEnable(isListenerNotice).builder();
+//
+//        BLEControl.get().enableNotify(bleUuid);
+//    }
 
-        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
-                .setAddress(connectDevice)
-                .setDescriptorUUID(descriptorUui)
-                .setEnable(isListenerNotice).builder();
 
-        BLEControl.get().enableNotify(bleUuid);
-    }
+//    /**
+//     * 数据的发送
+//     *
+//     * @param serviceUuid
+//     * @param characteristicUuid
+//     * @param bytes
+//     */
+//    public void sendData(UUID serviceUuid, UUID characteristicUuid, byte[] bytes) {
+//        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+//                .setAddress(MyApplication.getInstance().getCurrentShowDevice())
+//                .setDataBuffer(bytes).builder();
+//
+//        BLEControl.get().sendData(bleUuid);
+//    }
 
-
-    /**
-     * 数据的发送
-     *
-     * @param serviceUuid
-     * @param characteristicUuid
-     * @param bytes
-     */
-    public void sendData(UUID serviceUuid, UUID characteristicUuid, byte[] bytes) {
-        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
-                .setAddress(MyApplication.getInstance().getCurrentShowDevice())
-                .setDataBuffer(bytes).builder();
-
-        BLEControl.get().sendData(bleUuid);
-    }
-
-    public void readCharacter(UUID serviceUuid, UUID characteristicUuid) {
-        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
-                .setAddress(MyApplication.getInstance().getCurrentShowDevice()).builder();
-        BLEControl.get().readDeviceData(bleUuid);
-    }
+//    public void readCharacter(UUID serviceUuid, UUID characteristicUuid) {
+//        BLEUuid bleUuid = new BLEUuid.BLEUuidBuilder(serviceUuid, characteristicUuid)
+//                .setAddress(MyApplication.getInstance().getCurrentShowDevice()).builder();
+//        BLEControl.get().readDeviceData(bleUuid);
+//    }
 
 }

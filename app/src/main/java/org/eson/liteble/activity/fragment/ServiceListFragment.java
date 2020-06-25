@@ -11,17 +11,15 @@ import android.view.ViewGroup;
 import androidx.navigation.NavArgument;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.e.ble.control.BLEControl;
 import com.e.ble.core.BleTool;
 import com.e.ble.core.bean.ConnectBt;
+import com.e.ble.core.imp.OnConnectListener;
 import com.e.ble.util.BLEConstant;
 
-import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.DeviceDetailAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.vms.ServiceListViewModel;
-import org.eson.liteble.ble.BleService;
 import org.eson.liteble.ble.bean.ServiceBean;
 import org.eson.liteble.databinding.ActivityDetailBinding;
 
@@ -85,10 +83,22 @@ public class ServiceListFragment extends BaseObserveFragment {
 
         detailBinding.disconnect.setOnClickListener(v -> {
             if (isConnect) {
-                BLEControl.get().disconnect(connectBt.getAddress());
+//                BLEControl.get().disconnect(connectBt.getAddress());
                 isConnect = false;
             } else {
-                BleService.get().connectionDevice(connectBt.getAddress());
+//                BleService.get().connectionDevice(connectBt.getAddress());
+                BleTool.getInstance().getController().connectDevice(connectBt.getAddress()
+                        , new OnConnectListener() {
+                            @Override
+                            public void onConnectSate(int status, int newState) {
+
+                            }
+
+                            @Override
+                            public void onServicesDiscovered(ConnectBt connectBt) {
+
+                            }
+                        });
             }
         });
 
@@ -138,9 +148,6 @@ public class ServiceListFragment extends BaseObserveFragment {
      */
     private void getMessage() {
 
-//        String connectMac = MyApplication.getInstance().getCurrentShowDevice();
-
-       ;
         BluetoothGatt gatt =  BleTool.getInstance().getController().getGatt(connectBt.getAddress());
         if (gatt == null) {
             return;
@@ -177,7 +184,7 @@ public class ServiceListFragment extends BaseObserveFragment {
     private Thread mThread;
 
     private void startReadTimer() {
-        final String connectMac = MyApplication.getInstance().getCurrentShowDevice();
+//        final String connectMac = MyApplication.getInstance().getCurrentShowDevice();
         if (mThread == null) {
             mThread = new Thread(new Runnable() {
                 @Override
@@ -185,10 +192,10 @@ public class ServiceListFragment extends BaseObserveFragment {
 
                     while (isReadStart) {
 
-                        if (TextUtils.isEmpty(connectMac)) {
+                        if (TextUtils.isEmpty(connectBt.getAddress())) {
                             break;
                         }
-                        BLEControl.get().readGattRssi(connectMac);
+//                        BLEControl.get().readGattRssi(connectBt.getAddress());
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {

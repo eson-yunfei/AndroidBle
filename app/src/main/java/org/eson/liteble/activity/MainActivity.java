@@ -69,7 +69,7 @@ public class MainActivity extends ViewBindActivity {
 
         mainBinding.tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
-        checkBLEState();
+//        checkBLEState();
     }
 
 
@@ -133,31 +133,31 @@ public class MainActivity extends ViewBindActivity {
         menuScan.setVisible(true);
     }
 
-    private void checkBLEState() {
-        BLECheck.get().checkBleState(this, new BLECheckListener() {
-            @Override
-            public void noBluetoothPermission() {
-                //没有蓝牙权限，申请
-                BLECheck.get().requestBlePermission(MainActivity.this, "", 0x01);
-            }
-
-            @Override
-            public void notSupportBle() {
-                ToastUtil.showShort(MainActivity.this, "Sorry,UnSupport BLE !");
-                finish();
-            }
-
-            @Override
-            public void bleClosing() {
-                BLECheck.get().openBle(MainActivity.this, 0x02);
-            }
-
-            @Override
-            public void bleStateOK() {
-                //DO NOTHING
-            }
-        });
-    }
+//    private void checkBLEState() {
+//        BLECheck.get().checkBleState(this, new BLECheckListener() {
+//            @Override
+//            public void noBluetoothPermission() {
+//                //没有蓝牙权限，申请
+//                BLECheck.get().requestBlePermission(MainActivity.this, "", 0x01);
+//            }
+//
+//            @Override
+//            public void notSupportBle() {
+//                ToastUtil.showShort(MainActivity.this, "Sorry,UnSupport BLE !");
+//                finish();
+//            }
+//
+//            @Override
+//            public void bleClosing() {
+//                BLECheck.get().openBle(MainActivity.this, 0x02);
+//            }
+//
+//            @Override
+//            public void bleStateOK() {
+//                //DO NOTHING
+//            }
+//        });
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -219,13 +219,13 @@ public class MainActivity extends ViewBindActivity {
             }
 
             ToastUtil.showShort(this, "获取蓝牙权限成功");
-            checkBLEState();
+//            checkBLEState();
         } else if (requestCode == 0x02) {
             if (resultCode != RESULT_OK) {
                 return;
             }
             ToastUtil.showShort(this, "打开蓝牙成功");
-            checkBLEState();
+//            checkBLEState();
         }
     }
 

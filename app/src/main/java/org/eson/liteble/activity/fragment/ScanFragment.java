@@ -220,7 +220,7 @@ public class ScanFragment extends BaseObserveFragment {
                 }
                 bondedDeviceBean.setConnected(true);
 
-                MyApplication.getInstance().setCurrentShowDevice(selectDevice.getMac());
+//                MyApplication.getInstance().setCurrentShowDevice(selectDevice.getMac());
                 startToNext();
                 break;
             case BLEConstant.Connection.STATE_CONNECT_FAILED:
