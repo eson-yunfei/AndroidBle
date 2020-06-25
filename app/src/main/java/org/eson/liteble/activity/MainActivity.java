@@ -10,8 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.e.ble.check.BLECheck;
-import com.e.ble.check.BLECheckListener;
 import com.google.android.material.tabs.TabLayout;
 
 import org.eson.liteble.R;

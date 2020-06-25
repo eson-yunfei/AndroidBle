@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.e.ble.core.bean.SendMessage;
+import com.e.tool.ble.bean.SendMessage;
 import com.e.ble.util.BLEByteUtil;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.TMessage;

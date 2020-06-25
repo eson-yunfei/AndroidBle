@@ -8,11 +8,11 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
 
-import com.e.ble.core.BleTool;
-import com.e.ble.core.bean.NotifyState;
-import com.e.ble.core.bean.ReadMessage;
-import com.e.ble.core.imp.OnReadMessage;
-import com.e.ble.core.imp.OnUpdateNotify;
+import com.e.tool.ble.BleTool;
+import com.e.tool.ble.bean.NotifyState;
+import com.e.tool.ble.bean.ReadMessage;
+import com.e.tool.ble.imp.OnRead;
+import com.e.tool.ble.imp.OnWriteDescriptor;
 import com.e.ble.util.BLE_UUID_Util;
 import com.shon.dispatcher.Dispatcher;
 
@@ -147,7 +147,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         readMessage.setServiceUUID(UUID.fromString(serviceUUID));
         readMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
         BleTool.getInstance().getController()
-                .readInfo(readMessage, new OnReadMessage() {
+                .readInfo(readMessage, new OnRead() {
                     @Override
                     public void onReadMessage(ReadMessage readMessage) {
                         changeBleData(readMessage.getCharacteristicUUID().toString()
@@ -186,7 +186,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         notifyState.setEnable(isListenerNotice);
 
         BleTool.getInstance().getController()
-                .updateNotify(notifyState, new OnUpdateNotify() {
+                .updateNotify(notifyState, new OnWriteDescriptor() {
 
                     @Override
                     public void onWriteDescriptorError() {

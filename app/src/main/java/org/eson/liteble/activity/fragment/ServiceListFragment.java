@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import androidx.navigation.NavArgument;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.e.ble.core.BleTool;
-import com.e.ble.core.bean.ConnectBt;
-import com.e.ble.core.imp.OnConnectListener;
+import com.e.tool.ble.BleTool;
+import com.e.tool.ble.bean.ConnectBt;
+import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.ble.util.BLEConstant;
 
 import org.eson.liteble.R;
@@ -88,7 +88,7 @@ public class ServiceListFragment extends BaseObserveFragment {
             } else {
 //                BleService.get().connectionDevice(connectBt.getAddress());
                 BleTool.getInstance().getController().connectDevice(connectBt.getAddress()
-                        , new OnConnectListener() {
+                        , new OnDevConnectListener() {
                             @Override
                             public void onConnectSate(int status, int newState) {
 

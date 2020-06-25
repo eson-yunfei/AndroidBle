@@ -1,13 +1,11 @@
 package org.eson.liteble.ble.command;
 
-import com.e.ble.bean.BLEUuid;
-import com.e.ble.core.BleTool;
-import com.e.ble.core.bean.SendMessage;
+import com.e.tool.ble.BleTool;
+import com.e.tool.ble.bean.SendMessage;
 import com.e.ble.util.BLEByteUtil;
 import com.shon.dispatcher.Transmitter;
 import com.shon.dispatcher.TMessage;
 
-import org.eson.liteble.ble.BleService;
 import org.eson.liteble.util.LogUtil;
 
 /**

@@ -26,13 +26,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.e.ble.bean.BLEDevice;
-import com.e.ble.core.BleTool;
-import com.e.ble.core.bean.ConnectBt;
-import com.e.ble.core.imp.OnConnectListener;
+import com.e.tool.ble.BleTool;
+import com.e.tool.ble.bean.ConnectBt;
+import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
-import org.eson.liteble.MyApplication;
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.MainActivity;
 import org.eson.liteble.activity.base.BaseObserveFragment;
@@ -40,7 +39,6 @@ import org.eson.liteble.activity.vms.ScannerViewModel;
 import org.eson.liteble.activity.vms.data.ScanLiveData;
 import org.eson.liteble.activity.adapter.ScanBLEItem;
 import org.eson.liteble.databinding.FragmentScanDeviceBinding;
-import org.eson.liteble.ble.BleService;
 import org.eson.liteble.share.ConfigShare;
 import org.eson.liteble.ble.bean.BondedDeviceBean;
 import org.eson.liteble.ble.util.BondedDeviceUtil;
@@ -113,7 +111,7 @@ public class ScanFragment extends BaseObserveFragment {
 
         showProgress("正在连接设备：" + selectDevice.getName());
         BleTool.getInstance().getController().connectDevice(selectDevice.getMac()
-                , new OnConnectListener() {
+                , new OnDevConnectListener() {
                     @Override
                     public void onConnectSate(int status, int newState) {
                         LogUtil.e("current tread : " + Thread.currentThread().getName());

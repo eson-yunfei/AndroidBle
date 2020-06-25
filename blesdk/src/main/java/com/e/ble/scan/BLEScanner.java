@@ -22,7 +22,6 @@ import android.os.ParcelUuid;
 
 import com.e.ble.BLESdk;
 import com.e.ble.bean.BLEDevice;
-import com.e.ble.check.BLECheckUtil;
 import com.e.ble.util.BLEError;
 import com.e.ble.util.BLELog;
 
@@ -111,13 +110,13 @@ public class BLEScanner extends BLEScanListener {
         }
         this.bleScanListener = scanListener;
 
-        if (!BLECheckUtil.getBleEnable()) {
-            bleScanListener.onScannerError(BLEError.BLE_CLOSE);
-
-            tryToStopScanner();
-            onScannerStop();
-            return false;
-        }
+//        if (!BLECheckUtil.getBleEnable()) {
+//            bleScanListener.onScannerError(BLEError.BLE_CLOSE);
+//
+//            tryToStopScanner();
+//            onScannerStop();
+//            return false;
+//        }
 
         //先尝试关闭之前的扫描
         tryToStopScanner();

@@ -1,12 +1,11 @@
 package org.eson.liteble;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 
 import androidx.multidex.MultiDexApplication;
 
 import com.e.ble.BLESdk;
-import com.e.ble.core.BleTool;
+import com.e.tool.ble.BleTool;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.core.DispatcherConfig;
 

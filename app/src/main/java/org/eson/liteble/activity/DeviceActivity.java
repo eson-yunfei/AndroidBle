@@ -8,7 +8,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.e.ble.core.bean.ConnectBt;
+import com.e.tool.ble.bean.ConnectBt;
 
 import org.eson.liteble.R;
 import org.eson.liteble.util.LogUtil;

@@ -20,7 +20,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
-import com.e.ble.check.BLECheck;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLELog;
 
@@ -83,7 +82,7 @@ public class BLESdk {
     public void init(Context context) {
 
         AndroidBLE.init(context);                //初始化 BluetoothManager,BluetoothAdapter.
-        BLECheck.init();                    //初始化蓝牙检测类
+//        BLECheck.init();                    //初始化蓝牙检测类
         BLEScanner.init();                    //初始化蓝牙扫描类
 //        BLEControl.init();//	初始化蓝牙控制类
 
