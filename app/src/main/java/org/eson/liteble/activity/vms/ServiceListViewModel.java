@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.e.ble.util.BLE_UUID_Util;
 
-import org.eson.liteble.ble.bean.CharacterBean;
-import org.eson.liteble.ble.bean.DescriptorBean;
-import org.eson.liteble.ble.bean.ServiceBean;
+import org.eson.liteble.activity.bean.CharacterBean;
+import org.eson.liteble.activity.bean.DescriptorBean;
+import org.eson.liteble.activity.bean.ServiceBean;
 import org.eson.liteble.util.LogUtil;
 
 import java.util.ArrayList;

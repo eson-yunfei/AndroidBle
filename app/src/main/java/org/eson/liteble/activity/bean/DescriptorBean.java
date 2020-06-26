@@ -1,10 +1,10 @@
-package org.eson.liteble.ble.bean;
+package org.eson.liteble.activity.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @package_name org.eson.liteble.ble.bean
+ * @package_name org.eson.liteble.activity.bean
  * @name ${name}
  * <p>
  * Created by xiaoyunfei on 2017/4/4.

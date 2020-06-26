@@ -30,7 +30,7 @@ import com.e.ble.util.BLEByteUtil;
 import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
-import org.eson.liteble.ble.bean.BleDataBean;
+import org.eson.liteble.activity.bean.BleDataBean;
 
 import java.util.List;
 

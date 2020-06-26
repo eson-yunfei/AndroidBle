@@ -1,4 +1,4 @@
-package org.eson.liteble.ble.command.test;
+package org.eson.liteble.ble.test;
 
 /**
  * Auth : xiao_yun_fei

@@ -20,7 +20,7 @@ import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.DeviceDetailAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.vms.ServiceListViewModel;
-import org.eson.liteble.ble.bean.ServiceBean;
+import org.eson.liteble.activity.bean.ServiceBean;
 import org.eson.liteble.databinding.ActivityDetailBinding;
 
 import java.io.File;

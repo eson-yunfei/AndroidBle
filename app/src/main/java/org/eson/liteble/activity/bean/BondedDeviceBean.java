@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package org.eson.liteble.ble.bean;
+package org.eson.liteble.activity.bean;
 
 /**
  * @package_name org.eson.liteble.util

@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
-import org.eson.liteble.ble.bean.CharacterBean;
+import org.eson.liteble.activity.bean.CharacterBean;
 
 import java.util.List;
 import java.util.UUID;

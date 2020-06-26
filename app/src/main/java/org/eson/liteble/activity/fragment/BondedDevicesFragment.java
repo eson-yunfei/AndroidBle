@@ -25,12 +25,11 @@ import android.view.ViewGroup;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
-import org.eson.liteble.MyApplication;
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.adapter.BondedDevAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.ble.bean.BondedDeviceBean;
-import org.eson.liteble.ble.util.BondedDeviceUtil;
+import org.eson.liteble.activity.bean.BondedDeviceBean;
+import org.eson.liteble.util.BondedDeviceUtil;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
 import org.eson.liteble.util.ToastUtil;
 

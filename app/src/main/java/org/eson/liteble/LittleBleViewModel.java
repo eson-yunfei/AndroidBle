@@ -16,7 +16,7 @@ import com.shon.dispatcher.call.ListenerCall;
 
 import org.eson.liteble.ble.command.BleTransmitter;
 import org.eson.liteble.ble.command.Command;
-import org.eson.liteble.ble.command.test.RealSport;
+import org.eson.liteble.ble.test.RealSport;
 import org.eson.liteble.util.LogUtil;
 
 /**

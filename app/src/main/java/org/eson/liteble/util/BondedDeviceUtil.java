@@ -14,9 +14,9 @@
  *     limitations under the License.
  */
 
-package org.eson.liteble.ble.util;
+package org.eson.liteble.util;
 
-import org.eson.liteble.ble.bean.BondedDeviceBean;
+import org.eson.liteble.activity.bean.BondedDeviceBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;

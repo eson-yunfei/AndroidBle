@@ -1,4 +1,4 @@
-package org.eson.liteble.ble.command.test;
+package org.eson.liteble.ble.test;
 
 import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.transer.Listener;

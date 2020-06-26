@@ -1,4 +1,4 @@
-package org.eson.liteble.ble.bean;
+package org.eson.liteble.activity.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;

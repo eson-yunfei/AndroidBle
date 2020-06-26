@@ -5,7 +5,7 @@
 //import com.e.ble.util.BLEByteUtil;
 //import com.shon.dispatcher.TMessage;
 //
-//import org.eson.liteble.ble.bean.BleDataBean;
+//import org.eson.liteble.activity.bean.BleDataBean;
 //import org.eson.liteble.ble.command.BleTransmitter;
 //import org.eson.liteble.util.LogUtil;
 //

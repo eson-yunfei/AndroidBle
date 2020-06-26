@@ -40,8 +40,8 @@ import org.eson.liteble.activity.vms.data.ScanLiveData;
 import org.eson.liteble.activity.adapter.ScanBLEItem;
 import org.eson.liteble.databinding.FragmentScanDeviceBinding;
 import org.eson.liteble.share.ConfigShare;
-import org.eson.liteble.ble.bean.BondedDeviceBean;
-import org.eson.liteble.ble.util.BondedDeviceUtil;
+import org.eson.liteble.activity.bean.BondedDeviceBean;
+import org.eson.liteble.util.BondedDeviceUtil;
 import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.ToastUtil;
 
