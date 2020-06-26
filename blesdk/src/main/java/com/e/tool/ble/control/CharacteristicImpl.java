@@ -7,8 +7,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import com.e.tool.ble.bean.NotifyMessage;
 import com.e.tool.ble.bean.NotifyState;
 import com.e.tool.ble.bean.ReadMessage;
+import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnWriteDescriptor;
 import com.e.ble.util.BLEByteUtil;
@@ -26,6 +28,8 @@ class CharacteristicImpl {
     private OnRead onRead;
     private NotifyState notifyState;
     private OnWriteDescriptor onWriteDescriptor;
+
+    private OnDataNotify onDataNotify;
     private Handler handler;
 
 
@@ -43,6 +47,10 @@ class CharacteristicImpl {
         this.notifyState = notifyState;
         this.onWriteDescriptor = onWriteDescriptor;
 
+    }
+
+    public void setDataNotifyListener(OnDataNotify onDataNotify) {
+        this.onDataNotify = onDataNotify;
     }
 
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -64,8 +72,8 @@ class CharacteristicImpl {
         readMessage.setBytes(characteristic.getValue());
         handler.post(() -> onRead.onReadMessage(readMessage));
 
-
     }
+
 
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (status != BluetoothGatt.GATT_SUCCESS) {
@@ -76,6 +84,15 @@ class CharacteristicImpl {
 
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 
+        if (onDataNotify == null){
+            return;
+        }
+        NotifyMessage notifyMessage = new NotifyMessage();
+        notifyMessage.setAddress(gatt.getDevice().getAddress());
+        notifyMessage.setBytes(characteristic.getValue());
+        notifyMessage.setServiceUUID(characteristic.getService().getUuid());
+        notifyMessage.setCharacteristicUUID(characteristic.getUuid());
+        onDataNotify.onDataNotify(notifyMessage);
     }
 
 
@@ -90,19 +107,20 @@ class CharacteristicImpl {
 
         String value = Arrays.toString(descriptor.getValue());
         if (notifyState.isEnable()) {
-            boolean ret =  TextUtils.equals(value, Arrays.toString(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE));
+            boolean ret = TextUtils.equals(value, Arrays.toString(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE));
             result.setResult(ret);
-        }else {
-            boolean ret =  TextUtils.equals(value, Arrays.toString(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE));
+        } else {
+            boolean ret = TextUtils.equals(value, Arrays.toString(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE));
             result.setResult(ret);
         }
 
         handler.post(() -> {
-            if (onWriteDescriptor != null){
+            if (onWriteDescriptor != null) {
                 onWriteDescriptor.onWriteDescriptor(result);
             }
         });
 
     }
+
 
 }

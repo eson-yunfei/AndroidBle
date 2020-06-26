@@ -3,15 +3,15 @@ package com.shon.dispatcher.core;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.shon.dispatcher.InvocationHandler;
+import com.shon.dispatcher.AbsInvocation;
 import com.shon.dispatcher.Transmitter;
-import com.shon.dispatcher.annotation.API;
+import com.shon.dispatcher.annotation.Writer;
 import com.shon.dispatcher.annotation.Notice;
 import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.ICall;
 import com.shon.dispatcher.call.SenderCall;
-import com.shon.dispatcher.command.Listener;
-import com.shon.dispatcher.command.Sender;
+import com.shon.dispatcher.transer.Listener;
+import com.shon.dispatcher.transer.Sender;
 import com.shon.dispatcher.utils.TransLog;
 
 import java.lang.reflect.Method;
@@ -24,7 +24,7 @@ import java.util.Map;
  * Package name : com.shon.dispatcher
  * Des :
  */
-class Invocation extends InvocationHandler {
+class Invocation extends AbsInvocation {
 
     private HashMap<Method, ServiceMethod<Object, Object>> sendMethodMap;
     private HashMap<Method, ServiceMethod<Object, Object>> listenerMethodMap;
@@ -52,8 +52,10 @@ class Invocation extends InvocationHandler {
         }
     }
 
-    public void sendSuccess(TMessage TMessage) {
-        sendRunnable.sendSuccess(TMessage);
+    public void sendSuccess(TMessage tMessage) {
+        if (sendRunnable != null) {
+            sendRunnable.sendSuccess(tMessage);
+        }
     }
 
 
@@ -68,8 +70,8 @@ class Invocation extends InvocationHandler {
         }
         TransLog.e("invocationHandler : name  : " + method.getName());
         ICall<?> call = null;
-        API api = method.getAnnotation(API.class);
-        if (api == null) {
+        Writer writer = method.getAnnotation(Writer.class);
+        if (writer == null) {
             Notice notice = method.getAnnotation(Notice.class);
             if (notice == null) {
                 throw new Exception("unSupport method");
@@ -77,12 +79,12 @@ class Invocation extends InvocationHandler {
 
             serviceMethod = new ServiceMethod<>(transmitter, method);
             CommListenerCall<Object> commonCall = new CommListenerCall<>(handler);
-            call = (ICall<?>) serviceMethod.getCallAdapter().adapt(commonCall);
+            call = serviceMethod.getCallAdapter().adapt(commonCall);
 
         } else {
             serviceMethod = new ServiceMethod<>(transmitter, method);
             CommonCall<Object> commonCall = new CommonCall<>(serviceMethod, args, handler, sendRunnable);
-            call = (ICall<?>) serviceMethod.getCallAdapter().adapt(commonCall);
+            call = serviceMethod.getCallAdapter().adapt(commonCall);
         }
 
         if (args != null && args.length != 0) {
@@ -108,7 +110,7 @@ class Invocation extends InvocationHandler {
     }
 
 
-    public void handlerMessage(TMessage TMessage) {
+    public void handlerMessage(TMessage tMessage) {
         for (Map.Entry<Method, ServiceMethod<Object, Object>> serviceMethodEntry : sendMethodMap.entrySet()) {
             ServiceMethod<Object, Object> serviceMethod = serviceMethodEntry.getValue();
             if (serviceMethod == null) {
@@ -121,9 +123,9 @@ class Invocation extends InvocationHandler {
                 if (listener == null) {
                     continue;
                 }
-                result = listener.handlerMessage(TMessage);
+                result = listener.handlerMessage(tMessage);
             } else {
-                result = sender.handlerMessage(TMessage);
+                result = sender.handlerMessage(tMessage);
             }
 
 
@@ -131,9 +133,9 @@ class Invocation extends InvocationHandler {
                 return;
             }
 
-            ICall<Object> commonCall = (ICall<Object>) serviceMethod.getCallAdapter().getCall();
-            TransLog.e("onDataCallback : " + TMessage.toString());
-            commonCall.onDataCallback(result, TMessage);
+            ICall<Object> commonCall = serviceMethod.getCallAdapter().getCall();
+//            TransLog.e("onDataCallback : " + tMessage.toString());
+            commonCall.onDataCallback(result, tMessage);
 
             if (commonCall instanceof SenderCall<?>) {
                 ((SenderCall<?>) commonCall).cancelTimeOut();

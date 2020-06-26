@@ -11,16 +11,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Des :
  */
 public class ReadMessage implements Runnable {
-    private LinkedBlockingQueue<TMessage> TMessages;
+    private LinkedBlockingQueue<TMessage> tMessages;
     private Invocation invocation;
 
     public ReadMessage(Invocation invocation) {
-        TMessages = new LinkedBlockingQueue<>();
+        tMessages = new LinkedBlockingQueue<>();
         this.invocation = invocation;
     }
 
     public void addMessage(TMessage receivedData) {
-        TMessages.offer(receivedData);
+        tMessages.offer(receivedData);
     }
 
 
@@ -29,11 +29,11 @@ public class ReadMessage implements Runnable {
 
         while (true) {
             try {
-                TMessage TMessage = TMessages.take();
+                TMessage tMessage = tMessages.take();
                 if (invocation == null) {
                     break;
                 }
-                invocation.handlerMessage(TMessage);
+                invocation.handlerMessage(tMessage);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;

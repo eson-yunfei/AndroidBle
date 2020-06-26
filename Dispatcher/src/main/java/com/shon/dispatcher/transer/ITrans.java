@@ -1,4 +1,4 @@
-package com.shon.dispatcher.command;
+package com.shon.dispatcher.transer;
 
 import com.shon.dispatcher.TMessage;
 
@@ -8,13 +8,13 @@ import com.shon.dispatcher.TMessage;
  * Package name : com.shon.dispatcher.bean
  * Des :
  */
-interface ICommand<T> {
+interface ITrans<T> {
 
 
     /**
      * 处理消息，如果处理,返回数据， 不处理 null
-     * @param TMessage
-     * @return
+     * @param tMessage tMessage
+     * @return T
      */
-     T handlerMessage(TMessage TMessage);
+     T handlerMessage(TMessage tMessage);
 }

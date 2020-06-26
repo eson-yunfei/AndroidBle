@@ -48,9 +48,6 @@ public class Dispatcher {
         if (dispatcherConfig == null || dispatcherConfig.getServerInterface() == null) {
             return null;
         }
-//        if (invocation == null){
-//            invocation = new Invocation(dispatcherConfig.getTransmitter());
-//        }
         Class<?> commandApi = dispatcherConfig.getServerInterface();
         Utils.validateServiceInterface(dispatcherConfig.getServerInterface());
 
@@ -59,13 +56,20 @@ public class Dispatcher {
     }
 
 
+    /**
+     *
+     * @param receivedData receivedData
+     */
     void receiverData(TMessage receivedData) {
         dispatcherConfig.getInvocation().addMessage(receivedData);
-
     }
 
-    public void sendSuccess(TMessage TMessage) {
+    /**
+     *
+     * @param tMessage tMessage
+     */
+    void sendSuccess(TMessage tMessage) {
 
-        dispatcherConfig.getInvocation().sendSuccess(TMessage);
+        dispatcherConfig.getInvocation().sendSuccess(tMessage);
     }
 }

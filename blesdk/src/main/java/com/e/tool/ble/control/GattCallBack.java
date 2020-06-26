@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 
 import com.e.tool.ble.bean.NotifyState;
+import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnStateChanged;
 import com.e.tool.ble.imp.OnWriteDescriptor;
@@ -62,6 +63,12 @@ final class GattCallBack extends BluetoothGattCallback {
             characteristicImpl = new CharacteristicImpl();
         }
         characteristicImpl.setOnReadListener(onRead);
+    }
+    public void setDataNotifyListener(OnDataNotify onDataNotify) {
+        if (characteristicImpl == null) {
+            characteristicImpl = new CharacteristicImpl();
+        }
+        characteristicImpl.setDataNotifyListener(onDataNotify);
     }
 
 
@@ -175,6 +182,7 @@ final class GattCallBack extends BluetoothGattCallback {
         super.onPhyRead(gatt, txPhy, rxPhy, status);
         updateBluetoothGatt(gatt);
     }
+
 
 
 }

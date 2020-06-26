@@ -15,6 +15,7 @@ import com.e.ble.util.BLELog;
 import com.e.tool.ble.bean.NotifyState;
 import com.e.tool.ble.bean.ReadMessage;
 import com.e.tool.ble.bean.SendMessage;
+import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnStateChanged;
@@ -219,6 +220,16 @@ public class Controller {
 //        BLEByteUtil.printHex(bleUuid.getDataBuffer());
         characteristic.setValue(sendMessage.getBytes());
         return bluetoothGatt.writeCharacteristic(characteristic);
+
+    }
+
+    public void listenDataNotify(@NonNull OnDataNotify onDataNotify) {
+        GattCallBack gattCallBack = GattCallBack.gattCallBack();
+
+        if (gattCallBack == null){
+            return;
+        }
+        gattCallBack.setDataNotifyListener(onDataNotify);
 
     }
 }

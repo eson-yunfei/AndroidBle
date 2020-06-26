@@ -22,7 +22,7 @@ final class CommListenerCall<T> implements ListenerCall<T> {
     }
 
     @Override
-    public  void onListener(OnMsgListener msgListener) {
+    public  void onListener(OnMsgListener<T> msgListener) {
 
         this.onMsgListener = msgListener;
     }

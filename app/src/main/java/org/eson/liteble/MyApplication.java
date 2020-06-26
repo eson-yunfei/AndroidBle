@@ -24,34 +24,13 @@ import org.eson.liteble.ble.command.Command;
  */
 public class MyApplication extends MultiDexApplication {
 
-//    protected static Context mContext;
-    @SuppressLint("StaticFieldLeak")
-//    private static MyApplication instance;
-
-//    private String currentShowDevice = "";
-
-
-//    public static MyApplication getInstance() {
-//        return instance;
-//    }
-
-//    public static Context getContext() {
-//        return mContext;
-//    }
-
     @Override
     public void onCreate() {
         super.onCreate();
-//        mContext = this;
-//        instance = this;
         LittleBleViewModel.iniViewModel(this);
         BleTool.getInstance().init(this);
 
         BLESdk.get().init(this);
-//        BLESdk.get().setMaxConnect(3);
-//        ConfigShare configShare = new ConfigShare(mContext);
-//        BLESdk.get().setMaxConnect(configShare.getMaxConnect());
-//		BLESdk.get().setPermitConnectMore(configShare.isPermitConnectMore());
 
 //        Intent bleServer = new Intent(mContext, BleService.class);
 //        startService(bleServer);
@@ -63,12 +42,5 @@ public class MyApplication extends MultiDexApplication {
         Dispatcher.init(dispatcherConfig);
     }
 
-//    public String getCurrentShowDevice() {
-//        return currentShowDevice;
-//    }
-
-//    public void setCurrentShowDevice(String currentShowDevice) {
-//        this.currentShowDevice = currentShowDevice;
-//    }
 
 }

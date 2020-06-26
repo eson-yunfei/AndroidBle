@@ -1,6 +1,6 @@
 package com.shon.dispatcher.annotation;
 
-import com.shon.dispatcher.command.Listener;
+import com.shon.dispatcher.transer.Listener;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Notice {
 
-    Class<? extends Listener> name();
+    Class<? extends Listener<?>> name();
 }

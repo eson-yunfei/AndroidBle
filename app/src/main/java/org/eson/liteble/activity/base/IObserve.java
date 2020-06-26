@@ -1,6 +1,6 @@
 package org.eson.liteble.activity.base;
 
-import com.e.ble.annotation.BLESate;
+import com.e.tool.ble.annotation.LinkState;
 
 /**
  * Auth : xiao.yunfei
@@ -12,5 +12,5 @@ public interface IObserve {
 
     void observerViewModel();
 
-    void onDeviceStateChange(String deviceMac,@BLESate int currentState);
+    void onDeviceStateChange(String deviceMac,@LinkState int currentState);
 }

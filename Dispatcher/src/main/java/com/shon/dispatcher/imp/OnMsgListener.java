@@ -9,5 +9,5 @@ import com.shon.dispatcher.TMessage;
  * Des :
  */
 public interface OnMsgListener<T> {
-    void onDataReceived(T t, TMessage TMessage);
+    void onDataReceived(T t, TMessage tMessage);
 }

@@ -1,6 +1,6 @@
 package com.shon.dispatcher.core;
 
-import com.shon.dispatcher.InvocationHandler;
+import com.shon.dispatcher.AbsInvocation;
 import com.shon.dispatcher.Transmitter;
 
 
@@ -45,7 +45,7 @@ public class DispatcherConfig {
                 '}';
     }
 
-    public InvocationHandler getInvocation() {
+    public AbsInvocation getInvocation() {
         return invocation;
     }
 

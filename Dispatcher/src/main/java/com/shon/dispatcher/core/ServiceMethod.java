@@ -1,12 +1,11 @@
 package com.shon.dispatcher.core;
 
 import com.shon.dispatcher.Transmitter;
-import com.shon.dispatcher.annotation.API;
+import com.shon.dispatcher.annotation.Writer;
 import com.shon.dispatcher.annotation.Notice;
-import com.shon.dispatcher.call.CallAdapter;
 import com.shon.dispatcher.call.ICall;
-import com.shon.dispatcher.command.Listener;
-import com.shon.dispatcher.command.Sender;
+import com.shon.dispatcher.transer.Listener;
+import com.shon.dispatcher.transer.Sender;
 import com.shon.dispatcher.utils.TransLog;
 import com.shon.dispatcher.utils.Utils;
 
@@ -57,24 +56,24 @@ class ServiceMethod<RequestT, ResultT> {
         Annotation[] annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
             TransLog.e("annotation : " + annotation.getClass());
-            if (annotation instanceof API) {
+            if (annotation instanceof Writer) {
                 createCall(method);
             }
             if (annotation instanceof Notice) {
                 createListener(method);
             }
         }
-        callAdapter = (CallAdapter<Object, ICall<?>>) createCallAdapter(method);
+        callAdapter = createCallAdapter(method);
 
     }
 
     private void createCall(Method method) {
 
-        API api = method.getAnnotation(API.class);
-        if (api == null) {
+        Writer writer = method.getAnnotation(Writer.class);
+        if (writer == null) {
             return;
         }
-        Class<? extends Sender> cls = api.name();
+        Class<? extends Sender<?>> cls = writer.name();
         try {
             sender = cls.newInstance();
         } catch (Exception e) {
@@ -87,7 +86,7 @@ class ServiceMethod<RequestT, ResultT> {
         if (notice == null) {
             return;
         }
-        Class<? extends Listener> cls = notice.name();
+        Class<? extends Listener<?>> cls = notice.name();
         try {
             listener = cls.newInstance();
         } catch (Exception e) {

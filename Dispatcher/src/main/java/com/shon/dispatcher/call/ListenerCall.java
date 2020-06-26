@@ -1,5 +1,6 @@
 package com.shon.dispatcher.call;
 
+import com.shon.dispatcher.call.ICall;
 import com.shon.dispatcher.imp.OnMsgListener;
 
 /**
@@ -8,7 +9,7 @@ import com.shon.dispatcher.imp.OnMsgListener;
  * Package name : com.shon.dispatcher.call
  * Des :
  */
-public interface ListenerCall<T> extends ICall<T>{
+public interface ListenerCall<T> extends ICall<T> {
 
     void onListener(OnMsgListener<T> msgListener);
 }

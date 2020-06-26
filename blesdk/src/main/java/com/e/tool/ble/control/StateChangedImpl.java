@@ -119,12 +119,7 @@ public class StateChangedImpl {
                 newState == BluetoothProfile.STATE_CONNECTED) {
             gatt.discoverServices();
         }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                onDevConnectListener.onConnectSate(status, newState);
-            }
-        });
+        handler.post(() -> onDevConnectListener.onConnectSate(status, newState));
 
     }
 
@@ -137,46 +132,47 @@ public class StateChangedImpl {
         if (status != BluetoothGatt.GATT_SUCCESS) {
             return;
         }
-        switch (newState) {
-            case BluetoothProfile.STATE_CONNECTING:
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onStateChangeListener.onConnecting(address);
-                    }
-                });
-
-                break;
-            case BluetoothProfile.STATE_CONNECTED:
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onStateChangeListener.onConnected(address);
-                    }
-                });
-
-                break;
-            case BluetoothProfile.STATE_DISCONNECTING:
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onStateChangeListener.onDisconnecting(address);
-                    }
-                });
-
-                break;
-            case BluetoothProfile.STATE_DISCONNECTED:
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onStateChangeListener.onDisconnected(address);
-                    }
-                });
-
-                break;
-            default:
-                break;
-        }
+        handler.post(() -> onStateChangeListener.onSateChanged(address,newState));
+//        switch (newState) {
+//            case BluetoothProfile.STATE_CONNECTING:
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        onStateChangeListener.onConnecting(address);
+//                    }
+//                });
+//
+//                break;
+//            case BluetoothProfile.STATE_CONNECTED:
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        onStateChangeListener.onConnected(address);
+//                    }
+//                });
+//
+//                break;
+//            case BluetoothProfile.STATE_DISCONNECTING:
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        onStateChangeListener.onDisconnecting(address);
+//                    }
+//                });
+//
+//                break;
+//            case BluetoothProfile.STATE_DISCONNECTED:
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        onStateChangeListener.onDisconnected(address);
+//                    }
+//                });
+//
+//                break;
+//            default:
+//                break;
+//        }
     }
 
 
@@ -200,13 +196,14 @@ public class StateChangedImpl {
         return connectBean;
     }
 
-    private void updateSate(ConnectBean connectBean, int status, int newState) {
-        OnDevConnectListener connListener = connectBean.getConnListener();
-        if (connListener == null) {
-            return;
-        }
-        connListener.onConnectSate(status, newState);
-    }
+
+//    private void updateSate(ConnectBean connectBean, int status, int newState) {
+//        OnDevConnectListener connListener = connectBean.getConnListener();
+//        if (connListener == null) {
+//            return;
+//        }
+//        connListener.onConnectSate(status, newState);
+//    }
 
 
 

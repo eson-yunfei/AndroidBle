@@ -15,9 +15,6 @@ class SendRunnable implements Runnable {
     //需要发送的队列
     private LinkedBlockingQueue<CommonCall<?>> commonCallList;
 
-    //当前需要发送的数据
-    private CommonCall<?> commonCall;
-
     /**
      *
      */
@@ -26,8 +23,8 @@ class SendRunnable implements Runnable {
     }
 
     /**
-     * @param commonCall
-     * @param <T>
+     * @param commonCall commonCall
+     * @param <T> void
      */
     public <T> void addCall(CommonCall<T> commonCall) {
         commonCallList.add(commonCall);
@@ -35,9 +32,9 @@ class SendRunnable implements Runnable {
 
 
     /**
-     * @param TMessage
+     * @param tMessage
      */
-    public void sendSuccess(TMessage TMessage) {
+    public void sendSuccess(TMessage tMessage) {
 
         //TODO 回调发送成功
 //        if (commonCall == null){
@@ -52,7 +49,8 @@ class SendRunnable implements Runnable {
     public void run() {
         while (true) {
             try {
-                commonCall = commonCallList.take();
+                //当前需要发送的数据
+                CommonCall<?> commonCall = commonCallList.take();
                 if (!commonCall.sendData()) {
                     return;
                 }

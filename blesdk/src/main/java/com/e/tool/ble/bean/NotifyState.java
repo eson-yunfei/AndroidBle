@@ -8,7 +8,7 @@ import java.util.UUID;
  * Package name : com.e.tool.ble.bean
  * Des :
  */
-public class NotifyState  extends IMsg{
+public class NotifyState extends IMsg{
     private boolean enable;
     private UUID desUUID;
     private boolean result;

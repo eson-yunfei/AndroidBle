@@ -4,14 +4,14 @@ package com.shon.dispatcher;
  * Auth : xiao.yunfei
  * Date : 2020/6/19 17:10
  * Package name : com.shon.dispatcher.bean
- * Des :
+ * Des : 数据的实体
  */
 public class TMessage {
 
-    private byte[] bytes;  //实际数据
-    private String tag;   //
+    private byte[] bytes;  // 数据
+    private String tag;   // 扩展字段，用户字段实现
 
-    private Object object;
+    private Object object; //扩展字段，用户字段实现
 
     public byte[] getBytes() {
         return bytes;
@@ -47,11 +47,10 @@ public class TMessage {
     }
 
 
-
     /**
      * 十六进制打印数组
      */
-    private  String getHexString(byte[] buffer) {
+    private String getHexString(byte[] buffer) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (byte b : buffer) {

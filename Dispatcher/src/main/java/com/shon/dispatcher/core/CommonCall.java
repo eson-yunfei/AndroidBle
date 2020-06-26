@@ -6,7 +6,7 @@ import com.shon.dispatcher.Transmitter;
 import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.SenderCall;
 import com.shon.dispatcher.imp.OnMsgSendListener;
-import com.shon.dispatcher.command.Sender;
+import com.shon.dispatcher.transer.Sender;
 
 /**
  * Auth : xiao.yunfei
@@ -22,7 +22,7 @@ final class CommonCall<T> implements SenderCall<T> {
     private Handler myHandler;
     private SendRunnable sendRunnable;
     private Object[] args;
-    private TMessage TMessage;
+    private TMessage tMessage;
     boolean isWaiting;
 
     CommonCall(ServiceMethod<Object, Object> serviceMethod, Object[] args, Handler handler, SendRunnable sendRunnable) {
@@ -39,7 +39,7 @@ final class CommonCall<T> implements SenderCall<T> {
     }
 
     public boolean sendData() {
-        Sender sender = serviceMethod.getCommand();
+        Sender<?> sender = serviceMethod.getCommand();
         if (sender == null) {
             return false;
         }
@@ -47,13 +47,13 @@ final class CommonCall<T> implements SenderCall<T> {
             return false;
         }
 
-         TMessage = sender.getSendCmd((TMessage) args[0]);
+        tMessage = sender.getSendCmd((TMessage) args[0]);
 
-        transmitter.sendData(TMessage);
+        transmitter.sendData(tMessage);
         return startTime(500);
     }
     public String getSendMsg(){
-        return TMessage.getBytes().toString();
+        return tMessage.getBytes().toString();
     }
 
     @Override

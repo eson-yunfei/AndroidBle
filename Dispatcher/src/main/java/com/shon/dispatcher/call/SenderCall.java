@@ -1,5 +1,6 @@
 package com.shon.dispatcher.call;
 
+import com.shon.dispatcher.call.ICall;
 import com.shon.dispatcher.imp.OnMsgSendListener;
 
 /**
@@ -8,7 +9,7 @@ import com.shon.dispatcher.imp.OnMsgSendListener;
  * Package name : com.shon.dispatcher
  * Des :
  */
-public interface SenderCall<T> extends ICall<T>{
+public interface SenderCall<T> extends ICall<T> {
     void execute(OnMsgSendListener<T> onCallback);
 
     void cancelTimeOut();
