@@ -16,6 +16,7 @@
 
 package org.eson.liteble.util;
 
+
 import org.eson.liteble.activity.bean.BondedDeviceBean;
 
 import java.util.ArrayList;

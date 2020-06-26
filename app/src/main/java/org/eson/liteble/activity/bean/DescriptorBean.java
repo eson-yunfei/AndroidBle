@@ -4,18 +4,37 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @package_name org.eson.liteble.activity.bean
- * @name ${name}
- * <p>
- * Created by xiaoyunfei on 2017/4/4.
- * @description
+ * Auth : xiao_yun_fei
+ * Date : 2020/6/26 15:28
+ * Package name : org.eson.liteble.activity.bean
+ * Des :
  */
-
 public class DescriptorBean implements Parcelable {
     private String UUID;
     private int permissions;
 
-    public DescriptorBean() {
+    public DescriptorBean(){
+
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
+
+    public int getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(int permissions) {
+        this.permissions = permissions;
+    }
+
+    public static Creator<DescriptorBean> getCREATOR() {
+        return CREATOR;
     }
 
     protected DescriptorBean(Parcel in) {
@@ -34,22 +53,6 @@ public class DescriptorBean implements Parcelable {
             return new DescriptorBean[size];
         }
     };
-
-    public String getUUID() {
-        return UUID;
-    }
-
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
-    }
-
-    public int getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(int permissions) {
-        this.permissions = permissions;
-    }
 
     @Override
     public int describeContents() {

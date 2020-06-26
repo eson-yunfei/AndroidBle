@@ -14,7 +14,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.base.ViewBindActivity;
-import org.eson.liteble.activity.fragment.BondedDevicesFragment;
+import org.eson.liteble.activity.fragment.BondedFragment;
 import org.eson.liteble.activity.fragment.ScanFragment;
 import org.eson.liteble.databinding.ActivityMainBinding;
 import org.eson.liteble.util.LogUtil;
@@ -29,7 +29,7 @@ public class MainActivity extends ViewBindActivity {
     private FragmentTransaction mTransaction;
 
     private ScanFragment mScanFragment;
-    private BondedDevicesFragment mDevicesFragment;
+    private BondedFragment mDevicesFragment;
 
     private MenuItem menuRefresh;
     private MenuItem menuScan;
@@ -52,7 +52,7 @@ public class MainActivity extends ViewBindActivity {
         }
 
         mScanFragment = new ScanFragment();
-        mDevicesFragment = new BondedDevicesFragment();
+        mDevicesFragment = new BondedFragment();
 
         mFragmentManager = getSupportFragmentManager();
         mTransaction = mFragmentManager.beginTransaction();

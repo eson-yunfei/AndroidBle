@@ -1,42 +1,26 @@
-/*
- * Copyright (c) 2017. xiaoyunfei
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *     you may not use this file except in compliance with the License.
- *     You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *     Unless required by applicable law or agreed to in writing, software
- *     distributed under the License is distributed on an "AS IS" BASIS,
- *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *     See the License for the specific language governing permissions and
- *     limitations under the License.
- */
-
 package org.eson.liteble.activity.bean;
 
 /**
- * @package_name org.eson.liteble.util
- * @name ${name}
- * <p>
- * Created by xiaoyunfei on 2017/5/5.
- * @description
+ * Auth : xiao_yun_fei
+ * Date : 2020/6/26 15:25
+ * Package name : org.eson.liteble.activity.bean
+ * Des :
  */
-
 public class BondedDeviceBean {
     private String address;
     private String name;
     private boolean connected = false;
     private boolean connecting = false;
 
-
-    public BondedDeviceBean(String address) {
+    public BondedDeviceBean(String address){
         this.address = address;
     }
-
     public String getAddress() {
         return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getName() {
@@ -61,5 +45,15 @@ public class BondedDeviceBean {
 
     public void setConnecting(boolean connecting) {
         this.connecting = connecting;
+    }
+
+    @Override
+    public String toString() {
+        return "BondedDeviceBean{" +
+                "address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                ", connected=" + connected +
+                ", connecting=" + connecting +
+                '}';
     }
 }

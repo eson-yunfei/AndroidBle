@@ -43,7 +43,7 @@ import java.util.List;
  * @description
  */
 
-public class BondedDevicesFragment extends BaseObserveFragment {
+public class BondedFragment extends BaseObserveFragment {
 
     private ProgressDialog m_pDialog;
     private List<BondedDeviceBean> mDeviceBeanList;
