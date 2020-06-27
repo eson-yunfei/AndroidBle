@@ -18,7 +18,9 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER,
+        ElementType.METHOD,
+        ElementType.FIELD})
 @IntDef(
         value = {
                 BluetoothProfile.STATE_CONNECTING,

@@ -8,23 +8,25 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.e.tool.ble.bean.ConnectBt;
+import com.e.tool.ble.BleTool;
+import com.e.tool.ble.bean.ConnectResult;
 
 import org.eson.liteble.R;
 import org.eson.liteble.util.LogUtil;
 
 public class DeviceActivity extends AppCompatActivity {
+    private ConnectResult connectBt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
 
-        ConnectBt connectBt = getIntent().getParcelableExtra("connectBt");
+        connectBt = (ConnectResult) getIntent().getSerializableExtra("connectBt");
         setupNavigation(connectBt);
     }
 
-    private void setupNavigation(ConnectBt connectBt) {
+    private void setupNavigation(ConnectResult connectBt) {
         if (connectBt == null) {
             return;
         }
@@ -56,8 +58,7 @@ public class DeviceActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LogUtil.e("DeviceActivity -->> onPause");
-//        if (!BLESdk.get().isPermitConnectMore()) {
-//            BLEControl.get().disconnect(MyApplication.getInstance().getCurrentShowDevice());
-//        }
+        BleTool.getInstance().getController()
+                .disConnect(connectBt.getAddress());
     }
 }

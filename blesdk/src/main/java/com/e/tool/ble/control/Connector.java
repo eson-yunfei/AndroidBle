@@ -1,13 +1,16 @@
 package com.e.tool.ble.control;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.e.ble.util.BLELog;
+import com.e.tool.ble.bean.ConnectResult;
+import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.control.gatt.imp.StateChangeListener;
+import com.e.tool.ble.control.request.IRunnable;
+import com.e.tool.ble.imp.OnDevConnectListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -16,25 +19,21 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Package name : com.e.ble.core
  * Des : 连接器
  */
-class Connector implements Runnable {
-    private BluetoothAdapter bluetoothAdapter;
-    private Context context;
-    private LinkedBlockingQueue<ConnectBean> connectBeans = new LinkedBlockingQueue<>();
+class Connector extends IRunnable<ConnectRequest> {
+    private LinkedBlockingQueue<ConnectRequest> connectRequests = new LinkedBlockingQueue<>();
+    private final List<ConnectRequest> cacheList = new ArrayList<>();
 
-    Connector(Context context, BluetoothAdapter bluetoothAdapter) {
-        this.context = context;
-        this.bluetoothAdapter = bluetoothAdapter;
+    Connector(StateChangeListener stateChangeListener) {
+
+        stateChangeListener.setConnectCallBack(connectListener);
     }
 
-    /**
-     * 添加需要连接的设备
-     *
-     * @param connectBean
-     */
-    public void addConnect(ConnectBean connectBean) {
+
+    @Override
+    protected void addRequest(ConnectRequest connectRequest) {
         boolean isContains = false;
-        for (ConnectBean bean : connectBeans) {
-            if (TextUtils.equals(bean.getAddress(), connectBean.getAddress())) {
+        for (ConnectRequest bean : connectRequests) {
+            if (TextUtils.equals(bean.getAddress(), connectRequest.getAddress())) {
                 isContains = true;
                 break;
             }
@@ -43,57 +42,83 @@ class Connector implements Runnable {
             BLELog.e("Connector -->> addConnect  () 已存在");
             return;
         }
-        connectBeans.add(connectBean);
+        connectRequests.add(connectRequest);
     }
 
     @Override
-    public void run() {
+    protected ConnectRequest getNextRequest() throws InterruptedException {
+        return connectRequests.take();
+    }
 
-        while (true) {
-            try {
 
-                BLELog.e("Connector -->> run () taking ConnectBean ");
-                ConnectBean connectBean = connectBeans.take();
-                if (connectBean == null) {
-                    BLELog.e("Connector -->> run ()  connectBean is null ");
-                    return;
+    public void addConnectBean(ConnectRequest connectRequest) {
+        synchronized (cacheList) {
+            boolean isContainsBean = false;
+            for (ConnectRequest bean : cacheList) {
+                if (TextUtils.equals(bean.getAddress(), connectRequest.getAddress())) {
+                    isContainsBean = true;
+                    break;
                 }
-                BLELog.e("Connector -->> run () connectBean : " + connectBean.toString());
-                connect(connectBean);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
             }
-        }
 
+            if (isContainsBean) {
+                //存在，即添加设备，
+                return;
+            }
+            //不存在，添加成功
+            cacheList.add(connectRequest);
+            connectRequests.add(connectRequest);
+        }
     }
 
     /**
-     * 连接到指定的设备
      *
-     * @param connectBean
      */
-    private void connect(ConnectBean connectBean) {
-        BLELog.e("Connector -->> connect() ");
-        if (bluetoothAdapter == null) {
-            BLELog.e("Connector -->> connect() bluetoothAdapter is null  ");
-            return;
-        }
-        final BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(connectBean.getAddress());
-        if (bluetoothDevice == null) {
-            BLELog.e("Connector -->> connect() bluetoothDevice is null  ");
-            return;
+    private OnDevConnectListener connectListener = new OnDevConnectListener() {
+        @Override
+        public void onConnectError(ConnectResult connectResult) {
+            final ConnectRequest connectRequest = getConnectBean(connectResult.getAddress());
+            if (connectRequest != null){
+                connectRequest.onConnectError(connectResult);
+                synchronized (cacheList) {
+                    cacheList.remove(connectRequest);
+                }
+            }
+
         }
 
-        GattCallBack gattCallBack = GattCallBack.gattCallBack();
-        if (!gattCallBack.addConnectBean(connectBean)) {
-            BLELog.e("Connector -->> gattCallBack  已存在 该任务");
-            return;
+        @Override
+        public void onConnectSate(DevState devState) {
+            final ConnectRequest connectRequest = getConnectBean(devState.getAddress());
+            if (connectRequest != null){
+                connectRequest.onConnectSate(devState);
+            }
+
         }
-        BluetoothGatt gatt = bluetoothDevice.connectGatt(context, false, gattCallBack);
-        if (gatt != null) {
-            connectBean.setGatt(gatt);
+
+        @Override
+        public void onServicesDiscovered(ConnectResult result) {
+            final ConnectRequest connectRequest = getConnectBean(result.getAddress());
+            if (connectRequest != null) {
+                connectRequest.onServicesDiscovered(result);
+                synchronized (cacheList) {
+                    cacheList.remove(connectRequest);
+                }
+            }
         }
+    };
+
+    private ConnectRequest getConnectBean(String address) {
+        ConnectRequest connectRequest = null;
+        synchronized (cacheList) {
+            for (ConnectRequest bean : cacheList) {
+                if (TextUtils.equals(bean.getAddress(), address)) {
+                    connectRequest = bean;
+                    break;
+                }
+            }
+        }
+        return connectRequest;
     }
+
 }

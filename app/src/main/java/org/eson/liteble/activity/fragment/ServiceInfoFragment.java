@@ -10,8 +10,8 @@ import androidx.annotation.Nullable;
 
 import com.e.ble.util.BLE_UUID_Util;
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.NotifyState;
-import com.e.tool.ble.bean.ReadMessage;
+import com.e.tool.ble.bean.message.NotifyState;
+import com.e.tool.ble.bean.message.ReadMessage;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnWriteDescriptor;
 
@@ -149,7 +149,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         readMessage.setServiceUUID(UUID.fromString(serviceUUID));
         readMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
         BleTool.getInstance().getController()
-                .readInfo(readMessage, new OnRead() {
+                .read(readMessage, new OnRead() {
                     @Override
                     public void onReadMessage(ReadMessage readMessage) {
                         changeBleData(readMessage.getCharacteristicUUID().toString()

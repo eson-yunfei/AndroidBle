@@ -1,7 +1,7 @@
 package org.eson.liteble.ble.command;
 
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.SendMessage;
+import com.e.tool.ble.bean.message.SendMessage;
 import com.e.ble.util.BLEByteUtil;
 import com.shon.dispatcher.Transmitter;
 import com.shon.dispatcher.TMessage;
@@ -48,7 +48,7 @@ public class BleTransmitter extends Transmitter {
 
         //具体的发送动作
         BleTool.getInstance().getController()
-                .sendMessage(sendMessage);
+                .write(sendMessage);
         LogUtil.e("接收到发送数据的指令：" + BLEByteUtil.getHexString(sendData.getBytes()));
     }
 }

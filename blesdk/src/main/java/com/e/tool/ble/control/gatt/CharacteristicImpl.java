@@ -1,4 +1,4 @@
-package com.e.tool.ble.control;
+package com.e.tool.ble.control.gatt;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -7,9 +7,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
-import com.e.tool.ble.bean.NotifyMessage;
-import com.e.tool.ble.bean.NotifyState;
-import com.e.tool.ble.bean.ReadMessage;
+import com.e.tool.ble.bean.message.NotifyMessage;
+import com.e.tool.ble.bean.message.NotifyState;
+import com.e.tool.ble.bean.message.ReadMessage;
+import com.e.tool.ble.control.gatt.imp.CharacteristicListener;
 import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnWriteDescriptor;
@@ -24,7 +25,7 @@ import java.util.Arrays;
  * Package name : com.e.ble.core
  * Des :
  */
-class CharacteristicImpl {
+class CharacteristicImpl implements CharacteristicListener {
     private OnRead onRead;
     private NotifyState notifyState;
     private OnWriteDescriptor onWriteDescriptor;
@@ -38,6 +39,8 @@ class CharacteristicImpl {
             handler = new Handler(Looper.getMainLooper());
         }
     }
+
+
 
     public void setOnReadListener(OnRead onRead) {
         this.onRead = onRead;
@@ -53,6 +56,7 @@ class CharacteristicImpl {
         this.onDataNotify = onDataNotify;
     }
 
+    @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (status != BluetoothGatt.GATT_SUCCESS) {
             return;

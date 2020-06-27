@@ -1,6 +1,7 @@
 package org.eson.liteble.activity.fragment;
 
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothProfile;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -12,15 +13,14 @@ import androidx.navigation.NavArgument;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.ConnectBt;
-import com.e.tool.ble.imp.OnDevConnectListener;
-import com.e.ble.util.BLEConstant;
+import com.e.tool.ble.bean.ConnectResult;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.DeviceDetailAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.activity.vms.ServiceListViewModel;
 import org.eson.liteble.activity.bean.ServiceBean;
+import org.eson.liteble.activity.vms.ConnectViewModel;
+import org.eson.liteble.activity.vms.ServiceListViewModel;
 import org.eson.liteble.databinding.ActivityDetailBinding;
 
 import java.io.File;
@@ -45,7 +45,8 @@ public class ServiceListFragment extends BaseObserveFragment {
     private DeviceDetailAdapter mDeviceDetailAdapter;
 
     private ServiceListViewModel serviceListViewModel;
-    private ConnectBt connectBt;
+    private ConnectViewModel connectViewModel;
+    private ConnectResult connectBt;
 
     @Override
     protected View getView(LayoutInflater inflater, ViewGroup container) {
@@ -58,13 +59,13 @@ public class ServiceListFragment extends BaseObserveFragment {
     protected void onProcess() {
         super.onProcess();
         serviceListViewModel = getDefaultViewModelProviderFactory().create(ServiceListViewModel.class);
-
+        connectViewModel = getDefaultViewModelProviderFactory().create(ConnectViewModel.class);
         Map<String, NavArgument> map = NavHostFragment.findNavController(this).getGraph().getArguments();
         NavArgument navArgument = map.get("connectBt");
-        if (navArgument == null){
+        if (navArgument == null) {
             return;
         }
-        connectBt = (ConnectBt) navArgument.getDefaultValue();
+        connectBt = (ConnectResult) navArgument.getDefaultValue();
     }
 
     @Override
@@ -72,8 +73,6 @@ public class ServiceListFragment extends BaseObserveFragment {
         super.onResume();
         String devName = connectBt.getName();
         detailBinding.name.setText(devName);
-
-
         getMessage();
     }
 
@@ -83,22 +82,10 @@ public class ServiceListFragment extends BaseObserveFragment {
 
         detailBinding.disconnect.setOnClickListener(v -> {
             if (isConnect) {
-//                BLEControl.get().disconnect(connectBt.getAddress());
+                connectViewModel.disConnect(connectBt.getAddress());
                 isConnect = false;
             } else {
-//                BleService.get().connectionDevice(connectBt.getAddress());
-                BleTool.getInstance().getController().connectDevice(connectBt.getAddress()
-                        , new OnDevConnectListener() {
-                            @Override
-                            public void onConnectSate(int status, int newState) {
-
-                            }
-
-                            @Override
-                            public void onServicesDiscovered(ConnectBt connectBt) {
-
-                            }
-                        });
+                connectViewModel.connectDevice(connectBt.getAddress());
             }
         });
 
@@ -122,25 +109,19 @@ public class ServiceListFragment extends BaseObserveFragment {
 
     @Override
     public void onDeviceStateChange(String deviceMac, int currentState) {
-        switch (currentState) {
 
-            case BLEConstant.State.STATE_DIS_CONNECTED:
-                isConnect = false;
-                detailBinding.disconnect.setText("重新连接设备");
-
-
-                mDeviceDetailAdapter.setDataList(new ArrayList<>());
-                mDeviceDetailAdapter.notifyDataSetChanged();
-                break;
-            case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
-            case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
-                isConnect = true;
-                detailBinding.disconnect.setText("断开连接");
-                getMessage();
-                break;
-            default:
-                break;
+        if (currentState == BluetoothProfile.STATE_DISCONNECTING) {
+            isConnect = false;
+            detailBinding.disconnect.setText("重新连接设备");
+            mDeviceDetailAdapter.setDataList(new ArrayList<>());
+            mDeviceDetailAdapter.notifyDataSetChanged();
         }
+        if (currentState == BluetoothProfile.STATE_CONNECTED) {
+            isConnect = true;
+            detailBinding.disconnect.setText("断开连接");
+            getMessage();
+        }
+
     }
 
     /**
@@ -148,12 +129,12 @@ public class ServiceListFragment extends BaseObserveFragment {
      */
     private void getMessage() {
 
-        BluetoothGatt gatt =  BleTool.getInstance().getController().getGatt(connectBt.getAddress());
+        BluetoothGatt gatt = BleTool.getInstance().getController().getGatt(connectBt.getAddress());
         if (gatt == null) {
             return;
         }
 
-        if (serviceListViewModel== null){
+        if (serviceListViewModel == null) {
             return;
         }
         serviceListViewModel.getServiceList(gatt)
@@ -173,7 +154,7 @@ public class ServiceListFragment extends BaseObserveFragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable("serviceBean", serviceBean);
             bundle.putInt("position", position);
-            bundle.putString("address",connectBt.getAddress());
+            bundle.putString("address", connectBt.getAddress());
             navigateNext(R.id.action_serviceListFragment_to_serviceInfoFragment, bundle);
         });
         detailBinding.detailList.setAdapter(mDeviceDetailAdapter);
@@ -184,7 +165,6 @@ public class ServiceListFragment extends BaseObserveFragment {
     private Thread mThread;
 
     private void startReadTimer() {
-//        final String connectMac = MyApplication.getInstance().getCurrentShowDevice();
         if (mThread == null) {
             mThread = new Thread(new Runnable() {
                 @Override

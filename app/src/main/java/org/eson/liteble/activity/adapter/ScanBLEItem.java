@@ -43,10 +43,10 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
     @Override
     public void bindViews(View view) {
         rootView = view;
-        this.scanRet = (TextView) view.findViewById(R.id.scanRet);
-        this.deviceName = (TextView) view.findViewById(R.id.deviceName);
-        this.deviceMac = (TextView) view.findViewById(R.id.deviceMac);
-        this.deviceRssi = (TextView) view.findViewById(R.id.deviceRssi);
+        this.scanRet = view.findViewById(R.id.scanRet);
+        this.deviceName = view.findViewById(R.id.deviceName);
+        this.deviceMac = view.findViewById(R.id.deviceMac);
+        this.deviceRssi = view.findViewById(R.id.deviceRssi);
     }
 
     @Override

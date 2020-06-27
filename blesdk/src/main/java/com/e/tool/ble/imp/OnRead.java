@@ -1,6 +1,6 @@
 package com.e.tool.ble.imp;
 
-import com.e.tool.ble.bean.ReadMessage;
+import com.e.tool.ble.bean.message.ReadMessage;
 
 /**
  * Auth : xiao.yunfei

@@ -1,6 +1,6 @@
 package com.e.tool.ble.imp;
 
-import com.e.tool.ble.annotation.LinkState;
+import com.e.tool.ble.bean.DevState;
 
 /**
  * Auth : xiao.yunfei
@@ -9,5 +9,7 @@ import com.e.tool.ble.annotation.LinkState;
  * Des : 设备连接状态监听
  */
 public interface OnStateChanged {
-    void onSateChanged(String address,@LinkState int state);
+
+
+    void onSateChanged(DevState devState);
 }

@@ -44,7 +44,6 @@ import java.util.List;
 
 public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
 
-
     private boolean isUnknownCharacter = false;
 
     public BleDataAdapter(Context context, List<BleDataBean> dataList, String characterName) {

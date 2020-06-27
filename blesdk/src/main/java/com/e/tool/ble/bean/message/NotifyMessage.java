@@ -1,13 +1,12 @@
-package com.e.tool.ble.bean;
+package com.e.tool.ble.bean.message;
 
 /**
- * Auth : xiao.yunfei
- * Date : 2020/6/23 17:40
+ * Auth : xiao_yun_fei
+ * Date : 2020/6/25 19:35
  * Package name : com.e.tool.ble.bean
  * Des :
  */
-public class ReadMessage extends IMsg {
-
+public class NotifyMessage extends IMsg {
     private byte[] bytes;
 
     public byte[] getBytes() {
@@ -17,4 +16,6 @@ public class ReadMessage extends IMsg {
     public void setBytes(byte[] bytes) {
         this.bytes = bytes;
     }
+
+
 }

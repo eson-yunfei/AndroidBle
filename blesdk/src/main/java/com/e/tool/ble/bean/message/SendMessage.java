@@ -1,4 +1,4 @@
-package com.e.tool.ble.bean;
+package com.e.tool.ble.bean.message;
 
 /**
  * Auth : xiao_yun_fei

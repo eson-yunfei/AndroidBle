@@ -21,13 +21,9 @@ import java.util.UUID;
  */
 
 public class UUIDAdapter extends MyBaseAdapter<CharacterBean> {
-    private Context mContext;
-    private Resources mResources;
 
     public UUIDAdapter(Context context, List<CharacterBean> dataList) {
         super(context, dataList);
-        mContext = context;
-        mResources = mContext.getResources();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class UUIDAdapter extends MyBaseAdapter<CharacterBean> {
         String hexString = BLE_UUID_Util.getHexValue(UUID.fromString(characterUUID));
 
         viewHolder.character_name_text.setText(characterName);
-        viewHolder.uuidText.setText(mResources.getString(R.string.service_uuid, hexString, characterUUID));
+        viewHolder.uuidText.setText(resources.getString(R.string.service_uuid, hexString, characterUUID));
         viewHolder.descText.setText(getDesc(characterBean));
         return view;
     }

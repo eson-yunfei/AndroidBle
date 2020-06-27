@@ -27,13 +27,14 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        LittleBleViewModel.iniViewModel(this);
         BleTool.getInstance().init(this);
+
+        LittleBleViewModel.iniViewModel(this);
 
         BLESdk.get().init(this);
 
 //        Intent bleServer = new Intent(mContext, BleService.class);
-//        startService(bleServer);
+////        startService(bleServer);
 
         DispatcherConfig dispatcherConfig = new DispatcherConfig.Builder()
                 .setApiInterface(Command.class)

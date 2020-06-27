@@ -1,15 +1,21 @@
 package com.e.tool.ble.control;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.text.TextUtils;
 
-import com.e.tool.ble.bean.NotifyState;
+import com.e.tool.ble.bean.message.NotifyState;
+import com.e.tool.ble.control.gatt.BGattCallBack;
 import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnStateChanged;
 import com.e.tool.ble.imp.OnWriteDescriptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Auth : xiao.yunfei
@@ -17,170 +23,47 @@ import com.e.tool.ble.imp.OnWriteDescriptor;
  * Package name : com.e.ble.core
  * Des :
  */
-final class GattCallBack extends BluetoothGattCallback {
+final class GattCallBack extends BGattCallBack {
 
-    private static GattCallBack gattCallBack;
-    private StateChangedImpl stateChanged;
-    private CharacteristicImpl characteristicImpl;
-    private BluetoothGatt bluetoothGatt;
-
-    public static GattCallBack gattCallBack() {
-        if (gattCallBack == null) {
-            synchronized (GattCallBack.class) {
-                if (gattCallBack == null) {
-                    gattCallBack = new GattCallBack();
-
-                }
-            }
-        }
-        return gattCallBack;
-    }
+    private List<BluetoothGatt> bluetoothGattList;
 
     public GattCallBack() {
         super();
-
+        bluetoothGattList = new ArrayList<>();
     }
 
-    public boolean addConnectBean(ConnectBean connectBean) {
-
-        if (stateChanged == null) {
-            stateChanged = new StateChangedImpl(connectBean);
-            return true;
-        } else {
-            return stateChanged.addConnectBean(connectBean);
+    public BluetoothGatt getBluetoothGatt(String address) {
+        for (BluetoothGatt bluetoothGatt : bluetoothGattList) {
+            BluetoothDevice saveDev = bluetoothGatt.getDevice();
+            String saveAddress = saveDev.getAddress();
+            if (TextUtils.equals(address, saveAddress)) {
+                return bluetoothGatt;
+            }
         }
+        return null;
     }
-
-    public void setOnStateChangeListener(OnStateChanged onStateChanged) {
-        if (stateChanged == null) {
-            stateChanged = new StateChangedImpl();
-        }
-        stateChanged.setOnStateChangeListener(onStateChanged);
-    }
-
-    public void setReadListener(OnRead onRead) {
-        if (characteristicImpl == null) {
-            characteristicImpl = new CharacteristicImpl();
-        }
-        characteristicImpl.setOnReadListener(onRead);
-    }
-    public void setDataNotifyListener(OnDataNotify onDataNotify) {
-        if (characteristicImpl == null) {
-            characteristicImpl = new CharacteristicImpl();
-        }
-        characteristicImpl.setDataNotifyListener(onDataNotify);
-    }
-
-
-    public void setWriteDescriptor(NotifyState notifyState, OnWriteDescriptor onWriteDescriptor) {
-        if (characteristicImpl == null) {
-            characteristicImpl = new CharacteristicImpl();
-        }
-        characteristicImpl.setWriteDescriptor(notifyState, onWriteDescriptor);
-
-    }
-
-    public BluetoothGatt getBluetoothGatt() {
-        return bluetoothGatt;
-    }
-
-    private void updateBluetoothGatt(BluetoothGatt gatt) {
-        bluetoothGatt = gatt;
-    }
-
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        if (stateChanged != null) {
-            stateChanged.onConnectionStateChange(gatt, status, newState);
-        }
         super.onConnectionStateChange(gatt, status, newState);
         updateBluetoothGatt(gatt);
     }
 
-    @Override
-    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-        if (stateChanged != null) {
-            stateChanged.onServicesDiscovered(gatt, status);
+    protected void updateBluetoothGatt(BluetoothGatt gatt) {
+        final BluetoothDevice device = gatt.getDevice();
+        final String address = device.getAddress();
+        boolean canAdd = true;
+        for (BluetoothGatt bluetoothGatt : bluetoothGattList) {
+            BluetoothDevice saveDev = bluetoothGatt.getDevice();
+            String saveAddress = saveDev.getAddress();
+            if (TextUtils.equals(address, saveAddress)) {
+                canAdd = false;
+                break;
+            }
         }
-        super.onServicesDiscovered(gatt, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-        if (characteristicImpl != null){
-            characteristicImpl.onCharacteristicRead(gatt, characteristic, status);
+        if (canAdd) {
+            bluetoothGattList.add(gatt);
         }
-        super.onCharacteristicRead(gatt, characteristic, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-        if (characteristicImpl != null){
-            characteristicImpl.onCharacteristicWrite(gatt, characteristic, status);
-        }
-
-        super.onCharacteristicWrite(gatt, characteristic, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-        if (characteristicImpl != null){
-            characteristicImpl.onCharacteristicChanged(gatt, characteristic);
-        }
-        super.onCharacteristicChanged(gatt, characteristic);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-        super.onDescriptorRead(gatt, descriptor, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-
-        if (characteristicImpl != null){
-            characteristicImpl.onDescriptorWrite(gatt, descriptor, status);
-        }
-        super.onDescriptorWrite(gatt, descriptor, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-        super.onReliableWriteCompleted(gatt, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-        super.onReadRemoteRssi(gatt, rssi, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-        super.onMtuChanged(gatt, mtu, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-        super.onPhyUpdate(gatt, txPhy, rxPhy, status);
-        updateBluetoothGatt(gatt);
-    }
-
-    @Override
-    public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-        super.onPhyRead(gatt, txPhy, rxPhy, status);
-        updateBluetoothGatt(gatt);
     }
 
 

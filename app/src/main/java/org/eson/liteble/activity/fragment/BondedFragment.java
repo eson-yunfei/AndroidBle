@@ -22,14 +22,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.lifecycle.Observer;
+
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
 
+import org.eson.liteble.LittleBleViewModel;
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.adapter.BondedDevAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.bean.BondedDeviceBean;
-import org.eson.liteble.util.BondedDeviceUtil;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
 import org.eson.liteble.util.ToastUtil;
 
@@ -80,9 +82,18 @@ public class BondedFragment extends BaseObserveFragment {
     @Override
     public void onResume() {
         super.onResume();
-        mDeviceBeanList = BondedDeviceUtil.get().getBondedList();
-        BondedDevAdapter mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
-        bondedDeviceBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
+        LittleBleViewModel.getViewModel()
+                .getBondList()
+                .observerBondList().observe(this,
+                new Observer<List<BondedDeviceBean>>() {
+                    @Override
+                    public void onChanged(List<BondedDeviceBean> bondedDeviceBeans) {
+                        mDeviceBeanList = bondedDeviceBeans;
+                        BondedDevAdapter mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
+                        bondedDeviceBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
+                    }
+                });
+
 
     }
 
@@ -92,14 +103,6 @@ public class BondedFragment extends BaseObserveFragment {
         switch (state) {
             case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
             case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
-
-                BondedDeviceUtil.get().addBondDevice(mac);
-                BondedDeviceBean bondedDeviceBean = BondedDeviceUtil.get().getDevice(mac);
-                if (mac.equals(selectDevice.getAddress())) {
-
-                    bondedDeviceBean.setName(selectDevice.getName());
-                }
-                bondedDeviceBean.setConnected(true);
 
                 startToNext();
                 break;
@@ -145,12 +148,7 @@ public class BondedFragment extends BaseObserveFragment {
         }
 
         m_pDialog.setMessage(msg);
-        requireActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                m_pDialog.show();
-            }
-        });
+        requireActivity().runOnUiThread(() -> m_pDialog.show());
 
     }
 
@@ -159,12 +157,7 @@ public class BondedFragment extends BaseObserveFragment {
         if (m_pDialog == null) {
             return;
         }
-        requireActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                m_pDialog.dismiss();
-            }
-        });
+        requireActivity().runOnUiThread(() -> m_pDialog.dismiss());
 
     }
 

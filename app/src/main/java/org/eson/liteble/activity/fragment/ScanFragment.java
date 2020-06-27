@@ -17,6 +17,7 @@
 package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,22 +27,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.e.ble.bean.BLEDevice;
-import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.ConnectBt;
-import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.ble.scan.BLEScanner;
 import com.e.ble.util.BLEConstant;
+import com.e.tool.ble.annotation.LinkState;
+import com.e.tool.ble.bean.ConnectResult;
+import com.e.tool.ble.bean.DevState;
 
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.MainActivity;
+import org.eson.liteble.activity.adapter.ScanBLEItem;
 import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.activity.bean.BondedDeviceBean;
+import org.eson.liteble.activity.vms.ConnectViewModel;
 import org.eson.liteble.activity.vms.ScannerViewModel;
 import org.eson.liteble.activity.vms.data.ScanLiveData;
-import org.eson.liteble.activity.adapter.ScanBLEItem;
 import org.eson.liteble.databinding.FragmentScanDeviceBinding;
 import org.eson.liteble.share.ConfigShare;
-import org.eson.liteble.util.BondedDeviceUtil;
 import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.ToastUtil;
 
@@ -61,10 +61,9 @@ import kale.adapter.item.AdapterItem;
 public class ScanFragment extends BaseObserveFragment {
 
     private ScannerViewModel scannerViewModel;
+    private ConnectViewModel connectViewModel;
     private CommonRcvAdapter<BLEDevice> scanBLEAdapter;
     private ProgressDialog m_pDialog;
-
-    private BLEDevice selectDevice = null;
 
     private boolean isFilterNoName;
     private int scanTime;
@@ -84,7 +83,7 @@ public class ScanFragment extends BaseObserveFragment {
         scanBLEAdapter = new CommonRcvAdapter<BLEDevice>(new ArrayList<>()) {
             @NonNull
             @Override
-            public AdapterItem createItem(Object o) {
+            public AdapterItem<?> createItem(Object o) {
                 return new ScanBLEItem(getActivity(), mOnClickListener);
             }
         };
@@ -98,48 +97,58 @@ public class ScanFragment extends BaseObserveFragment {
         isFilterNoName = configShare.getFilterNoName();
         scanTime = configShare.getConnectTime();
         scannerViewModel = getDefaultViewModelProviderFactory().create(ScannerViewModel.class);
+        connectViewModel = getDefaultViewModelProviderFactory().create(ConnectViewModel.class);
     }
 
     @Override
     public void onPause() {
-        BLEScanner.get().stopScan();
+        stopScanner();
         super.onPause();
     }
 
     private ScanBLEItem.ItemClickListener mOnClickListener = device -> {
-        selectDevice = device;
 
-        showProgress("正在连接设备：" + selectDevice.getName());
-        BleTool.getInstance().getController().connectDevice(selectDevice.getMac()
-                , new OnDevConnectListener() {
-                    @Override
-                    public void onConnectSate(int status, int newState) {
-                        LogUtil.e("current tread : " + Thread.currentThread().getName());
-                        LogUtil.e("onConnectSate : status = " + status + " ;  newState = " + newState);
-                    }
-
-                    @Override
-                    public void onServicesDiscovered(ConnectBt connectBt) {
-
-                        LogUtil.e("current tread : " + Thread.currentThread().getName());
-                        LogUtil.e("onServicesDiscovered : address : " + connectBt.getAddress());
-
-                        hideProgress();
-                        Intent intent = new Intent(getActivity(), DeviceActivity.class);
-                        intent.putExtra("connectBt", connectBt);
-                        startActivity(intent);
-
-                    }
-                });
-//        BleService.get().connectionDevice(selectDevice.getMac());
-//        showProgress("正在连接设备：" + selectDevice.getName());
+        showProgress("正在连接设备：" + device.getName());
+        connectViewModel.connectDevice(device.getMac())
+                .observe(this, this::updateConnectResult);
     };
 
+    /**
+     * @param connectDeviceData connectDeviceData
+     */
+    private void updateConnectResult(ConnectViewModel.ConnectDeviceData connectDeviceData) {
+        if (connectDeviceData == null) {
+            return;
+        }
+
+        ConnectResult errorCode = connectDeviceData.getErrorCode();
+        if (errorCode != null) {
+            LogUtil.e("连接设备异常 ：" + errorCode);
+            hideProgress();
+            ToastUtil.showShort(getActivity(), "设备连接失败");
+            return;
+        }
+
+        DevState devState = connectDeviceData.getDevState();
+        if (devState != null) {
+            LogUtil.e("devState " + devState.toString());
+        }
+
+        ConnectResult connectBt = connectDeviceData.getConnectBt();
+        if (connectBt != null) {
+            LogUtil.e("onServicesDiscovered : address : " + connectBt.getAddress());
+            hideProgress();
+            ToastUtil.showShort(getActivity(), "设备连接成功");
+            Intent intent = new Intent(getActivity(), DeviceActivity.class);
+            intent.putExtra("connectBt", connectBt);
+            startActivity(intent);
+        }
+    }
 
     /**
      * 显示等待框
      *
-     * @param msg
+     * @param msg msg
      */
     public void showProgress(String msg) {
         if (m_pDialog == null) {
@@ -158,17 +167,13 @@ public class ScanFragment extends BaseObserveFragment {
             return;
         }
         mainActivity.runOnUiThread(() -> m_pDialog.show());
-
     }
 
     public void hideProgress() {
+        if (m_pDialog == null || getActivity() == null) {
+            return;
+        }
 
-        if (m_pDialog == null) {
-            return;
-        }
-        if (getActivity() == null) {
-            return;
-        }
         getActivity().runOnUiThread(() -> m_pDialog.dismiss());
 
     }
@@ -187,7 +192,9 @@ public class ScanFragment extends BaseObserveFragment {
             }
             hideProgress();
             if (liveData.isStop() || liveData.isTimeout()) {
-                ((MainActivity) getActivity()).reSetMenu();
+                if (getActivity() != null) {
+                    ((MainActivity) getActivity()).reSetMenu();
+                }
                 scanLiveData.removeObservers(this);
                 return;
             }
@@ -198,63 +205,13 @@ public class ScanFragment extends BaseObserveFragment {
 
     @Override
     public void onDeviceStateChange(String deviceMac, int currentState) {
-
-        LogUtil.e("DeviceScanFragment onDeviceStateChange : " + deviceMac);
-        onBleStateChange(deviceMac, currentState);
-    }
-
-
-    public void onBleStateChange(String mac, int state) {
-
-        switch (state) {
-            case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
-            case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
-
-                BondedDeviceUtil.get().addBondDevice(mac);
-                BondedDeviceBean bondedDeviceBean = BondedDeviceUtil.get().getDevice(mac);
-                if (mac.equals(selectDevice.getMac())) {
-
-                    bondedDeviceBean.setName(selectDevice.getName());
-                }
-                bondedDeviceBean.setConnected(true);
-
-//                MyApplication.getInstance().setCurrentShowDevice(selectDevice.getMac());
-                startToNext();
-                break;
-            case BLEConstant.Connection.STATE_CONNECT_FAILED:
-                hideProgress();
-                ToastUtil.showShort(getActivity(), "设备连接失败");
-                break;
-            case BLEConstant.State.STATE_CONNECTED:
-                hideProgress();
-                ToastUtil.showShort(getActivity(), "设备连接成功");
-
-                break;
-            case BLEConstant.State.STATE_DIS_CONNECTED:
-                hideProgress();
-                ToastUtil.showShort(getActivity(), "设备断开");
-                break;
-            default:
-                break;
-
+        if (currentState == BluetoothProfile.STATE_DISCONNECTED) {
+            hideProgress();
+            ToastUtil.showShort(getActivity(), "设备断开");
         }
     }
 
-    /**
-     * 跳转的详情界面
-     */
-    private void startToNext() {
-        hideProgress();
-
-
-        ToastUtil.showShort(getActivity(), "连接成功");
-        startActivity(new Intent(getActivity(), DeviceActivity.class));
-
-
-    }
-
     public void stopScanner() {
-
         BLEScanner.get().stopScan();
     }
 
@@ -263,6 +220,4 @@ public class ScanFragment extends BaseObserveFragment {
         scanBLEAdapter.notifyDataSetChanged();
         searchDevice();
     }
-
-
 }

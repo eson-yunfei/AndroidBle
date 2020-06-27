@@ -1,4 +1,4 @@
-package com.e.tool.ble.bean;
+package com.e.tool.ble.bean.message;
 
 import java.util.UUID;
 

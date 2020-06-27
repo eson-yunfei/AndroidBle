@@ -22,6 +22,8 @@ public class BleTool {
 
     private static BleTool bleTool;
 
+
+
     public static BleTool getInstance() {
         if (bleTool == null) {
             synchronized (BleTool.class) {
@@ -33,6 +35,10 @@ public class BleTool {
         return bleTool;
     }
 
+    private BleTool(){
+
+
+    }
     public void init(Application context) {
         this.context = context;
     }

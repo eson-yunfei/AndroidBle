@@ -6,8 +6,8 @@ import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.ListenerCall;
 import com.shon.dispatcher.call.SenderCall;
 
-import org.eson.liteble.ble.test.RealSport;
-import org.eson.liteble.ble.test.RealStepListener;
+import org.eson.liteble.ble.tes.RealSport;
+import org.eson.liteble.ble.tes.RealStepListener;
 
 /**
  * Auth : xiao.yunfei

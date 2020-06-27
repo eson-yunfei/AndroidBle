@@ -1,5 +1,7 @@
 package com.e.tool.ble.control;
 
+import com.e.tool.ble.control.request.IRunnable;
+
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +22,7 @@ class CorePool {
     }
 
 
-    public void execute(Runnable runnable) {
+    public void execute(IRunnable<?> runnable) {
         threadPoolExecutor.execute(runnable);
     }
 

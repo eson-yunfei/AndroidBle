@@ -1,6 +1,6 @@
 package com.e.tool.ble.imp;
 
-import com.e.tool.ble.bean.NotifyState;
+import com.e.tool.ble.bean.message.NotifyState;
 
 /**
  * Auth : xiao_yun_fei
