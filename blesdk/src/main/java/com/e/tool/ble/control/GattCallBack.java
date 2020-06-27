@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.text.TextUtils;
 
+import com.e.ble.util.BLELog;
 import com.e.tool.ble.bean.message.NotifyState;
 import com.e.tool.ble.control.gatt.BGattCallBack;
 import com.e.tool.ble.imp.OnDataNotify;
@@ -50,17 +51,21 @@ final class GattCallBack extends BGattCallBack {
     }
 
     protected void updateBluetoothGatt(BluetoothGatt gatt) {
+        BLELog.e("GattCallBack-->> updateBluetoothGatt ");
         final BluetoothDevice device = gatt.getDevice();
         final String address = device.getAddress();
         boolean canAdd = true;
-        for (BluetoothGatt bluetoothGatt : bluetoothGattList) {
+        for (int i = 0; i < bluetoothGattList.size(); i++) {
+            BluetoothGatt bluetoothGatt = bluetoothGattList.get(i);
             BluetoothDevice saveDev = bluetoothGatt.getDevice();
             String saveAddress = saveDev.getAddress();
             if (TextUtils.equals(address, saveAddress)) {
                 canAdd = false;
+                bluetoothGattList.set(i,gatt);
                 break;
             }
         }
+
         if (canAdd) {
             bluetoothGattList.add(gatt);
         }

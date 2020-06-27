@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavArgument;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -85,7 +86,20 @@ public class ServiceListFragment extends BaseObserveFragment {
                 connectViewModel.disConnect(connectBt.getAddress());
                 isConnect = false;
             } else {
-                connectViewModel.connectDevice(connectBt.getAddress());
+                connectViewModel.connectDevice(connectBt.getAddress())
+                .observe(this, new Observer<ConnectViewModel.ConnectDeviceData>() {
+                    @Override
+                    public void onChanged(ConnectViewModel.ConnectDeviceData connectDeviceData) {
+
+                        if (connectDeviceData == null){
+                            return;
+                        }
+                       ConnectResult connectResult =  connectDeviceData.getConnectBt();
+                        if (connectResult != null){
+                            getMessage();
+                        }
+                    }
+                });
             }
         });
 
@@ -110,7 +124,7 @@ public class ServiceListFragment extends BaseObserveFragment {
     @Override
     public void onDeviceStateChange(String deviceMac, int currentState) {
 
-        if (currentState == BluetoothProfile.STATE_DISCONNECTING) {
+        if (currentState == BluetoothProfile.STATE_DISCONNECTED) {
             isConnect = false;
             detailBinding.disconnect.setText("重新连接设备");
             mDeviceDetailAdapter.setDataList(new ArrayList<>());

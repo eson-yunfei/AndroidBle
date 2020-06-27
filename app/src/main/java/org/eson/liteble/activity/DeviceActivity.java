@@ -43,7 +43,6 @@ public class DeviceActivity extends AppCompatActivity {
         graph.addArgument("connectBt", argument);
 
         controller.setGraph(graph);
-        controller.navigate(R.id.serviceListFragment);
     }
 
 

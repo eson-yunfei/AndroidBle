@@ -1,5 +1,6 @@
 package com.e.tool.ble.control;
 
+import android.bluetooth.BluetoothProfile;
 import android.text.TextUtils;
 
 import com.e.ble.util.BLELog;
@@ -63,6 +64,7 @@ class Connector extends IRunnable<ConnectRequest> {
 
             if (isContainsBean) {
                 //存在，即添加设备，
+                BLELog.e("ConnectRequest is exist");
                 return;
             }
             //不存在，添加成功
@@ -94,6 +96,11 @@ class Connector extends IRunnable<ConnectRequest> {
                 connectRequest.onConnectSate(devState);
             }
 
+            if (devState.getNewState() == BluetoothProfile.STATE_DISCONNECTED){
+                synchronized (cacheList) {
+                    cacheList.remove(connectRequest);
+                }
+            }
         }
 
         @Override

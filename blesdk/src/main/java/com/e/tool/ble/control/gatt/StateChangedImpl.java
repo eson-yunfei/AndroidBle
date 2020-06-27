@@ -55,6 +55,7 @@ class StateChangedImpl implements StateChangeListener {
             BluetoothDevice device = gatt.getDevice();
             ConnectResult connectBt = new ConnectResult(device.getAddress()
                     , device.getName(),status);
+            connectBt.setServicesDiscovered(true);
             handler.post(() -> onDevConnectListener.onServicesDiscovered(connectBt));
 
         }

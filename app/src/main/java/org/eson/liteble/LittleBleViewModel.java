@@ -25,7 +25,7 @@ import org.eson.liteble.util.LogUtil;
  * Auth : xiao.yunfei
  * Date : 2020/6/20 16:31
  * Package name : org.eson.liteble
- * Des :
+ * Des : LittleBleViewModel
  */
 public class LittleBleViewModel extends AndroidViewModel {
 
@@ -33,6 +33,7 @@ public class LittleBleViewModel extends AndroidViewModel {
     private BondList bondList;
     private DeviceState bleDeviceState;
     private MutableLiveData<NotifyMessage> realData;
+
 
     static void iniViewModel(Application application) {
         if (littleBleViewModel == null) {
@@ -59,6 +60,8 @@ public class LittleBleViewModel extends AndroidViewModel {
     }
 
     /**
+     * 监听设备状态
+     *
      * @return
      */
     public DeviceState observerDeviceState() {
@@ -71,6 +74,7 @@ public class LittleBleViewModel extends AndroidViewModel {
     }
 
     /**
+     * 更新设备状态
      *
      * @param devState
      */
@@ -94,8 +98,11 @@ public class LittleBleViewModel extends AndroidViewModel {
     }
 
 
-
-
+    /**
+     * 监听通知
+     *
+     * @return
+     */
     public MutableLiveData<NotifyMessage> observerDataNotify() {
         realData = new MutableLiveData<>();
         BleTool.getInstance().getController()

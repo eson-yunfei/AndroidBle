@@ -1,6 +1,7 @@
 package com.e.tool.ble.control;
 
 import android.bluetooth.BluetoothGatt;
+import android.os.DeadObjectException;
 
 import com.e.ble.util.BLELog;
 import com.e.tool.ble.BleTool;
@@ -8,6 +9,8 @@ import com.e.tool.ble.control.gatt.BGattCallBack;
 import com.e.tool.ble.control.gatt.imp.StateChangeListener;
 import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.tool.ble.imp.OnStateChanged;
+
+import java.lang.reflect.Method;
 
 /**
  * Auth : xiao.yunfei
@@ -56,7 +59,13 @@ public class StateController extends AController {
             return;
         }
         bluetoothGatt.disconnect();
-        bluetoothGatt.close();
+        try {
+            Thread.sleep(300);
+            bluetoothGatt.close();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -66,5 +75,16 @@ public class StateController extends AController {
         stateChangeListener.setOnStateChangeListener(onStateChangeListener);
     }
 
+    private  void refreshCache(BluetoothGatt gatt) throws DeadObjectException {
+
+        try {
+            Method localMethod = gatt.getClass().getMethod(
+                    "refresh");
+            localMethod.invoke(gatt);
+
+        } catch (Exception localException) {
+            BLELog.e("An exception occured while refreshing device");
+        }
+    }
 
 }
