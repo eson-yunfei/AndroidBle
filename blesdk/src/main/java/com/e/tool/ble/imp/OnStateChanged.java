@@ -1,6 +1,6 @@
 package com.e.tool.ble.imp;
 
-import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.bean.state.DevState;
 
 /**
  * Auth : xiao.yunfei

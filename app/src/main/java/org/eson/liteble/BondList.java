@@ -2,7 +2,7 @@ package org.eson.liteble;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.bean.state.DevState;
 
 import org.eson.liteble.activity.bean.BondedDeviceBean;
 
@@ -75,6 +75,7 @@ public class BondList {
             bondedDeviceBeans.add(bondedDeviceBean);
         }
         mutableLiveData.postValue(bondedDeviceBeans);
+
     }
 
 

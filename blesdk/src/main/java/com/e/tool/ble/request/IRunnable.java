@@ -1,9 +1,9 @@
-package com.e.tool.ble.control.request;
+package com.e.tool.ble.request;
 
 /**
  * Auth : xiao_yun_fei
  * Date : 2020/6/27 13:19
- * Package name : com.e.tool.ble.control.request
+ * Package name : com.e.tool.ble.request
  * Des :
  */
 public abstract class IRunnable<T extends Request> implements Runnable {
@@ -29,6 +29,10 @@ public abstract class IRunnable<T extends Request> implements Runnable {
             }
 
         }
+    }
+
+    protected void addRunnable() {
+        CorePool.getInstance().execute(this);
     }
 
     protected abstract void addRequest(T t);

@@ -1,4 +1,4 @@
-package com.e.tool.ble.bean;
+package com.e.tool.ble.bean.state;
 
 import androidx.annotation.NonNull;
 

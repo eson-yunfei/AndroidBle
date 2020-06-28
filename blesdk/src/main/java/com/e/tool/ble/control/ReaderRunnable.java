@@ -1,7 +1,7 @@
 package com.e.tool.ble.control;
 
 import com.e.tool.ble.bean.message.ReadMessage;
-import com.e.tool.ble.control.request.IRunnable;
+import com.e.tool.ble.request.IRunnable;
 import com.e.tool.ble.imp.OnRead;
 
 import java.util.concurrent.LinkedBlockingDeque;
@@ -16,8 +16,10 @@ class ReaderRunnable extends IRunnable<ReadRequest> {
     private LinkedBlockingDeque<ReadRequest> readRequestDeque;
 
     private ReadRequest readBean;
+
     ReaderRunnable() {
         readRequestDeque = new LinkedBlockingDeque<>();
+        addRunnable();
     }
 
 
@@ -36,6 +38,7 @@ class ReaderRunnable extends IRunnable<ReadRequest> {
     public OnRead getReadMessageListener() {
         return readMessage;
     }
+
     private OnRead readMessage = new OnRead() {
         @Override
         public void onReadMessage(ReadMessage readMessage) {

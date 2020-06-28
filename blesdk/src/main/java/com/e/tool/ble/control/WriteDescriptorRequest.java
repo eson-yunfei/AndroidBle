@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothGattService;
 
 import com.e.ble.util.BLELog;
 import com.e.tool.ble.bean.message.NotifyState;
-import com.e.tool.ble.control.request.Request;
+import com.e.tool.ble.request.Request;
 import com.e.tool.ble.imp.OnWriteDescriptor;
 
 import java.util.UUID;
@@ -32,12 +32,14 @@ class WriteDescriptorRequest extends Request {
 
 
     public void onWriteDescriptorError() {
+        isWaiting = false;
         if (onWriteDescriptor != null) {
             onWriteDescriptor.onWriteDescriptorError();
         }
     }
 
     public void onWriteDescriptor(NotifyState result) {
+        isWaiting = false;
         if (onWriteDescriptor != null) {
             onWriteDescriptor.onWriteDescriptor(result);
         }
@@ -46,11 +48,13 @@ class WriteDescriptorRequest extends Request {
 
     @Override
     public boolean launch() {
+        writeDescriptor();
         return false;
     }
 
-    private void writeDescriptor(OnWriteDescriptor onUpdateNotify) {
+    private void writeDescriptor() {
         if (notifyState == null) {
+            isWaiting = false;
             return;
         }
 
@@ -61,16 +65,22 @@ class WriteDescriptorRequest extends Request {
                 serviceUuid,
                 characteristicUuid);
         if (characteristic == null) {
+            isWaiting = false;
             return;
         }
         UUID descriptorUuid = notifyState.getDesUUID();
 
 
-        gatt.setCharacteristicNotification(characteristic, notifyState.isEnable());//激活通知
+       boolean setResult =  gatt.setCharacteristicNotification(characteristic, notifyState.isEnable());//激活通知
 
+        if (!setResult){
+            isWaiting = false;
+            return;
+        }
         BluetoothGattDescriptor descriptor = characteristic.getDescriptor(descriptorUuid);
         if (descriptor == null) {
             BLELog.e("descriptorUuid not find");
+            isWaiting = false;
             return;
         }
         if (notifyState.isEnable()) {
@@ -78,7 +88,10 @@ class WriteDescriptorRequest extends Request {
         } else {
             descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
         }
-        gatt.writeDescriptor(descriptor);
+       boolean writeResult =  gatt.writeDescriptor(descriptor);
+        if (writeResult){
+            isWaiting = true;
+        }
     }
 
     /**

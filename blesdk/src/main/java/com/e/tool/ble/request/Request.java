@@ -1,4 +1,4 @@
-package com.e.tool.ble.control.request;
+package com.e.tool.ble.request;
 
 /**
  * Auth : xiao_yun_fei

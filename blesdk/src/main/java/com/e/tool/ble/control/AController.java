@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.control.gatt.BGattCallBack;
+import com.e.tool.ble.gatt.BGattCallBack;
 
 import java.util.UUID;
 
@@ -17,14 +17,12 @@ import java.util.UUID;
  */
 abstract class AController {
     protected BleTool bleTool;
-    protected CorePool corePool;
     protected BGattCallBack bGattCallBack;
 
     public AController(BleTool bleTool,
                        BGattCallBack bGattCallBack) {
         this.bleTool = bleTool;
         this.bGattCallBack = bGattCallBack;
-        corePool = new CorePool();
 
     }
 

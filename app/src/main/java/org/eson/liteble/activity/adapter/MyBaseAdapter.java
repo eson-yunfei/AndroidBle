@@ -51,6 +51,6 @@ public abstract class MyBaseAdapter<T> extends BaseAdapter {
 	public abstract View getView(int var1, View var2, ViewGroup var3);
 
 	public <T extends View> T findView(View rootView, int viewID) {
-		return (T) rootView.findViewById(viewID);
+		return rootView.findViewById(viewID);
 	}
 }

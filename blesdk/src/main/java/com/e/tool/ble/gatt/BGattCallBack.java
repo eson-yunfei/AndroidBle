@@ -1,17 +1,17 @@
-package com.e.tool.ble.control.gatt;
+package com.e.tool.ble.gatt;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 
-import com.e.tool.ble.control.gatt.imp.CharacteristicListener;
-import com.e.tool.ble.control.gatt.imp.StateChangeListener;
+import com.e.tool.ble.gatt.imp.CharacteristicListener;
+import com.e.tool.ble.gatt.imp.StateChangeListener;
 
 /**
  * Auth : xiao_yun_fei
  * Date : 2020/6/26 18:46
- * Package name : com.e.tool.ble.control.gatt
+ * Package name : com.e.tool.ble.gatt
  * Des :
  */
 public class BGattCallBack extends BluetoothGattCallback {

@@ -1,4 +1,4 @@
-package com.e.tool.ble.control.gatt;
+package com.e.tool.ble.gatt;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import com.e.tool.ble.bean.message.NotifyMessage;
 import com.e.tool.ble.bean.message.NotifyState;
 import com.e.tool.ble.bean.message.ReadMessage;
-import com.e.tool.ble.control.gatt.imp.CharacteristicListener;
+import com.e.tool.ble.gatt.imp.CharacteristicListener;
 import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnWriteDescriptor;

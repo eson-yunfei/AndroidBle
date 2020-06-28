@@ -9,12 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavArgument;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.ConnectResult;
+import com.e.tool.ble.bean.state.ConnectResult;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.DeviceDetailAdapter;
@@ -87,17 +86,14 @@ public class ServiceListFragment extends BaseObserveFragment {
                 isConnect = false;
             } else {
                 connectViewModel.connectDevice(connectBt.getAddress())
-                .observe(this, new Observer<ConnectViewModel.ConnectDeviceData>() {
-                    @Override
-                    public void onChanged(ConnectViewModel.ConnectDeviceData connectDeviceData) {
+                .observe(this, connectDeviceData -> {
 
-                        if (connectDeviceData == null){
-                            return;
-                        }
-                       ConnectResult connectResult =  connectDeviceData.getConnectBt();
-                        if (connectResult != null){
-                            getMessage();
-                        }
+                    if (connectDeviceData == null){
+                        return;
+                    }
+                   ConnectResult connectResult =  connectDeviceData.getConnectBt();
+                    if (connectResult != null){
+                        getMessage();
                     }
                 });
             }
@@ -157,7 +153,7 @@ public class ServiceListFragment extends BaseObserveFragment {
     }
 
     /**
-     * @param serviceBeanList
+     * @param serviceBeanList serviceBeanList
      */
     private void setAdapter(List<ServiceBean> serviceBeanList) {
         if (serviceBeanList == null) {
@@ -180,21 +176,18 @@ public class ServiceListFragment extends BaseObserveFragment {
 
     private void startReadTimer() {
         if (mThread == null) {
-            mThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
+            mThread = new Thread(() -> {
 
-                    while (isReadStart) {
+                while (isReadStart) {
 
-                        if (TextUtils.isEmpty(connectBt.getAddress())) {
-                            break;
-                        }
+                    if (TextUtils.isEmpty(connectBt.getAddress())) {
+                        break;
+                    }
 //                        BLEControl.get().readGattRssi(connectBt.getAddress());
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             });

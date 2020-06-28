@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.ConnectResult;
-import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.bean.state.ConnectError;
+import com.e.tool.ble.bean.state.ConnectResult;
+import com.e.tool.ble.bean.state.DevState;
 import com.e.tool.ble.imp.OnDevConnectListener;
 
 /**
@@ -36,7 +37,7 @@ public class ConnectViewModel extends ViewModel {
         return new OnDevConnectListener() {
 
             @Override
-            public void onConnectError(ConnectResult errorCode) {
+            public void onConnectError(ConnectError errorCode) {
                 if (connectDeviceData != null) {
                     connectDeviceData.setErrorCode(errorCode);
                 }
@@ -60,15 +61,15 @@ public class ConnectViewModel extends ViewModel {
 
 
     public static class ConnectDeviceData extends LiveData<ConnectDeviceData> {
-        private ConnectResult errorCode;
+        private ConnectError errorCode;
         private DevState devState;
         private ConnectResult connectBt;
 
-        public ConnectResult getErrorCode() {
+        public ConnectError getErrorCode() {
             return errorCode;
         }
 
-        public void setErrorCode(ConnectResult errorCode) {
+        public void setErrorCode(ConnectError errorCode) {
             reset();
             this.errorCode = errorCode;
             postValue(this);

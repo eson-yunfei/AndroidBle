@@ -10,8 +10,8 @@ import com.e.tool.ble.BleTool;
 import com.e.tool.ble.bean.message.NotifyState;
 import com.e.tool.ble.bean.message.ReadMessage;
 import com.e.tool.ble.bean.message.SendMessage;
-import com.e.tool.ble.control.gatt.BGattCallBack;
-import com.e.tool.ble.control.gatt.imp.CharacteristicListener;
+import com.e.tool.ble.gatt.BGattCallBack;
+import com.e.tool.ble.gatt.imp.CharacteristicListener;
 import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnRead;
 import com.e.tool.ble.imp.OnWriteDescriptor;
@@ -21,13 +21,13 @@ import java.util.UUID;
 /**
  * Auth : xiao_yun_fei
  * Date : 2020/6/26 19:10
- * Package name : com.e.tool.ble.control.gatt
+ * Package name : com.e.tool.ble.gatt
  * Des :
  */
 class ServiceController extends AController {
 
     private ReaderRunnable readerRunnable;
-    private NotifyState notifyState;
+//    private NotifyState notifyState;
     private CharacteristicListener characteristicListener;
 
     public ServiceController(BleTool bleTool, BGattCallBack bGattCallBack) {
@@ -54,7 +54,6 @@ class ServiceController extends AController {
         ReadRequest readRequest = new ReadRequest(readMessage, bluetoothGatt, onReadMessage);
         if (readerRunnable == null) {
             readerRunnable = new ReaderRunnable();
-            corePool.execute(readerRunnable);
         }
         readerRunnable.addRequest(readRequest);
         characteristicListener.setOnReadListener(readerRunnable.getReadMessageListener());

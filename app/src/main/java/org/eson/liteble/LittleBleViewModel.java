@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.e.tool.ble.BleTool;
 import com.e.tool.ble.annotation.LinkState;
-import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.bean.state.DevState;
 import com.e.tool.ble.bean.message.NotifyMessage;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.TMessage;

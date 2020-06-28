@@ -1,4 +1,4 @@
-package com.e.tool.ble.control.gatt.imp;
+package com.e.tool.ble.gatt.imp;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -11,7 +11,7 @@ import com.e.tool.ble.imp.OnWriteDescriptor;
 /**
  * Auth : xiao_yun_fei
  * Date : 2020/6/26 19:14
- * Package name : com.e.tool.ble.control.gatt.imp
+ * Package name : com.e.tool.ble.gatt.imp
  * Des :
  */
 public interface CharacteristicListener {

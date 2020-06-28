@@ -9,7 +9,7 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.ConnectResult;
+import com.e.tool.ble.bean.state.ConnectResult;
 
 import org.eson.liteble.R;
 import org.eson.liteble.util.LogUtil;

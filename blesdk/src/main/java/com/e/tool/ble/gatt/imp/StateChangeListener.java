@@ -1,4 +1,4 @@
-package com.e.tool.ble.control.gatt.imp;
+package com.e.tool.ble.gatt.imp;
 
 import android.bluetooth.BluetoothGatt;
 
@@ -8,7 +8,7 @@ import com.e.tool.ble.imp.OnStateChanged;
 /**
  * Auth : xiao_yun_fei
  * Date : 2020/6/26 18:56
- * Package name : com.e.tool.ble.control.gatt.imp
+ * Package name : com.e.tool.ble.gatt.imp
  * Des :
  */
 public interface StateChangeListener {

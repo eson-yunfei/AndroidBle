@@ -4,10 +4,11 @@ import android.bluetooth.BluetoothProfile;
 import android.text.TextUtils;
 
 import com.e.ble.util.BLELog;
-import com.e.tool.ble.bean.ConnectResult;
-import com.e.tool.ble.bean.DevState;
-import com.e.tool.ble.control.gatt.imp.StateChangeListener;
-import com.e.tool.ble.control.request.IRunnable;
+import com.e.tool.ble.bean.state.ConnectError;
+import com.e.tool.ble.bean.state.ConnectResult;
+import com.e.tool.ble.bean.state.DevState;
+import com.e.tool.ble.gatt.imp.StateChangeListener;
+import com.e.tool.ble.request.IRunnable;
 import com.e.tool.ble.imp.OnDevConnectListener;
 
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ class Connector extends IRunnable<ConnectRequest> {
 
     Connector(StateChangeListener stateChangeListener) {
 
+
         stateChangeListener.setConnectCallBack(connectListener);
+        addRunnable();
     }
 
 
@@ -78,10 +81,10 @@ class Connector extends IRunnable<ConnectRequest> {
      */
     private OnDevConnectListener connectListener = new OnDevConnectListener() {
         @Override
-        public void onConnectError(ConnectResult connectResult) {
-            final ConnectRequest connectRequest = getConnectBean(connectResult.getAddress());
-            if (connectRequest != null){
-                connectRequest.onConnectError(connectResult);
+        public void onConnectError(ConnectError connectError) {
+            final ConnectRequest connectRequest = getConnectBean(connectError.getAddress());
+            if (connectRequest != null) {
+                connectRequest.onConnectError(connectError);
                 synchronized (cacheList) {
                     cacheList.remove(connectRequest);
                 }
@@ -92,11 +95,11 @@ class Connector extends IRunnable<ConnectRequest> {
         @Override
         public void onConnectSate(DevState devState) {
             final ConnectRequest connectRequest = getConnectBean(devState.getAddress());
-            if (connectRequest != null){
+            if (connectRequest != null) {
                 connectRequest.onConnectSate(devState);
             }
 
-            if (devState.getNewState() == BluetoothProfile.STATE_DISCONNECTED){
+            if (devState.getNewState() == BluetoothProfile.STATE_DISCONNECTED) {
                 synchronized (cacheList) {
                     cacheList.remove(connectRequest);
                 }

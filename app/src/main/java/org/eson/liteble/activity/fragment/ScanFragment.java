@@ -28,10 +28,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.scan.BLEScanner;
-import com.e.ble.util.BLEConstant;
-import com.e.tool.ble.annotation.LinkState;
-import com.e.tool.ble.bean.ConnectResult;
-import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.bean.state.ConnectError;
+import com.e.tool.ble.bean.state.ConnectResult;
+import com.e.tool.ble.bean.state.DevState;
 
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.MainActivity;
@@ -121,9 +120,9 @@ public class ScanFragment extends BaseObserveFragment {
             return;
         }
 
-        ConnectResult errorCode = connectDeviceData.getErrorCode();
-        if (errorCode != null) {
-            LogUtil.e("连接设备异常 ：" + errorCode);
+        ConnectError connectError = connectDeviceData.getErrorCode();
+        if (connectError != null) {
+            LogUtil.e("连接设备异常 ：" + connectError.toString());
             hideProgress();
             ToastUtil.showShort(getActivity(), "设备连接失败");
             return;

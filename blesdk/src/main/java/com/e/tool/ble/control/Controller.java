@@ -8,7 +8,7 @@ import com.e.tool.ble.BleTool;
 import com.e.tool.ble.bean.message.NotifyState;
 import com.e.tool.ble.bean.message.ReadMessage;
 import com.e.tool.ble.bean.message.SendMessage;
-import com.e.tool.ble.control.gatt.BGattCallBack;
+import com.e.tool.ble.gatt.BGattCallBack;
 import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.tool.ble.imp.OnRead;

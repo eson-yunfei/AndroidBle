@@ -1,4 +1,4 @@
-package com.e.tool.ble.control.gatt;
+package com.e.tool.ble.gatt;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -6,9 +6,10 @@ import android.bluetooth.BluetoothProfile;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.e.tool.ble.bean.ConnectResult;
-import com.e.tool.ble.bean.DevState;
-import com.e.tool.ble.control.gatt.imp.StateChangeListener;
+import com.e.tool.ble.bean.state.ConnectError;
+import com.e.tool.ble.bean.state.ConnectResult;
+import com.e.tool.ble.bean.state.DevState;
+import com.e.tool.ble.gatt.imp.StateChangeListener;
 import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.tool.ble.imp.OnStateChanged;
 
@@ -54,7 +55,7 @@ class StateChangedImpl implements StateChangeListener {
         if (onDevConnectListener != null) {
             BluetoothDevice device = gatt.getDevice();
             ConnectResult connectBt = new ConnectResult(device.getAddress()
-                    , device.getName(),status);
+                    , device.getName(), status);
             connectBt.setServicesDiscovered(true);
             handler.post(() -> onDevConnectListener.onServicesDiscovered(connectBt));
 
@@ -76,19 +77,16 @@ class StateChangedImpl implements StateChangeListener {
             if (onDevConnectListener != null) {
                 handler.post(() -> {
                     BluetoothDevice bluetoothDevice = gatt.getDevice();
-                    ConnectResult connectResult;
-                    if (bluetoothDevice != null) {
-                        connectResult  = new ConnectResult(bluetoothDevice.getAddress(),
-                                bluetoothDevice.getName(), status);
-                    }else {
-                        connectResult = new ConnectResult("","",status);
+                    ConnectError connectError;
+                    if (bluetoothDevice == null) {
+                        return;
                     }
-                    connectResult.setNewState(newState);
-                    onDevConnectListener.onConnectError(connectResult);
+                    connectError = new ConnectError(bluetoothDevice.getAddress());
+                    connectError.setName(bluetoothDevice.getName());
+                    connectError.setStatus(status);
+                    onDevConnectListener.onConnectError(connectError);
                 });
             }
-
-
             return;
         }
         if (newState == BluetoothProfile.STATE_CONNECTED) {
@@ -104,7 +102,7 @@ class StateChangedImpl implements StateChangeListener {
             handler.post(() -> onStateChangeListener.onSateChanged(devState));
         }
 
-        if (onDevConnectListener != null){
+        if (onDevConnectListener != null) {
             onDevConnectListener.onConnectSate(devState);
         }
 

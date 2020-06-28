@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
 import com.e.tool.ble.bean.message.ReadMessage;
-import com.e.tool.ble.control.request.Request;
+import com.e.tool.ble.request.Request;
 import com.e.tool.ble.imp.OnRead;
 
 import java.util.UUID;

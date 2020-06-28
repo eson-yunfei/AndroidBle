@@ -1,7 +1,8 @@
 package com.e.tool.ble.imp;
 
-import com.e.tool.ble.bean.ConnectResult;
-import com.e.tool.ble.bean.DevState;
+import com.e.tool.ble.bean.state.ConnectError;
+import com.e.tool.ble.bean.state.ConnectResult;
+import com.e.tool.ble.bean.state.DevState;
 
 /**
  * Auth : xiao.yunfei
@@ -10,7 +11,7 @@ import com.e.tool.ble.bean.DevState;
  * Des :
  */
 public interface OnDevConnectListener {
-    void onConnectError(ConnectResult connectResult);
+    void onConnectError(ConnectError connectError);
 
     void onConnectSate(DevState devState);
 

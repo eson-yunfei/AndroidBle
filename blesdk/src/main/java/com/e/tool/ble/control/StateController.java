@@ -5,8 +5,8 @@ import android.os.DeadObjectException;
 
 import com.e.ble.util.BLELog;
 import com.e.tool.ble.BleTool;
-import com.e.tool.ble.control.gatt.BGattCallBack;
-import com.e.tool.ble.control.gatt.imp.StateChangeListener;
+import com.e.tool.ble.gatt.BGattCallBack;
+import com.e.tool.ble.gatt.imp.StateChangeListener;
 import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.tool.ble.imp.OnStateChanged;
 
@@ -45,7 +45,7 @@ public class StateController extends AController {
 
         if (connector == null) {
             connector = new Connector(stateChangeListener);
-            corePool.execute(connector);
+
         }
         connector.addConnectBean(connectRequest);
 

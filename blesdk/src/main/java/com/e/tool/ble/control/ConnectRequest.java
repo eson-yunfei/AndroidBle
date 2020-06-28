@@ -6,10 +6,11 @@ import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 
 import com.e.ble.util.BLELog;
-import com.e.tool.ble.bean.ConnectResult;
-import com.e.tool.ble.bean.DevState;
-import com.e.tool.ble.control.gatt.BGattCallBack;
-import com.e.tool.ble.control.request.Request;
+import com.e.tool.ble.bean.state.ConnectError;
+import com.e.tool.ble.bean.state.ConnectResult;
+import com.e.tool.ble.bean.state.DevState;
+import com.e.tool.ble.gatt.BGattCallBack;
+import com.e.tool.ble.request.Request;
 import com.e.tool.ble.imp.OnDevConnectListener;
 
 /**
@@ -85,7 +86,7 @@ class ConnectRequest extends Request {
         return false;
     }
 
-    public void onConnectError(ConnectResult connectResult) {
+    public void onConnectError(ConnectError connectResult) {
         isWaiting = false;
 
         if (connListener == null) {

@@ -2,18 +2,10 @@ package com.e.tool.ble.control;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.text.TextUtils;
 
 import com.e.ble.util.BLELog;
-import com.e.tool.ble.bean.message.NotifyState;
-import com.e.tool.ble.control.gatt.BGattCallBack;
-import com.e.tool.ble.imp.OnDataNotify;
-import com.e.tool.ble.imp.OnRead;
-import com.e.tool.ble.imp.OnStateChanged;
-import com.e.tool.ble.imp.OnWriteDescriptor;
+import com.e.tool.ble.gatt.BGattCallBack;
 
 import java.util.ArrayList;
 import java.util.List;
