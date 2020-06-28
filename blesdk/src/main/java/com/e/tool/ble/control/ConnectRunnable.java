@@ -21,11 +21,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Package name : com.e.ble.core
  * Des : 连接器
  */
-class Connector extends IRunnable<ConnectRequest> {
+class ConnectRunnable extends IRunnable<ConnectRequest> {
     private LinkedBlockingQueue<ConnectRequest> connectRequests = new LinkedBlockingQueue<>();
     private final List<ConnectRequest> cacheList = new ArrayList<>();
 
-    Connector(StateChangeListener stateChangeListener) {
+    ConnectRunnable(StateChangeListener stateChangeListener) {
 
 
         stateChangeListener.setConnectCallBack(connectListener);

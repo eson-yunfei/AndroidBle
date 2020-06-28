@@ -30,11 +30,11 @@ public class Controller {
 
     public Controller(BleTool bleTool) {
         this.bleTool = bleTool;
-        bGattCallBack = new GattCallBack();
+        bGattCallBack = BGattCallBack.createCallBack();
     }
 
     public BluetoothGatt getGatt(String address) {
-        return ((GattCallBack)bGattCallBack).getBluetoothGatt(address);
+        return bGattCallBack.getBluetoothGatt(address);
     }
 
 

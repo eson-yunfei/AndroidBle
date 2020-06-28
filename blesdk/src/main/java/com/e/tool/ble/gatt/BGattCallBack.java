@@ -16,8 +16,15 @@ import com.e.tool.ble.gatt.imp.StateChangeListener;
  */
 public class BGattCallBack extends BluetoothGattCallback {
 
+    public BGattCallBack() {
+    }
+
     protected CharacteristicImpl characteristicListener;
     protected StateChangedImpl stateChangeListener;
+
+    public static BGattCallBack createCallBack() {
+        return new GattCallBack();
+    }
 
     public void setCharacteristicImpl() {
         this.characteristicListener = new CharacteristicImpl();
@@ -33,6 +40,10 @@ public class BGattCallBack extends BluetoothGattCallback {
 
     public StateChangeListener getStateChangeListener() {
         return stateChangeListener;
+    }
+
+    public BluetoothGatt getBluetoothGatt(String address) {
+        return null;
     }
 
     @Override

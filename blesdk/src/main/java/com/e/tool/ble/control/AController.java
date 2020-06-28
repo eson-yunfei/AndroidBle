@@ -56,7 +56,7 @@ abstract class AController {
      * @return BluetoothGatt
      */
     public BluetoothGatt getGatt(String address) {
-        return ((GattCallBack)bGattCallBack).getBluetoothGatt(address);
+        return (bGattCallBack).getBluetoothGatt(address);
     }
 
 }

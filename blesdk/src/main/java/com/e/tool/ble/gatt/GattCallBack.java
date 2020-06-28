@@ -1,4 +1,4 @@
-package com.e.tool.ble.control;
+package com.e.tool.ble.gatt;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -16,7 +16,7 @@ import java.util.List;
  * Package name : com.e.ble.core
  * Des :
  */
-final class GattCallBack extends BGattCallBack {
+public final class GattCallBack extends BGattCallBack {
 
     private List<BluetoothGatt> bluetoothGattList;
 
@@ -25,6 +25,7 @@ final class GattCallBack extends BGattCallBack {
         bluetoothGattList = new ArrayList<>();
     }
 
+    @Override
     public BluetoothGatt getBluetoothGatt(String address) {
         for (BluetoothGatt bluetoothGatt : bluetoothGattList) {
             BluetoothDevice saveDev = bluetoothGatt.getDevice();

@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  */
 public class StateController extends AController {
 
-    private Connector connector;
+    private ConnectRunnable connectRunnable;
     private StateChangeListener stateChangeListener;
 
     public StateController(BleTool bleTool, BGattCallBack gattCallback) {
@@ -43,18 +43,18 @@ public class StateController extends AController {
                 bleTool.getBluetoothAdapter(),
                 bGattCallBack, bleConnListener);
 
-        if (connector == null) {
-            connector = new Connector(stateChangeListener);
+        if (connectRunnable == null) {
+            connectRunnable = new ConnectRunnable(stateChangeListener);
 
         }
-        connector.addConnectBean(connectRequest);
+        connectRunnable.addConnectBean(connectRequest);
 
     }
 
     public void disConnect(String address) {
         BLELog.e("Controller : disConnect :" + address);
 
-        BluetoothGatt bluetoothGatt = ((GattCallBack) bGattCallBack).getBluetoothGatt(address);
+        BluetoothGatt bluetoothGatt = (bGattCallBack).getBluetoothGatt(address);
         if (bluetoothGatt == null) {
             return;
         }
