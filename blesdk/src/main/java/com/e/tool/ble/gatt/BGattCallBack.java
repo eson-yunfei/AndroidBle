@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 
 import com.e.tool.ble.gatt.imp.CharacteristicListener;
+import com.e.tool.ble.gatt.imp.ReadRssiListener;
 import com.e.tool.ble.gatt.imp.StateChangeListener;
 
 /**
@@ -21,6 +22,7 @@ public class BGattCallBack extends BluetoothGattCallback {
 
     protected CharacteristicImpl characteristicListener;
     protected StateChangedImpl stateChangeListener;
+    protected ReadRssiListener readRssiListener;
 
     public static BGattCallBack createCallBack() {
         return new GattCallBack();
@@ -34,6 +36,10 @@ public class BGattCallBack extends BluetoothGattCallback {
         stateChangeListener = new StateChangedImpl();
     }
 
+    public void setReadRssiImpl() {
+        readRssiListener = new ReadRssiImpl();
+    }
+
     public CharacteristicListener getCharacteristicListener() {
         return characteristicListener;
     }
@@ -41,6 +47,12 @@ public class BGattCallBack extends BluetoothGattCallback {
     public StateChangeListener getStateChangeListener() {
         return stateChangeListener;
     }
+
+    public ReadRssiListener getReadRssiListener() {
+        return readRssiListener;
+    }
+
+    ;
 
     public BluetoothGatt getBluetoothGatt(String address) {
         return null;
@@ -56,27 +68,37 @@ public class BGattCallBack extends BluetoothGattCallback {
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        stateChangeListener.onConnectionStateChange(gatt, status, newState);
+        if (stateChangeListener != null) {
+            stateChangeListener.onConnectionStateChange(gatt, status, newState);
+        }
     }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-        stateChangeListener.onServicesDiscovered(gatt, status);
+        if (stateChangeListener != null) {
+            stateChangeListener.onServicesDiscovered(gatt, status);
+        }
     }
 
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-        characteristicListener.onCharacteristicRead(gatt, characteristic, status);
+        if (characteristicListener != null) {
+            characteristicListener.onCharacteristicRead(gatt, characteristic, status);
+        }
     }
 
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-        characteristicListener.onCharacteristicWrite(gatt, characteristic, status);
+        if (characteristicListener != null) {
+            characteristicListener.onCharacteristicWrite(gatt, characteristic, status);
+        }
     }
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-        characteristicListener.onCharacteristicChanged(gatt, characteristic);
+        if (characteristicListener != null) {
+            characteristicListener.onCharacteristicChanged(gatt, characteristic);
+        }
     }
 
     @Override
@@ -85,6 +107,9 @@ public class BGattCallBack extends BluetoothGattCallback {
 
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+        if (characteristicListener != null) {
+            characteristicListener.onDescriptorWrite(gatt, descriptor, status);
+        }
     }
 
     @Override
@@ -93,6 +118,9 @@ public class BGattCallBack extends BluetoothGattCallback {
 
     @Override
     public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        if (readRssiListener != null) {
+            readRssiListener.onReadRemoteRssi(gatt, rssi, status);
+        }
     }
 
     @Override

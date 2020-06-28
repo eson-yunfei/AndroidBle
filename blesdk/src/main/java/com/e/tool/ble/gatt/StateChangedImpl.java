@@ -19,17 +19,14 @@ import com.e.tool.ble.imp.OnStateChanged;
  * Package name : com.e.ble.core.impl
  * Des : 设备 状态处理
  */
-class StateChangedImpl implements StateChangeListener {
+class StateChangedImpl extends BaseImpl implements StateChangeListener {
 
-    private Handler handler;
     private OnStateChanged onStateChangeListener;
     private OnDevConnectListener onDevConnectListener;
 
 
     public StateChangedImpl() {
-        if (handler == null) {
-            handler = new Handler(Looper.getMainLooper());
-        }
+        super();
     }
 
     public void setOnStateChangeListener(OnStateChanged listener) {
@@ -57,7 +54,7 @@ class StateChangedImpl implements StateChangeListener {
             ConnectResult connectBt = new ConnectResult(device.getAddress()
                     , device.getName(), status);
             connectBt.setServicesDiscovered(true);
-            handler.post(() -> onDevConnectListener.onServicesDiscovered(connectBt));
+            post(() -> onDevConnectListener.onServicesDiscovered(connectBt));
 
         }
 //
@@ -75,17 +72,7 @@ class StateChangedImpl implements StateChangeListener {
             gatt.disconnect();
 
             if (onDevConnectListener != null) {
-                handler.post(() -> {
-                    BluetoothDevice bluetoothDevice = gatt.getDevice();
-                    ConnectError connectError;
-                    if (bluetoothDevice == null) {
-                        return;
-                    }
-                    connectError = new ConnectError(bluetoothDevice.getAddress());
-                    connectError.setName(bluetoothDevice.getName());
-                    connectError.setStatus(status);
-                    onDevConnectListener.onConnectError(connectError);
-                });
+                post(() -> postConnectError(gatt, status));
             }
             return;
         }
@@ -99,14 +86,28 @@ class StateChangedImpl implements StateChangeListener {
         devState.setNewState(newState);
         if (onStateChangeListener != null) {
             //回复状态更改
-            handler.post(() -> onStateChangeListener.onSateChanged(devState));
+            post(() -> onStateChangeListener.onSateChanged(devState));
         }
 
         if (onDevConnectListener != null) {
             onDevConnectListener.onConnectSate(devState);
         }
+    }
 
-
+    /**
+     * @param gatt   gatt
+     * @param status status
+     */
+    private void postConnectError(BluetoothGatt gatt, int status) {
+        BluetoothDevice bluetoothDevice = gatt.getDevice();
+        ConnectError connectError;
+        if (bluetoothDevice == null) {
+            return;
+        }
+        connectError = new ConnectError(bluetoothDevice.getAddress());
+        connectError.setName(bluetoothDevice.getName());
+        connectError.setStatus(status);
+        onDevConnectListener.onConnectError(connectError);
     }
 
 

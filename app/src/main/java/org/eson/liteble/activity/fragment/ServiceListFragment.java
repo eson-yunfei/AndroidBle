@@ -22,6 +22,7 @@ import org.eson.liteble.activity.bean.ServiceBean;
 import org.eson.liteble.activity.vms.ConnectViewModel;
 import org.eson.liteble.activity.vms.ServiceListViewModel;
 import org.eson.liteble.databinding.ActivityDetailBinding;
+import org.eson.liteble.task.ReadRssiTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,6 +77,11 @@ public class ServiceListFragment extends BaseObserveFragment {
         getMessage();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopReadTimer();
+    }
 
     @Override
     protected void initListener() {
@@ -86,16 +92,16 @@ public class ServiceListFragment extends BaseObserveFragment {
                 isConnect = false;
             } else {
                 connectViewModel.connectDevice(connectBt.getAddress())
-                .observe(this, connectDeviceData -> {
+                        .observe(this, connectDeviceData -> {
 
-                    if (connectDeviceData == null){
-                        return;
-                    }
-                   ConnectResult connectResult =  connectDeviceData.getConnectBt();
-                    if (connectResult != null){
-                        getMessage();
-                    }
-                });
+                            if (connectDeviceData == null) {
+                                return;
+                            }
+                            ConnectResult connectResult = connectDeviceData.getConnectBt();
+                            if (connectResult != null) {
+                                getMessage();
+                            }
+                        });
             }
         });
 
@@ -109,7 +115,7 @@ public class ServiceListFragment extends BaseObserveFragment {
 
             } else {
                 isReadStart = true;
-                createFile();
+
                 detailBinding.readRssiBtn.setText("停止读取信号值");
                 startReadTimer();
             }
@@ -171,56 +177,21 @@ public class ServiceListFragment extends BaseObserveFragment {
 
     }
 
-
-    private Thread mThread;
-
+    private ReadRssiTask readRssiTask;
     private void startReadTimer() {
-        if (mThread == null) {
-            mThread = new Thread(() -> {
-
-                while (isReadStart) {
-
-                    if (TextUtils.isEmpty(connectBt.getAddress())) {
-                        break;
-                    }
-//                        BLEControl.get().readGattRssi(connectBt.getAddress());
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            mThread.start();
+        if (readRssiTask != null) {
+            return;
         }
+        readRssiTask = new ReadRssiTask(connectBt.getAddress());
+        readRssiTask.start();
     }
 
     private void stopReadTimer() {
-        try {
-            mThread.interrupt();
-            mThread = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void createFile() {
-        String sd = Environment.getExternalStorageDirectory().getPath() + "/LiteBle/rssi";
-        String fileName = sd + "/rssi.csv";
-        File file = new File(sd);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        file = new File(fileName);
-        if (file.exists()) {
-            file.delete();
-        }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (readRssiTask != null) {
+            readRssiTask.stopRead();
+            readRssiTask = null;
         }
     }
+
 
 }

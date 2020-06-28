@@ -25,19 +25,16 @@ import java.util.Arrays;
  * Package name : com.e.ble.core
  * Des :
  */
-class CharacteristicImpl implements CharacteristicListener {
+class CharacteristicImpl extends BaseImpl implements CharacteristicListener {
     private OnRead onRead;
     private NotifyState notifyState;
     private OnWriteDescriptor onWriteDescriptor;
 
     private OnDataNotify onDataNotify;
-    private Handler handler;
 
 
     CharacteristicImpl() {
-        if (handler == null) {
-            handler = new Handler(Looper.getMainLooper());
-        }
+       super();
     }
 
 
@@ -74,7 +71,7 @@ class CharacteristicImpl implements CharacteristicListener {
         readMessage.setCharacteristicUUID(characteristic.getUuid());
         readMessage.setAddress(gatt.getDevice().getAddress());
         readMessage.setBytes(characteristic.getValue());
-        handler.post(() -> onRead.onReadMessage(readMessage));
+        post(() -> onRead.onReadMessage(readMessage));
 
     }
 
@@ -118,7 +115,7 @@ class CharacteristicImpl implements CharacteristicListener {
             result.setResult(ret);
         }
 
-        handler.post(() -> {
+        post(() -> {
             if (onWriteDescriptor != null) {
                 onWriteDescriptor.onWriteDescriptor(result);
             }

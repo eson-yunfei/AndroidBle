@@ -12,6 +12,7 @@ import com.e.tool.ble.gatt.BGattCallBack;
 import com.e.tool.ble.imp.OnDataNotify;
 import com.e.tool.ble.imp.OnDevConnectListener;
 import com.e.tool.ble.imp.OnRead;
+import com.e.tool.ble.imp.OnReadRssiCallBack;
 import com.e.tool.ble.imp.OnStateChanged;
 import com.e.tool.ble.imp.OnWriteDescriptor;
 
@@ -27,6 +28,7 @@ public class Controller {
 
     private StateController stateController;
     private ServiceController serviceController;
+    private ReadRssiController readRssiController;
 
     public Controller(BleTool bleTool) {
         this.bleTool = bleTool;
@@ -39,7 +41,6 @@ public class Controller {
 
 
     /**
-     *
      * @param address
      * @param onDevConnectListener
      */
@@ -65,31 +66,39 @@ public class Controller {
     }
 
     public void read(ReadMessage readMessage, OnRead onRead) {
-        if (serviceController == null){
-            serviceController = new ServiceController(bleTool,bGattCallBack);
+        if (serviceController == null) {
+            serviceController = new ServiceController(bleTool, bGattCallBack);
         }
-        serviceController.readInfo(readMessage,onRead);
+        serviceController.readInfo(readMessage, onRead);
     }
 
     public void write(SendMessage sendMessage) {
-        if (serviceController == null){
-            serviceController = new ServiceController(bleTool,bGattCallBack);
+        if (serviceController == null) {
+            serviceController = new ServiceController(bleTool, bGattCallBack);
         }
         serviceController.sendMessage(sendMessage);
     }
+
     public void updateNotify(NotifyState notifyState, OnWriteDescriptor writeDescriptor) {
-        if (serviceController == null){
-            serviceController = new ServiceController(bleTool,bGattCallBack);
+        if (serviceController == null) {
+            serviceController = new ServiceController(bleTool, bGattCallBack);
         }
-        serviceController.updateNotify(notifyState,writeDescriptor);
+        serviceController.updateNotify(notifyState, writeDescriptor);
 
     }
 
     public void listenDataNotify(@NonNull OnDataNotify onDataNotify) {
-        if (serviceController == null){
-            serviceController = new ServiceController(bleTool,bGattCallBack);
+        if (serviceController == null) {
+            serviceController = new ServiceController(bleTool, bGattCallBack);
         }
         serviceController.listenDataNotify(onDataNotify);
     }
 
+
+    public void readRssi(String address, OnReadRssiCallBack onReadRssiCallBack) {
+        if (readRssiController == null) {
+            readRssiController = new ReadRssiController(bleTool, bGattCallBack);
+        }
+        readRssiController.readRssi(address, onReadRssiCallBack);
+    }
 }

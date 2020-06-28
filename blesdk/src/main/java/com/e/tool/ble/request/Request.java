@@ -11,4 +11,6 @@ public abstract class Request {
     public boolean isWaiting = true;
 
     public abstract boolean launch();
+
+
 }

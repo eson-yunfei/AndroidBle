@@ -1,9 +1,10 @@
 package org.eson.liteble.task;
 
-import android.bluetooth.BluetoothGatt;
 import android.text.TextUtils;
 
 import com.e.tool.ble.BleTool;
+
+import org.eson.liteble.util.LogUtil;
 
 /**
  * Auth : xiao.yunfei
@@ -15,9 +16,11 @@ public class ReadRssiTask extends Thread {
 
     private String address;
     private boolean interrupted = false;
+    private FileWrite fileWrite;
 
     public ReadRssiTask(String address) {
         this.address = address;
+        fileWrite = new FileWrite(address);
     }
 
     @Override
@@ -29,29 +32,37 @@ public class ReadRssiTask extends Thread {
             if (TextUtils.isEmpty(address)) {
                 break;
             }
-            BluetoothGatt gatt = BleTool.getInstance().getController().getGatt("");
-            if (gatt == null) {
+
+            BleTool.getInstance().getController()
+                    .readRssi(address, (address, name, rssi) -> {
+                        LogUtil.e("address : " + address + " ; name :" + name + " ; rssi : " + rssi);
+                        if (fileWrite == null) {
+                            return;
+                        }
+                        fileWrite.saveRssi(address,name, rssi);
+                    });
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
                 break;
             }
-            boolean readResult = gatt.readRemoteRssi();
-            if (readResult) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (interrupted) {
-                    break;
-                }
-            } else {
+            if (interrupted) {
                 break;
             }
+
         }
     }
 
-    @Override
-    public void interrupt() {
-        super.interrupt();
+    public void stopRead() {
         interrupted = true;
+        if (fileWrite != null){
+            fileWrite.stopSave();
+            fileWrite = null;
+        }
+
     }
+
+
 }
