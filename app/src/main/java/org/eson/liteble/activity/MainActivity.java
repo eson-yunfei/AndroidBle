@@ -1,5 +1,6 @@
 package org.eson.liteble.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.view.Menu;
@@ -19,6 +20,8 @@ import org.eson.liteble.activity.fragment.ScanFragment;
 import org.eson.liteble.databinding.ActivityMainBinding;
 import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.ToastUtil;
+import org.eson.permissions.OnRequestPermissionCallback;
+import org.eson.permissions.PermissionRequest;
 
 /**
  * 主界面，蓝牙状态检测，蓝牙搜索界面
@@ -67,7 +70,23 @@ public class MainActivity extends ViewBindActivity {
 
         mainBinding.tabLayout.addOnTabSelectedListener(onTabSelectedListener);
 
-//        checkBLEState();
+        checkBLEState();
+    }
+
+    private void checkBLEState() {
+        PermissionRequest request = new PermissionRequest(this);
+        request.requestPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.BLUETOOTH_ADMIN);
+        request.setOnRequestCallBack(new OnRequestPermissionCallback(){
+
+            @Override
+            public void onRequest(boolean granted) {
+
+            }
+        });
+
     }
 
 

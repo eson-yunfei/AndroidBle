@@ -29,8 +29,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     api project(path: ':Dispatcher')
     testImplementation 'junit:junit:4.13'
-    //第三方库：
-    //谷歌的权限管理库
-    implementation 'pub.devrel:easypermissions:0.3.0'
     implementation project(':ble_common')
 }
