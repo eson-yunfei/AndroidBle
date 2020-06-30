@@ -1,4 +1,4 @@
-//package com.e.ble.annotation;
+//package com.e.back.annotation;
 //
 //import androidx.annotation.IntDef;
 //
@@ -10,7 +10,7 @@
 ///**
 // * Auth : xiao.yunfei
 // * Date : 2020/6/20 16:49
-// * Package name : com.e.ble.annotation
+// * Package name : com.e.back.annotation
 // * Des :
 // */
 //@Retention(RetentionPolicy.RUNTIME)
