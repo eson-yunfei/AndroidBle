@@ -19,7 +19,6 @@ package org.eson.liteble.activity.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.Observer;
@@ -45,24 +44,23 @@ import java.util.List;
  * @description
  */
 
-public class BondedFragment extends BaseObserveFragment {
+public class BondedFragment extends BaseObserveFragment<FragmentBondedDeviceBinding> {
 
     private ProgressDialog m_pDialog;
     private List<BondedDeviceBean> mDeviceBeanList;
 
     private BondedDeviceBean selectDevice = null;
 
-    private FragmentBondedDeviceBinding bondedDeviceBinding;
+
 
     @Override
-    protected View getView(LayoutInflater inflater, ViewGroup container) {
-        bondedDeviceBinding = FragmentBondedDeviceBinding.inflate(inflater, container, false);
-        return bondedDeviceBinding.getRoot();
+    protected FragmentBondedDeviceBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
+        return FragmentBondedDeviceBinding.inflate(inflater,container,false);
     }
 
     @Override
     protected void initListener() {
-        bondedDeviceBinding.bondedDeviceList.setOnItemClickListener((parent, view, position, id) -> {
+        viewBinding.bondedDeviceList.setOnItemClickListener((parent, view, position, id) -> {
 
             selectDevice = mDeviceBeanList.get(position);
             showProgress("正在连接设备：" + selectDevice.getName());
@@ -90,7 +88,7 @@ public class BondedFragment extends BaseObserveFragment {
                     public void onChanged(List<BondedDeviceBean> bondedDeviceBeans) {
                         mDeviceBeanList = bondedDeviceBeans;
                         BondedDevAdapter mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
-                        bondedDeviceBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
+                        viewBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
                     }
                 });
 

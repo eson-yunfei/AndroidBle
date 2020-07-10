@@ -3,13 +3,12 @@ package org.eson.liteble.activity.fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.e.tool.ble.bean.message.SendMessage;
 import com.e.ble.util.BLEByteUtil;
+import com.e.tool.ble.bean.message.SendMessage;
 import com.shon.dispatcher.Dispatcher;
 import com.shon.dispatcher.TMessage;
 import com.shon.dispatcher.call.SenderCall;
@@ -28,22 +27,20 @@ import java.util.UUID;
  * Package name : org.eson.liteble.activity.fragment
  * Des :
  */
-public class SendDataFragment extends BaseObserveFragment {
-    private ActivitySendDataBinding sendDataBinding;
+public class SendDataFragment extends BaseObserveFragment<ActivitySendDataBinding> {
 
     private String serviceUUID;
     private String characterUUID;
     private String connectMac;
 
     @Override
-    protected View getView(LayoutInflater inflater, ViewGroup container) {
-        sendDataBinding = ActivitySendDataBinding.inflate(inflater, container, false);
-        return sendDataBinding.getRoot();
+    protected ActivitySendDataBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
+        return ActivitySendDataBinding.inflate(inflater, container, false);
     }
 
     @Override
     protected void initListener() {
-        sendDataBinding.sendBtn.setOnClickListener(v -> sendData());
+        viewBinding.sendBtn.setOnClickListener(v -> sendData());
     }
 
     @Override
@@ -65,7 +62,7 @@ public class SendDataFragment extends BaseObserveFragment {
 
 
     private void sendData() {
-        String data = sendDataBinding.editText.getText().toString();
+        String data = viewBinding.editText.getText().toString();
         if (TextUtils.isEmpty(data)) {
             return;
         }

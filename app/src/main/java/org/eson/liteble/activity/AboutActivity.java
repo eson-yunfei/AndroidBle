@@ -17,12 +17,11 @@
 package org.eson.liteble.activity;
 
 import android.content.pm.PackageManager;
-import android.view.View;
 
 import com.e.ble.BuildConfig;
 
 import org.eson.liteble.R;
-import org.eson.liteble.activity.base.ViewBindActivity;
+import org.eson.liteble.activity.base.IBaseActivity;
 import org.eson.liteble.databinding.ActivityAboutBinding;
 
 /**
@@ -33,16 +32,13 @@ import org.eson.liteble.databinding.ActivityAboutBinding;
  * @description
  */
 
-public class AboutActivity extends ViewBindActivity {
-
-
-    private ActivityAboutBinding aboutBinding;
+public class AboutActivity extends IBaseActivity<ActivityAboutBinding> {
 
     @Override
-    protected View getBindViewRoot() {
-        aboutBinding = ActivityAboutBinding.inflate(getLayoutInflater());
-        return aboutBinding.getRoot();
+    protected ActivityAboutBinding getViewBing() {
+        return ActivityAboutBinding.inflate(getLayoutInflater());
     }
+
 
     @Override
     protected void onProcess() {
@@ -51,8 +47,8 @@ public class AboutActivity extends ViewBindActivity {
         String sdkVersion = formatVersion(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
 
 
-        aboutBinding.appVerTV.setText(getString(R.string.app_version, appVersion));
-        aboutBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
+        viewBinding.appVerTV.setText(getString(R.string.app_version, appVersion));
+        viewBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
     }
 
 
@@ -93,4 +89,6 @@ public class AboutActivity extends ViewBindActivity {
             return 0;
         }
     }
+
+
 }

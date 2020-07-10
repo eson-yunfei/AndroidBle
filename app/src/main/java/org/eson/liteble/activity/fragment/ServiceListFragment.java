@@ -3,14 +3,12 @@ package org.eson.liteble.activity.fragment;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothProfile;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.navigation.NavArgument;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewbinding.ViewBinding;
 
 import com.e.tool.ble.BleTool;
 import com.e.tool.ble.bean.state.ConnectResult;
@@ -24,8 +22,6 @@ import org.eson.liteble.activity.vms.ServiceListViewModel;
 import org.eson.liteble.databinding.ActivityDetailBinding;
 import org.eson.liteble.task.ReadRssiTask;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +32,7 @@ import java.util.Map;
  * Package name : org.eson.liteble.activity.fragment
  * Des : 支持服务列表界面
  */
-public class ServiceListFragment extends BaseObserveFragment {
-
-    private ActivityDetailBinding detailBinding;
+public class ServiceListFragment extends BaseObserveFragment<ActivityDetailBinding> {
 
     private boolean isConnect = true;
 
@@ -50,9 +44,8 @@ public class ServiceListFragment extends BaseObserveFragment {
     private ConnectResult connectBt;
 
     @Override
-    protected View getView(LayoutInflater inflater, ViewGroup container) {
-        detailBinding = ActivityDetailBinding.inflate(inflater, container, false);
-        return detailBinding.getRoot();
+    protected ActivityDetailBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
+        return ActivityDetailBinding.inflate(inflater, container, false);
     }
 
 
@@ -73,7 +66,7 @@ public class ServiceListFragment extends BaseObserveFragment {
     public void onResume() {
         super.onResume();
         String devName = connectBt.getName();
-        detailBinding.name.setText(devName);
+        viewBinding.name.setText(devName);
         getMessage();
     }
 
@@ -83,10 +76,11 @@ public class ServiceListFragment extends BaseObserveFragment {
         stopReadTimer();
     }
 
+
     @Override
     protected void initListener() {
 
-        detailBinding.disconnect.setOnClickListener(v -> {
+        viewBinding.disconnect.setOnClickListener(v -> {
             if (isConnect) {
                 connectViewModel.disConnect(connectBt.getAddress());
                 isConnect = false;
@@ -105,18 +99,18 @@ public class ServiceListFragment extends BaseObserveFragment {
             }
         });
 
-        detailBinding.readRssiBtn.setOnClickListener(v -> {
+        viewBinding.readRssiBtn.setOnClickListener(v -> {
 
             if (isReadStart) {
 
                 isReadStart = false;
-                detailBinding.readRssiBtn.setText("开始读取信号值");
+                viewBinding.readRssiBtn.setText("开始读取信号值");
                 stopReadTimer();
 
             } else {
                 isReadStart = true;
 
-                detailBinding.readRssiBtn.setText("停止读取信号值");
+                viewBinding.readRssiBtn.setText("停止读取信号值");
                 startReadTimer();
             }
         });
@@ -128,13 +122,13 @@ public class ServiceListFragment extends BaseObserveFragment {
 
         if (currentState == BluetoothProfile.STATE_DISCONNECTED) {
             isConnect = false;
-            detailBinding.disconnect.setText("重新连接设备");
+            viewBinding.disconnect.setText("重新连接设备");
             mDeviceDetailAdapter.setDataList(new ArrayList<>());
             mDeviceDetailAdapter.notifyDataSetChanged();
         }
         if (currentState == BluetoothProfile.STATE_CONNECTED) {
             isConnect = true;
-            detailBinding.disconnect.setText("断开连接");
+            viewBinding.disconnect.setText("断开连接");
             getMessage();
         }
 
@@ -173,7 +167,7 @@ public class ServiceListFragment extends BaseObserveFragment {
             bundle.putString("address", connectBt.getAddress());
             navigateNext(R.id.action_serviceListFragment_to_serviceInfoFragment, bundle);
         });
-        detailBinding.detailList.setAdapter(mDeviceDetailAdapter);
+        viewBinding.detailList.setAdapter(mDeviceDetailAdapter);
 
     }
 

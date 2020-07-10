@@ -1,15 +1,24 @@
 package org.eson.liteble.activity;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 
 import com.e.ble.BLESdk;
 
-import org.eson.liteble.activity.base.ViewBindActivity;
+import org.eson.liteble.activity.base.IBaseActivity;
 import org.eson.liteble.databinding.ActivitySettingBinding;
 import org.eson.liteble.share.ConfigShare;
 import org.eson.liteble.util.ToastUtil;
+
+import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -23,16 +32,34 @@ import static java.lang.Integer.parseInt;
  * @chang 2020-06-19
  * @class describe
  */
-public class SettingActivity extends ViewBindActivity {
+public class SettingActivity extends IBaseActivity<ActivitySettingBinding> {
 
     private ConfigShare configShare;
-    private ActivitySettingBinding settingBinding;
 
     @Override
-    protected View getBindViewRoot() {
-        settingBinding = ActivitySettingBinding.inflate(getLayoutInflater());
+    protected ActivitySettingBinding getViewBing() {
+        return ActivitySettingBinding.inflate(getLayoutInflater());
+    }
 
-        return settingBinding.getRoot();
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar == null) {
+            return;
+        }
+        supportActionBar.setHomeButtonEnabled(true);
+        supportActionBar.setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -44,47 +71,47 @@ public class SettingActivity extends ViewBindActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        settingBinding.timeOutEdit.setText("" + configShare.getConnectTime());
+        viewBinding.timeOutEdit.setText("" + configShare.getConnectTime());
 
         boolean permit = configShare.isPermitConnectMore();
         int visibility = permit ? View.VISIBLE : View.GONE;
 
-        settingBinding.maxSizeLayout.setVisibility(visibility);
-        settingBinding.switchBtn.setChecked(permit);
+        viewBinding.maxSizeLayout.setVisibility(visibility);
+        viewBinding.switchBtn.setChecked(permit);
 
-        settingBinding.maxNumber.setText("" + configShare.getMaxConnect());
-        settingBinding.switchBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        viewBinding.maxNumber.setText("" + configShare.getMaxConnect());
+        viewBinding.switchBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
             configShare.setPermitConnectMore(isChecked);
             int visibility1 = isChecked ? View.VISIBLE : View.GONE;
-            settingBinding.maxSizeLayout.setVisibility(visibility1);
+            viewBinding.maxSizeLayout.setVisibility(visibility1);
         });
 
-        settingBinding.filterNoName.setChecked(configShare.getFilterNoName());
+        viewBinding.filterNoName.setChecked(configShare.getFilterNoName());
 
 
-        settingBinding.filterNoName.setOnCheckedChangeListener((buttonView, isChecked) -> configShare.setFilterNoName(isChecked));
+        viewBinding.filterNoName.setOnCheckedChangeListener((buttonView, isChecked) -> configShare.setFilterNoName(isChecked));
 
-        settingBinding.saveBtn.setOnClickListener(v -> saveSettingInfo());
+        viewBinding.saveBtn.setOnClickListener(v -> saveSettingInfo());
 
     }
 
     private void saveSettingInfo() {
-        String text = settingBinding.timeOutEdit.getText().toString();
+        String text = viewBinding.timeOutEdit.getText().toString();
 
         if (TextUtils.isEmpty(text)) {
             ToastUtil.showShort(this, "超时时间不能为空");
             return;
         }
 
-        int value = parseInt(text) ;
+        int value = parseInt(text);
         if (value < -1) {
             value = -1;
         }
 
         configShare.setConnectTime(value);
 
-        String maxConnect = settingBinding.switchBtn.isChecked() ? settingBinding.maxNumber.getText().toString() : "1";
+        String maxConnect = viewBinding.switchBtn.isChecked() ? viewBinding.maxNumber.getText().toString() : "1";
 
         int size = Integer.parseInt(maxConnect);
         if (size < 1 || size > 5) {

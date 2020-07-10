@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
+import androidx.viewbinding.ViewBinding;
 
 import com.e.ble.util.BLE_UUID_Util;
 import com.e.tool.ble.BleTool;
@@ -40,10 +41,9 @@ import java.util.UUID;
  * Package name : org.eson.liteble.activity.fragment
  * Des :
  */
-public class ServiceInfoFragment extends BaseObserveFragment implements View.OnClickListener {
+public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteristicBinding> implements View.OnClickListener {
 
 
-    private ActivityCharacteristicBinding characteristicBinding;
 
     private CharacterBean characterBean;
     private String serviceUUID;
@@ -57,16 +57,15 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
     private BleDataAdapter adapter;
 
     @Override
-    protected View getView(LayoutInflater inflater, ViewGroup container) {
-        characteristicBinding = ActivityCharacteristicBinding.inflate(getLayoutInflater(), container, false);
-        return characteristicBinding.getRoot();
+    protected ActivityCharacteristicBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
+        return ActivityCharacteristicBinding.inflate(getLayoutInflater(), container, false);
     }
 
     @Override
     protected void initListener() {
-        characteristicBinding.readBtn.setOnClickListener(this);
-        characteristicBinding.writeBtn.setOnClickListener(this);
-        characteristicBinding.notifyBtn.setOnClickListener(this);
+        viewBinding.readBtn.setOnClickListener(this);
+        viewBinding.writeBtn.setOnClickListener(this);
+        viewBinding.notifyBtn.setOnClickListener(this);
     }
 
     @Override
@@ -171,7 +170,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
 
         isListenerNotice = !isListenerNotice;
         String text = isListenerNotice ? "取消监听" : "开始监听";
-        characteristicBinding.notifyBtn.setText(text);
+        viewBinding.notifyBtn.setText(text);
         characterBean.setListening(isListenerNotice);
         UUID des = null;
         if (descriptors.size() == 0) {
@@ -214,7 +213,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
         bleDataList.add(0, bean);
         if (adapter == null) {
             adapter = new BleDataAdapter(getActivity(), bleDataList, characterName);
-            characteristicBinding.dataListView.setAdapter(adapter);
+            viewBinding.dataListView.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
         }
@@ -232,33 +231,33 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
     private void setData() {
 
 
-        characteristicBinding.uuidText.setText(characterUUID);
+        viewBinding.uuidText.setText(characterUUID);
 
 
         String name = "";
         if (characterBean.isRead()) {
             name += "read ";
-            characteristicBinding.readBtn.setVisibility(View.VISIBLE);
+            viewBinding.readBtn.setVisibility(View.VISIBLE);
         }
         if (characterBean.isWrite()) {
             name += "write ";
-            characteristicBinding.writeBtn.setVisibility(View.VISIBLE);
+            viewBinding.writeBtn.setVisibility(View.VISIBLE);
         }
         if (characterBean.isNotify()) {
             name += "notify ";
-            characteristicBinding.notifyBtn.setVisibility(View.VISIBLE);
+            viewBinding.notifyBtn.setVisibility(View.VISIBLE);
         }
 
-        characteristicBinding.propertiesText.setText(name);
+        viewBinding.propertiesText.setText(name);
 
 
         String text = isListenerNotice ? "取消监听" : "开始监听";
-        characteristicBinding.notifyBtn.setText(text);
+        viewBinding.notifyBtn.setText(text);
 
 
         List<DescriptorBean> descriptorList = characterBean.getDescriptorBeen();
         if (descriptorList == null || descriptorList.size() == 0) {
-            characteristicBinding.descriptorLayout.setVisibility(View.GONE);
+            viewBinding.descriptorLayout.setVisibility(View.GONE);
             return;
         }
 
@@ -269,7 +268,7 @@ public class ServiceInfoFragment extends BaseObserveFragment implements View.OnC
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
-        characteristicBinding.descListView.setAdapter(arrayAdapter);
+        viewBinding.descListView.setAdapter(arrayAdapter);
     }
 
 

@@ -20,11 +20,11 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewbinding.ViewBinding;
 
 import com.e.ble.bean.BLEDevice;
 import com.e.ble.scan.BLEScanner;
@@ -57,7 +57,7 @@ import kale.adapter.item.AdapterItem;
  * @description 扫描设备界面
  */
 
-public class ScanFragment extends BaseObserveFragment {
+public class ScanFragment extends BaseObserveFragment<FragmentScanDeviceBinding> {
 
     private ScannerViewModel scannerViewModel;
     private ConnectViewModel connectViewModel;
@@ -67,18 +67,16 @@ public class ScanFragment extends BaseObserveFragment {
     private boolean isFilterNoName;
     private int scanTime;
 
-    private FragmentScanDeviceBinding scanDeviceBinding;
 
     @Override
-    protected View getView(LayoutInflater inflater, ViewGroup container) {
-        scanDeviceBinding = FragmentScanDeviceBinding.inflate(inflater, container, false);
-        return scanDeviceBinding.getRoot();
+    protected FragmentScanDeviceBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
+        return FragmentScanDeviceBinding.inflate(inflater, container, false);
     }
 
     @Override
     protected void initListener() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        scanDeviceBinding.listview.setLayoutManager(layoutManager);
+        viewBinding.listview.setLayoutManager(layoutManager);
         scanBLEAdapter = new CommonRcvAdapter<BLEDevice>(new ArrayList<>()) {
             @NonNull
             @Override
@@ -86,7 +84,7 @@ public class ScanFragment extends BaseObserveFragment {
                 return new ScanBLEItem(getActivity(), mOnClickListener);
             }
         };
-        scanDeviceBinding.listview.setAdapter(scanBLEAdapter);
+        viewBinding.listview.setAdapter(scanBLEAdapter);
     }
 
     @Override

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.viewbinding.ViewBinding;
 
 import org.eson.liteble.util.LogUtil;
 
@@ -20,13 +21,14 @@ import org.eson.liteble.util.LogUtil;
  * Package name : org.eson.liteble.activity.base
  * Des :
  */
-public abstract class ViewBindFragment extends Fragment {
+public abstract class ViewBindFragment<VB extends ViewBinding> extends Fragment {
+    protected VB viewBinding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        return getView(inflater,container);
+        viewBinding = getViewBinding(inflater,container);
+        return viewBinding.getRoot();
     }
 
     @Override
@@ -40,7 +42,7 @@ public abstract class ViewBindFragment extends Fragment {
 
 
 
-    protected abstract View getView(LayoutInflater inflater, ViewGroup container);
+    protected abstract VB getViewBinding(LayoutInflater inflater, ViewGroup container);
 
     protected abstract void initListener();
 

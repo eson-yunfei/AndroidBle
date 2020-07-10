@@ -1,5 +1,7 @@
 package org.eson.liteble.activity.base;
 
+import androidx.viewbinding.ViewBinding;
+
 import org.eson.liteble.LittleBleViewModel;
 
 /**
@@ -8,7 +10,7 @@ import org.eson.liteble.LittleBleViewModel;
  * Package name : org.eson.liteble.activity.base
  * Des :
  */
-public abstract class BaseObserveFragment extends ViewBindFragment implements IObserve {
+public abstract class BaseObserveFragment<VB extends ViewBinding> extends ViewBindFragment<VB> implements IObserve {
 
     private LittleBleViewModel.DeviceState deviceStateLiveData;
 
