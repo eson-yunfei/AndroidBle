@@ -19,8 +19,8 @@ package org.eson.liteble.activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.e.ble.BuildConfig;
@@ -51,8 +51,8 @@ public class AboutActivity extends AppCompatActivity {
 
         String appVersion = getVersionName(this) + "(" + getVersionCode(this) + ")";
         appVerTV.setText(getString(R.string.app_version, appVersion));
-        String sdkVersion = BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ")";
-        sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
+//        String sdkVersion = BuildConfig.VERSION_NAME + "(" + BuildConfig.VERSION_CODE + ")";
+//        sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
 
     }
 

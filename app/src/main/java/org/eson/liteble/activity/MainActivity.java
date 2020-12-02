@@ -5,13 +5,13 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.e.ble.check.BLECheck;
 import com.e.ble.check.BLECheckListener;
+import com.google.android.material.tabs.TabLayout;
 
 import org.eson.liteble.MyApplication;
 import org.eson.liteble.R;
