@@ -1,19 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-<<<<<<< HEAD
-    compileSdkVersion 29
-=======
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    compileSdkVersion 30
+    buildToolsVersion '27.0.3'
 
->>>>>>> parent of 16f4f1d... 迁移到最新版本的AndroidStudio
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 21
-        versionName "2.0.1"
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 5
+        versionName "1.0.5"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -30,23 +26,14 @@ android {
 }
 
 dependencies {
-<<<<<<< HEAD
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     api project(path: ':Dispatcher')
     testImplementation 'junit:junit:4.13'
     implementation project(':ble_common')
-=======
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    testCompile 'junit:junit:4.12'
 
     //第三方库：
     //谷歌的权限管理库
-    compile 'pub.devrel:easypermissions:0.3.0'
->>>>>>> parent of 16f4f1d... 迁移到最新版本的AndroidStudio
+    implementation 'pub.devrel:easypermissions:0.3.0'
 }

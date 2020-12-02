@@ -1,23 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-<<<<<<< HEAD
-    compileSdkVersion 29
-    buildToolsVersion '29.0.3'
-=======
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
->>>>>>> parent of 16f4f1d... 迁移到最新版本的AndroidStudio
+    compileSdkVersion 30
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.eson.liteble"
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 11
-        versionName "2.0.1"
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-
-        multiDexEnabled true
-
+        targetSdkVersion 30
+        versionCode 3
+        versionName "1.0.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildFeatures{
             viewBinding = true
         }
@@ -28,7 +20,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -36,7 +27,6 @@ android {
 }
 
 dependencies {
-<<<<<<< HEAD
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
@@ -50,27 +40,17 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     testImplementation 'junit:junit:4.13'
     implementation project(':blesdk')
+
+
     //adapter
     implementation 'com.github.tianzhijiexian:CommonAdapter:1.2.4'
     //    注意：统计SDK必须依赖基础组件库。所以需要加入对应依赖:
     implementation 'com.umeng.sdk:common:1.5.3'
     implementation 'com.umeng.analytics:analytics:6.1.4'
     implementation project(':ble_scanner')
-=======
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
-    testCompile 'junit:junit:4.12'
-    compile project(':blesdk')
+
     compile 'io.reactivex.rxjava2:rxjava:2.0.1'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'com.android.support:cardview-v7:25.2.0'
 
-    //adapter
-    compile 'com.github.tianzhijiexian:CommonAdapter:1.2.3'
->>>>>>> parent of 16f4f1d... 迁移到最新版本的AndroidStudio
+
 }
