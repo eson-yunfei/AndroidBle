@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 30
-    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.eson.liteble"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 10
         versionName "2.0.0"
@@ -24,33 +24,39 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.navigation:navigation-fragment:2.3.2'
-    implementation 'androidx.navigation:navigation-ui:2.3.2'
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.2.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation project(path: ':bluetooth')
     testImplementation 'junit:junit:4.13.1'
-    implementation project(':blesdk')
-
 
     //adapter
     implementation 'com.github.tianzhijiexian:CommonAdapter:1.2.4'
     //    注意：统计SDK必须依赖基础组件库。所以需要加入对应依赖:
-    implementation 'com.umeng.sdk:common:1.5.3'
+//    implementation 'com.umeng.sdk:common:1.5.3'
+
     implementation 'com.umeng.analytics:analytics:6.1.4'
-    implementation project(':ble_scanner')
+    implementation "com.github.eson-yunfei.Android_Utils:permissions:0.1.4"
+    implementation "com.github.eson-yunfei.Android_Utils:log:0.1.4"
+    implementation "com.github.eson-yunfei.Android_Utils:toast:0.1.4"
+    implementation "com.github.eson-yunfei.AndroidMvvm:mvvm:0.0.5"
 
-    compile 'io.reactivex.rxjava2:rxjava:2.2.8'
-    compile 'io.reactivex.rxjava2:rxandroid:2.1.1'
-
-
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 }

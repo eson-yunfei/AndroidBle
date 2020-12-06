@@ -2,7 +2,7 @@ package org.eson.liteble.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,19 +11,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
+import com.shon.mvvm.base.ui.BaseBindingActivity;
 
 import org.eson.liteble.R;
-import org.eson.liteble.activity.base.IBaseActivity;
 import org.eson.liteble.activity.fragment.BondedFragment;
 import org.eson.liteble.activity.fragment.ScanFragment;
 import org.eson.liteble.databinding.ActivityMainBinding;
-import org.eson.liteble.util.ToastUtil;
 import org.eson.permissions.PermissionRequest;
+import org.eson.toast.ToastUtils;
 
 /**
  * 主界面，蓝牙状态检测，蓝牙搜索界面
  */
-public class MainActivity extends IBaseActivity<ActivityMainBinding> {
+public class MainActivity extends BaseBindingActivity<ActivityMainBinding> {
 
     private FragmentManager mFragmentManager;
     private FragmentTransaction mTransaction;
@@ -34,20 +34,12 @@ public class MainActivity extends IBaseActivity<ActivityMainBinding> {
     private MenuItem menuRefresh;
     private MenuItem menuScan;
 
-
     @Override
-    protected ActivityMainBinding getViewBing() {
-        return ActivityMainBinding.inflate(getLayoutInflater());
-    }
-
-    @Override
-    protected void onProcess() {
+    public void initViewState() {
         ActionBar mActionBar = getSupportActionBar();
-        if (Build.VERSION.SDK_INT >= 21 && mActionBar != null) {
-
+        if (mActionBar != null) {
             mActionBar.setElevation(0);
         }
-
         mScanFragment = new ScanFragment();
         mDevicesFragment = new BondedFragment();
 
@@ -55,17 +47,20 @@ public class MainActivity extends IBaseActivity<ActivityMainBinding> {
         mTransaction = mFragmentManager.beginTransaction();
         mTransaction.add(R.id.containerLayout, mScanFragment);
         mTransaction.commit();
+    }
 
-        TabLayout.Tab scanTab = viewBinding.tabLayout.newTab().setText("Scanner");
-        TabLayout.Tab bondTab = viewBinding.tabLayout.newTab().setText("Bonded");
+    @Override
+    public void initViewListener() {
+        super.initViewListener();
+        assert binding != null;
+        binding.tabLayout.addOnTabSelectedListener(onTabSelectedListener);
+    }
 
-        viewBinding.tabLayout.addTab(scanTab, true);
-        viewBinding.tabLayout.addTab(bondTab);
-
-        viewBinding.tabLayout.addOnTabSelectedListener(onTabSelectedListener);
-
+    @Override
+    public void onProcess(Bundle bundle) {
         checkBLEState();
     }
+
 
     private void checkBLEState() {
         PermissionRequest request = new PermissionRequest(this);
@@ -76,7 +71,7 @@ public class MainActivity extends IBaseActivity<ActivityMainBinding> {
         request.setOnRequestCallBack(granted -> {
 
             if (granted){
-                ToastUtil.showShort(MainActivity.this, "获取蓝牙权限成功");
+                ToastUtils.showShort(MainActivity.this, "获取蓝牙权限成功");
             }
         });
 
@@ -92,7 +87,7 @@ public class MainActivity extends IBaseActivity<ActivityMainBinding> {
     /**
      *
      */
-    private TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
+    private final TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
             onTabChanged(tab);
@@ -191,27 +186,5 @@ public class MainActivity extends IBaseActivity<ActivityMainBinding> {
         Intent intent = new Intent(MainActivity.this, SettingActivity.class);
         startActivity(intent);
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        LogUtil.e("onActivityResult" + requestCode + ";;;;" + resultCode);
-//        if (requestCode == 0x01) {
-//            if (resultCode != RESULT_OK) {
-//
-//                return;
-//            }
-//
-//            ToastUtil.showShort(this, "获取蓝牙权限成功");
-////            checkBLEState();
-//        } else if (requestCode == 0x02) {
-//            if (resultCode != RESULT_OK) {
-//                return;
-//            }
-//            ToastUtil.showShort(this, "打开蓝牙成功");
-////            checkBLEState();
-//        }
-//    }
-
 
 }

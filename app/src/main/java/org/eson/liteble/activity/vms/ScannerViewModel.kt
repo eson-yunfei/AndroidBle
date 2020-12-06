@@ -1,57 +1,69 @@
-package org.eson.liteble.activity.vms;
+package org.eson.liteble.activity.vms
 
-import androidx.lifecycle.ViewModel;
-
-import com.e.ble.bean.BLEDevice;
-import com.e.ble.scan.BLEScanCfg;
-import com.e.ble.scan.BLEScanListener;
-import com.e.ble.scan.BLEScanner;
-
-import org.eson.liteble.activity.vms.data.ScanLiveData;
-import org.eson.liteble.util.LogUtil;
+import android.os.Handler
+import android.os.Looper
+import androidx.core.os.postDelayed
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import no.nordicsemi.android.support.v18.scanner.*
+import org.eson.liteble.activity.vms.data.ScannerLiveData
+import java.util.*
 
 /**
- * Auth : xiao.yunfei
- * Date : 2020/6/20 15:09
- * Package name : org.eson.liteble.activity.vms
- * Des :
+ *
  */
-public class ScannerViewModel extends ViewModel {
+class ScannerViewModel : ViewModel() {
 
-    private ScanLiveData scanLiveData;
+    private val scannerResultLiveData = ScannerLiveData()
 
-    public ScanLiveData startScanDevice(boolean isFilterName, int connectTime) {
+    private lateinit var scannerCompat: BluetoothLeScannerCompat
 
-        LogUtil.e("startScanDevice: isFilterName = " + isFilterName + " ; connectTime = " + connectTime);
-        scanLiveData = new ScanLiveData(isFilterName);
-        BLEScanCfg scanCfg = new BLEScanCfg.ScanCfgBuilder(connectTime)
-                .builder();
-        BLEScanner.get().startScanner(scanCfg, new BLEScanListener() {
-            @Override
-            public void onScanning(BLEDevice device) {
-                LogUtil.d("onScanning : " + device.toString());
-                scanLiveData.addScanBLE(device);
-            }
-
-
-            @Override
-            public void onScannerStop() {
-                LogUtil.e("onScannerStop : " );
-                scanLiveData.setStop(true);
-            }
-
-            @Override
-            public void onScannerError(int errorCode) {
-                LogUtil.e("onScannerError : " + errorCode);
-                scanLiveData.setTimeout(true);
-            }
-
-        });
-
-        return scanLiveData;
+    fun attachView(lifecycleOwner: LifecycleOwner, scannerView: ScannerView) {
+        scannerResultLiveData.observe(lifecycleOwner) {
+            it ?: return@observe
+            scannerView.onFindDevices(it.getScanResultList())
+        }
     }
 
-    public void stopScanner() {
+    fun startScanner() {
+        Handler(Looper.getMainLooper()).postDelayed(30_000) {
+            // 10 s  后 停止扫描
+            stopScanner()
+        }
 
+        scannerCompat = BluetoothLeScannerCompat.getScanner()
+        val scanCfg = ScanSettings.Builder()
+                .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
+                .setLegacy(false)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setReportDelay(1000)
+                .build()
+        val filters: List<ScanFilter> = ArrayList()
+        //        ScanFilter filter = new ScanFilter.Builder()
+//                .setServiceUuid(ParcelUuid.fromString("6E401892-B5A3-F393-E0A9-E50E24DCCA9E"))
+//                .setDeviceAddress("F7:CE:C8:F0:77:44")
+//                .build();
+//
+//        filters.add(filter);
+        scannerCompat.startScan(filters, scanCfg, scanCallback)
+    }
+
+    fun stopScanner() {
+        scannerCompat.stopScan(scanCallback)
+    }
+
+
+    private val scanCallback: ScanCallback = object : ScanCallback() {
+
+        override fun onBatchScanResults(results: List<ScanResult>) {
+            super.onBatchScanResults(results)
+            scannerResultLiveData.onScannerResult(results)
+        }
+
+    }
+
+    interface ScannerView {
+        fun onFindDevices(scanResultList: MutableList<ScanResult>)
     }
 }
+

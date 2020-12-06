@@ -26,8 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.e.ble.util.BLEByteUtil;
-import com.e.ble.util.BLE_UUID_Util;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.bean.BleDataBean;
@@ -48,7 +46,7 @@ public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
 
     public BleDataAdapter(Context context, List<BleDataBean> dataList, String characterName) {
         super(context, dataList);
-        isUnknownCharacter = TextUtils.equals(characterName, BLE_UUID_Util.UNKNOWN_CHARACTER);
+//        isUnknownCharacter = TextUtils.equals(characterName, BleUUIDUtil.UNKNOWN_CHARACTER);
     }
 
     @Override
@@ -88,10 +86,11 @@ public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
 
 
     public String getDataString(byte[] buffer) {
-        String text = BLEByteUtil.getHexString(buffer);
-        if (!isUnknownCharacter) {
-            text = text + " (  " + BLEByteUtil.byteToCharSequence(buffer) + "  )";
-        }
-        return text;
+//        String text = BLEByteUtil.getHexString(buffer);
+//        if (!isUnknownCharacter) {
+//            text = text + " (  " + BLEByteUtil.byteToCharSequence(buffer) + "  )";
+//        }
+//        return text;
+        return "";
     }
 }

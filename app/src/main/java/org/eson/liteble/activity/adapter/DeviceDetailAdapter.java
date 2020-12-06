@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.e.ble.util.BLE_UUID_Util;
+import com.shon.bluetooth.util.BleUUIDUtil;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.bean.CharacterBean;
@@ -51,8 +51,8 @@ public class DeviceDetailAdapter extends MyBaseAdapter<ServiceBean> {
         if (TextUtils.isEmpty(uuid)) {
             return view;
         }
-        String serviceName = BLE_UUID_Util.getServiceNameByUUID(UUID.fromString(uuid));
-        String shortUUID = BLE_UUID_Util.getHexValue(UUID.fromString(uuid));
+        String serviceName = BleUUIDUtil.getServiceNameByUUID(UUID.fromString(uuid));
+        String shortUUID = BleUUIDUtil.getHexValue(UUID.fromString(uuid));
         String serviceUUIDString = context.getString(R.string.service_uuid, shortUUID, serviceBean.getServiceUUID());
         String serviceType = serviceBean.getServiceType();
 

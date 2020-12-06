@@ -7,16 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
-import androidx.viewbinding.ViewBinding;
 
-import com.e.ble.util.BLE_UUID_Util;
-import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.message.NotifyState;
-import com.e.tool.ble.bean.message.ReadMessage;
-import com.e.tool.ble.imp.OnRead;
-import com.e.tool.ble.imp.OnWriteDescriptor;
-
-import org.eson.liteble.LittleBleViewModel;
 import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.BleDataAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
@@ -25,8 +16,6 @@ import org.eson.liteble.activity.bean.CharacterBean;
 import org.eson.liteble.activity.bean.DescriptorBean;
 import org.eson.liteble.activity.bean.ServiceBean;
 import org.eson.liteble.databinding.ActivityCharacteristicBinding;
-import org.eson.liteble.util.LogUtil;
-import org.eson.liteble.util.UUIDFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +75,7 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
         characterBean = serviceBean.getUUIDBeen().get(position);
         serviceUUID = characterBean.getServiceUUID();
         characterUUID = characterBean.getCharacterUUID();
-        characterName = BLE_UUID_Util.getCharacterNameByUUID(UUID.fromString(characterUUID));
+//        characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID));
 
         isListenerNotice = characterBean.isListening();
     }
@@ -100,14 +89,14 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
 
     public void startListener() {
 
-        LittleBleViewModel.getViewModel().observerDataNotify()
-                .observe(this, notifyMessage -> {
-                    if (notifyMessage == null) {
-                        return;
-                    }
-                    changeBleData(notifyMessage.getCharacteristicUUID().toString(),
-                            notifyMessage.getBytes(), notifyMessage.getAddress());
-                });
+//        LittleBleViewModel.getViewModel().observerDataNotify()
+//                .observe(this, notifyMessage -> {
+//                    if (notifyMessage == null) {
+//                        return;
+//                    }
+//                    changeBleData(notifyMessage.getCharacteristicUUID().toString(),
+//                            notifyMessage.getBytes(), notifyMessage.getAddress());
+//                });
 
     }
 
@@ -143,23 +132,23 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
 
     private void readCharacter() {
 
-        ReadMessage readMessage = new ReadMessage();
-        readMessage.setAddress(connectMac);
-        readMessage.setServiceUUID(UUID.fromString(serviceUUID));
-        readMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
-        BleTool.getInstance().getController()
-                .read(readMessage, new OnRead() {
-                    @Override
-                    public void onReadMessage(ReadMessage readMessage) {
-                        changeBleData(readMessage.getCharacteristicUUID().toString()
-                                , readMessage.getBytes(), readMessage.getAddress());
-                    }
-
-                    @Override
-                    public void onReadError() {
-
-                    }
-                });
+//        ReadMessage readMessage = new ReadMessage();
+//        readMessage.setAddress(connectMac);
+//        readMessage.setServiceUUID(UUID.fromString(serviceUUID));
+//        readMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
+//        BleTool.getInstance().getController()
+//                .read(readMessage, new OnRead() {
+//                    @Override
+//                    public void onReadMessage(ReadMessage readMessage) {
+//                        changeBleData(readMessage.getCharacteristicUUID().toString()
+//                                , readMessage.getBytes(), readMessage.getAddress());
+//                    }
+//
+//                    @Override
+//                    public void onReadError() {
+//
+//                    }
+//                });
     }
 
     /**
@@ -168,41 +157,41 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
     private void enableNotice() {
 
 
-        isListenerNotice = !isListenerNotice;
-        String text = isListenerNotice ? "取消监听" : "开始监听";
-        viewBinding.notifyBtn.setText(text);
-        characterBean.setListening(isListenerNotice);
-        UUID des = null;
-        if (descriptors.size() == 0) {
-            des = UUIDFormat.DESC;
-        } else {
-            des = UUID.fromString(descriptors.get(0));
-        }
-
-        NotifyState notifyState = new NotifyState();
-        notifyState.setAddress(connectMac);
-        notifyState.setServiceUUID(UUID.fromString(serviceUUID));
-        notifyState.setCharacteristicUUID(UUID.fromString(characterUUID));
-        notifyState.setDesUUID(des);
-        notifyState.setEnable(isListenerNotice);
-
-        BleTool.getInstance().getController()
-                .updateNotify(notifyState, new OnWriteDescriptor() {
-
-                    @Override
-                    public void onWriteDescriptorError() {
-                        LogUtil.e("NotifyState : onWriteDescriptorError ");
-                    }
-
-                    @Override
-                    public void onWriteDescriptor(NotifyState result) {
-
-                        LogUtil.e("NotifyState : " + result.isResult());
-                        if (result.isResult()) {
-                            startListener();
-                        }
-                    }
-                });
+//        isListenerNotice = !isListenerNotice;
+//        String text = isListenerNotice ? "取消监听" : "开始监听";
+//        viewBinding.notifyBtn.setText(text);
+//        characterBean.setListening(isListenerNotice);
+//        UUID des = null;
+//        if (descriptors.size() == 0) {
+//            des = UUIDFormat.DESC;
+//        } else {
+//            des = UUID.fromString(descriptors.get(0));
+//        }
+//
+//        NotifyState notifyState = new NotifyState();
+//        notifyState.setAddress(connectMac);
+//        notifyState.setServiceUUID(UUID.fromString(serviceUUID));
+//        notifyState.setCharacteristicUUID(UUID.fromString(characterUUID));
+//        notifyState.setDesUUID(des);
+//        notifyState.setEnable(isListenerNotice);
+//
+//        BleTool.getInstance().getController()
+//                .updateNotify(notifyState, new OnWriteDescriptor() {
+//
+//                    @Override
+//                    public void onWriteDescriptorError() {
+//                        LogUtil.e("NotifyState : onWriteDescriptorError ");
+//                    }
+//
+//                    @Override
+//                    public void onWriteDescriptor(NotifyState result) {
+//
+//                        LogUtil.e("NotifyState : " + result.isResult());
+//                        if (result.isResult()) {
+//                            startListener();
+//                        }
+//                    }
+//                });
 
     }
 

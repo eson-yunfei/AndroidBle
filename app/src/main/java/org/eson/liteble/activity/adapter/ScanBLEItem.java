@@ -1,17 +1,17 @@
 package org.eson.liteble.activity.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 
-import com.e.ble.bean.BLEDevice;
-import com.e.ble.support.ScanRecord;
-import com.e.ble.util.BLEByteUtil;
 
 import org.eson.liteble.R;
 
 import kale.adapter.item.AdapterItem;
+import no.nordicsemi.android.support.v18.scanner.ScanRecord;
+import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 /**
  * @name AndroidBle
@@ -23,7 +23,7 @@ import kale.adapter.item.AdapterItem;
  * @chang time
  * @class describe
  */
-public class ScanBLEItem implements AdapterItem<BLEDevice> {
+public class ScanBLEItem implements AdapterItem<ScanResult> {
     private ItemClickListener mOnClickListener;
     private View rootView;
     private TextView deviceName;
@@ -54,11 +54,12 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void handleData(BLEDevice device, final int position) {
+    public void handleData(ScanResult device, final int position) {
 
-        String name = device.getName();
-        String mac = device.getMac();
+        String name = device.getDevice().getName();
+        String mac = device.getDevice().getAddress();
 
         deviceRssi.setText("RSSI：" + device.getRssi());
         deviceName.setText(name);
@@ -66,19 +67,14 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
 
         scanRet.setVisibility(View.INVISIBLE);
 
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mOnClickListener.onItemClick(device);
-            }
-        });
+        rootView.setOnClickListener(v -> mOnClickListener.onItemClick(device));
 
 
         ScanRecord scanRecord = device.getScanRecord();
         if (scanRecord == null) {
             return;
         }
-        SparseArray array = scanRecord.getManufacturerSpecificData();
+        SparseArray<byte[]> array = scanRecord.getManufacturerSpecificData();
         if (array == null || array.size() == 0) {
             return;
         }
@@ -89,7 +85,7 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
             int key = array.keyAt(0);
             byte[] b = (byte[]) array.get(key);
 
-            builder.append(BLEByteUtil.getHexString(b));
+//            builder.append(BLEByteUtil.getHexString(b));
             if (i != array.size() - 1) {
                 builder.append("\n");
             }
@@ -100,6 +96,6 @@ public class ScanBLEItem implements AdapterItem<BLEDevice> {
     }
 
     public interface ItemClickListener {
-        void onItemClick(BLEDevice bleDevice);
+        void onItemClick(ScanResult bleDevice);
     }
 }

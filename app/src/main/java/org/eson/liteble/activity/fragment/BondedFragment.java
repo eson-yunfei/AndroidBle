@@ -17,22 +17,12 @@
 package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.lifecycle.Observer;
-
-import com.e.ble.scan.BLEScanner;
-import com.e.ble.util.BLEConstant;
-
-import org.eson.liteble.LittleBleViewModel;
-import org.eson.liteble.activity.DeviceActivity;
-import org.eson.liteble.activity.adapter.BondedDevAdapter;
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.bean.BondedDeviceBean;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
-import org.eson.liteble.util.ToastUtil;
 
 import java.util.List;
 
@@ -65,7 +55,7 @@ public class BondedFragment extends BaseObserveFragment<FragmentBondedDeviceBind
             selectDevice = mDeviceBeanList.get(position);
             showProgress("正在连接设备：" + selectDevice.getName());
 //            MyApplication.getInstance().setCurrentShowDevice(selectDevice.getAddress());
-            BLEScanner.get().stopScan();
+//            BLEScanner.get().stopScan();
 //            BleService.get().connectionDevice(selectDevice.getAddress());
         });
     }
@@ -73,61 +63,61 @@ public class BondedFragment extends BaseObserveFragment<FragmentBondedDeviceBind
 
     @Override
     public void onDeviceStateChange(String deviceMac, int currentState) {
-        onBleStateChange(deviceMac, currentState);
+//        onBleStateChange(deviceMac, currentState);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        LittleBleViewModel.getViewModel()
-                .getBondList()
-                .observerBondList().observe(this,
-                new Observer<List<BondedDeviceBean>>() {
-                    @Override
-                    public void onChanged(List<BondedDeviceBean> bondedDeviceBeans) {
-                        mDeviceBeanList = bondedDeviceBeans;
-                        BondedDevAdapter mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
-                        viewBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
-                    }
-                });
+//        LittleBleViewModel.getViewModel()
+//                .getBondList()
+//                .observerBondList().observe(this,
+//                new Observer<List<BondedDeviceBean>>() {
+//                    @Override
+//                    public void onChanged(List<BondedDeviceBean> bondedDeviceBeans) {
+//                        mDeviceBeanList = bondedDeviceBeans;
+//                        BondedDevAdapter mBondedDevAdapter = new BondedDevAdapter(getActivity(), mDeviceBeanList);
+//                        viewBinding.bondedDeviceList.setAdapter(mBondedDevAdapter);
+//                    }
+//                });
 
 
     }
 
 
-    public void onBleStateChange(String mac, int state) {
-
-        switch (state) {
-            case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
-            case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
-
-                startToNext();
-                break;
-            case BLEConstant.Connection.STATE_CONNECT_FAILED:
-                hideProgress();
-                ToastUtil.showShort(getActivity(), "设备连接失败");
-                break;
-            case BLEConstant.State.STATE_CONNECTED:
-                hideProgress();
-                ToastUtil.showShort(getActivity(), "设备连接成功");
-
-                break;
-            case BLEConstant.State.STATE_DIS_CONNECTED:
-                hideProgress();
-                ToastUtil.showShort(getActivity(), "设备断开");
-                break;
-
-        }
-    }
-
-    private void startToNext() {
-        hideProgress();
-
-        ToastUtil.showShort(getActivity(), "连接成功");
-
-        startActivity(new Intent(getActivity(), DeviceActivity.class));
-    }
+//    public void onBleStateChange(String mac, int state) {
+//
+//        switch (state) {
+//            case BLEConstant.Connection.STATE_CONNECT_CONNECTED:
+//            case BLEConstant.Connection.STATE_CONNECT_SUCCEED:
+//
+//                startToNext();
+//                break;
+//            case BLEConstant.Connection.STATE_CONNECT_FAILED:
+//                hideProgress();
+//                ToastUtil.showShort(getActivity(), "设备连接失败");
+//                break;
+//            case BLEConstant.State.STATE_CONNECTED:
+//                hideProgress();
+//                ToastUtil.showShort(getActivity(), "设备连接成功");
+//
+//                break;
+//            case BLEConstant.State.STATE_DIS_CONNECTED:
+//                hideProgress();
+//                ToastUtil.showShort(getActivity(), "设备断开");
+//                break;
+//
+//        }
+//    }
+//
+//    private void startToNext() {
+//        hideProgress();
+//
+//        ToastUtil.showShort(getActivity(), "连接成功");
+//
+//        startActivity(new Intent(getActivity(), DeviceActivity.class));
+//    }
 
     /**
      * 显示等待框

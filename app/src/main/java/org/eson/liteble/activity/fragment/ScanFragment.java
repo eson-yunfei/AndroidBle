@@ -17,130 +17,94 @@
 package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothProfile;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewbinding.ViewBinding;
 
-import com.e.ble.bean.BLEDevice;
-import com.e.ble.scan.BLEScanner;
-import com.e.tool.ble.bean.state.ConnectError;
-import com.e.tool.ble.bean.state.ConnectResult;
-import com.e.tool.ble.bean.state.DevState;
+import com.shon.mvvm.base.ui.BaseBindingFragment;
 
+import org.eson.liteble.R;
 import org.eson.liteble.activity.DeviceActivity;
 import org.eson.liteble.activity.MainActivity;
 import org.eson.liteble.activity.adapter.ScanBLEItem;
-import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.activity.vms.ConnectViewModel;
 import org.eson.liteble.activity.vms.ScannerViewModel;
-import org.eson.liteble.activity.vms.data.ScanLiveData;
 import org.eson.liteble.databinding.FragmentScanDeviceBinding;
-import org.eson.liteble.share.ConfigShare;
-import org.eson.liteble.util.LogUtil;
-import org.eson.liteble.util.ToastUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import kale.adapter.CommonRcvAdapter;
 import kale.adapter.item.AdapterItem;
+import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 /**
- * @package_name org.eson.liteble.activity.fragment
- * @name ${name}
- * <p>
  * Created by xiaoyunfei on 2017/5/5.
- * @description 扫描设备界面
+ *
+ * update on 2020/12/06
+ *
+ * 扫描设备界面
  */
-
-public class ScanFragment extends BaseObserveFragment<FragmentScanDeviceBinding> {
+public class ScanFragment extends BaseBindingFragment<FragmentScanDeviceBinding>
+        implements ScannerViewModel.ScannerView , ConnectViewModel.ConnectView {
 
     private ScannerViewModel scannerViewModel;
     private ConnectViewModel connectViewModel;
-    private CommonRcvAdapter<BLEDevice> scanBLEAdapter;
     private ProgressDialog m_pDialog;
-
-    private boolean isFilterNoName;
-    private int scanTime;
+    private CommonRcvAdapter<ScanResult> commonRcvAdapter;
 
 
     @Override
-    protected FragmentScanDeviceBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
-        return FragmentScanDeviceBinding.inflate(inflater, container, false);
-    }
-
-    @Override
-    protected void initListener() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        viewBinding.listview.setLayoutManager(layoutManager);
-        scanBLEAdapter = new CommonRcvAdapter<BLEDevice>(new ArrayList<>()) {
-            @NonNull
-            @Override
-            public AdapterItem<?> createItem(Object o) {
-                return new ScanBLEItem(getActivity(), mOnClickListener);
-            }
-        };
-        viewBinding.listview.setAdapter(scanBLEAdapter);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ConfigShare configShare = new ConfigShare(getActivity());
-        isFilterNoName = configShare.getFilterNoName();
-        scanTime = configShare.getConnectTime();
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
         scannerViewModel = getDefaultViewModelProviderFactory().create(ScannerViewModel.class);
         connectViewModel = getDefaultViewModelProviderFactory().create(ConnectViewModel.class);
     }
 
     @Override
-    public void onPause() {
-        stopScanner();
-        super.onPause();
-    }
+    public void initViewState() {
 
-    private ScanBLEItem.ItemClickListener mOnClickListener = device -> {
-
-        showProgress("正在连接设备：" + device.getName());
-        connectViewModel.connectDevice(device.getMac())
-                .observe(this, this::updateConnectResult);
-    };
-
-    /**
-     * @param connectDeviceData connectDeviceData
-     */
-    private void updateConnectResult(ConnectViewModel.ConnectDeviceData connectDeviceData) {
-        if (connectDeviceData == null) {
+        if (binding == null) {
             return;
         }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        binding.listview.setLayoutManager(layoutManager);
+        commonRcvAdapter = new CommonRcvAdapter<ScanResult>(new ArrayList<>()) {
+            @NonNull
+            @Override
+            public AdapterItem<ScanResult> createItem(Object type) {
+                return new ScanBLEItem(getActivity(), bleDevice -> {
+                    BluetoothDevice device = bleDevice.getDevice();
+                    showProgress("Connecting...");
+                    connectViewModel.connectDevice(device.getAddress(),device.getName());
 
-        ConnectError connectError = connectDeviceData.getErrorCode();
-        if (connectError != null) {
-            LogUtil.e("连接设备异常 ：" + connectError.toString());
-            hideProgress();
-            ToastUtil.showShort(getActivity(), "设备连接失败");
-            return;
-        }
-
-        DevState devState = connectDeviceData.getDevState();
-        if (devState != null) {
-            LogUtil.e("devState " + devState.toString());
-        }
-
-        ConnectResult connectBt = connectDeviceData.getConnectBt();
-        if (connectBt != null) {
-            LogUtil.e("onServicesDiscovered : address : " + connectBt.getAddress());
-            hideProgress();
-            ToastUtil.showShort(getActivity(), "设备连接成功");
-            Intent intent = new Intent(getActivity(), DeviceActivity.class);
-            intent.putExtra("connectBt", connectBt);
-            startActivity(intent);
-        }
+                });
+            }
+        };
+        binding.listview.setAdapter(commonRcvAdapter);
     }
+
+    @Override
+    public void onProcess(Bundle savedInstanceState) {
+
+        scannerViewModel.attachView(this, this);
+        connectViewModel.attachView(this,this);
+
+    }
+
+    @Override
+    public void onFindDevices(@NotNull List<ScanResult> scanResultList) {
+        hideProgress();
+        commonRcvAdapter.setData(scanResultList);
+        commonRcvAdapter.notifyDataSetChanged();
+    }
+
 
     /**
      * 显示等待框
@@ -175,46 +139,41 @@ public class ScanFragment extends BaseObserveFragment<FragmentScanDeviceBinding>
 
     }
 
-    /**
-     * 扫描蓝牙设备
-     */
-    private void searchDevice() {
-        showProgress("搜索设备中。。。。");
 
-        ScanLiveData scanLiveData = scannerViewModel.startScanDevice(isFilterNoName, scanTime);
 
-        scanLiveData.observe(this, liveData -> {
-            if (liveData == null) {
-                return;
-            }
-            hideProgress();
-            if (liveData.isStop() || liveData.isTimeout()) {
-                if (getActivity() != null) {
-                    ((MainActivity) getActivity()).reSetMenu();
-                }
-                scanLiveData.removeObservers(this);
-                return;
-            }
-            scanBLEAdapter.setData(liveData.getDeviceList());
-            scanBLEAdapter.notifyDataSetChanged();
-        });
+    public void stopScanner() {
+        scannerViewModel.stopScanner();
+    }
+//
+    public void startScanner() {
+        showProgress(getString(R.string.text_scan_device));
+        commonRcvAdapter.setData(new ArrayList<>());
+        commonRcvAdapter.notifyDataSetChanged();
+        scannerViewModel.startScanner();
     }
 
     @Override
-    public void onDeviceStateChange(String deviceMac, int currentState) {
-        if (currentState == BluetoothProfile.STATE_DISCONNECTED) {
-            hideProgress();
-            ToastUtil.showShort(getActivity(), "设备断开");
-        }
+    public void onConnected(String deviceMac, BluetoothGatt gatt) {
+
     }
 
-    public void stopScanner() {
-        BLEScanner.get().stopScan();
+    @Override
+    public void onServerEnable(String deviceMac, BluetoothGatt gatt) {
+
+        hideProgress();
+
+        Intent intent = new Intent(getActivity(), DeviceActivity.class);
+        intent.putExtra("connectBt", deviceMac);
+        startActivity(intent);
     }
 
-    public void startScanner() {
-        scanBLEAdapter.setData(new ArrayList<>());
-        scanBLEAdapter.notifyDataSetChanged();
-        searchDevice();
+    @Override
+    public void onDisconnected(String deviceMac) {
+
+    }
+
+    @Override
+    public void connectError(String deviceMac, int errorCode) {
+
     }
 }

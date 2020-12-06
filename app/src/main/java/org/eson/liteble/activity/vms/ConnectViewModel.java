@@ -1,13 +1,11 @@
 package org.eson.liteble.activity.vms;
 
-import androidx.lifecycle.LiveData;
+import android.bluetooth.BluetoothGatt;
+
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 
-import com.e.tool.ble.BleTool;
-import com.e.tool.ble.bean.state.ConnectError;
-import com.e.tool.ble.bean.state.ConnectResult;
-import com.e.tool.ble.bean.state.DevState;
-import com.e.tool.ble.imp.OnDevConnectListener;
+import org.eson.liteble.DeviceState;
 
 /**
  * Auth : xiao_yun_fei
@@ -17,88 +15,47 @@ import com.e.tool.ble.imp.OnDevConnectListener;
  */
 public class ConnectViewModel extends ViewModel {
 
-    private ConnectDeviceData connectDeviceData;
+    private LifecycleOwner lifecycleOwner;
+    private ConnectView connectView;
 
-    public ConnectDeviceData connectDevice(String address) {
-        connectDeviceData = new ConnectDeviceData();
-        BleTool.getInstance()
-                .getController()
-                .connect(address, getConnectListener());
-
-        return connectDeviceData;
+    public void attachView(LifecycleOwner lifecycleOwner, ConnectView connectView) {
+        this.lifecycleOwner = lifecycleOwner;
+        this.connectView = connectView;
     }
 
-    public void disConnect(String address) {
-        BleTool.getInstance().getController()
-                .disConnect(address);
-    }
+    public void connectDevice(String address, String name) {
+        DeviceState deviceState = DeviceState.getInstance();
+        if (deviceState == null) {
+            return;
+        }
+        deviceState.connectDevice(address, name)
+                .observe(lifecycleOwner, deviceLiveData -> {
 
-    private OnDevConnectListener getConnectListener() {
-        return new OnDevConnectListener() {
-
-            @Override
-            public void onConnectError(ConnectError errorCode) {
-                if (connectDeviceData != null) {
-                    connectDeviceData.setErrorCode(errorCode);
-                }
-            }
-
-            @Override
-            public void onConnectSate(DevState devState) {
-                if (connectDeviceData != null) {
-                    connectDeviceData.setDevState(devState);
-                }
-            }
-
-            @Override
-            public void onServicesDiscovered(ConnectResult connectBt) {
-                if (connectDeviceData != null) {
-                    connectDeviceData.setConnectBt(connectBt);
-                }
-            }
-        };
+                    switch (deviceLiveData.getState()) {
+                        case DeviceState.DeviceLiveData.STATE_CONNECT_ERROR:
+                            connectView.connectError(deviceLiveData.getDeviceMac(), deviceLiveData.getErrorCode());
+                            break;
+                        case DeviceState.DeviceLiveData.STATE_DIS_CONNECTED:
+                            connectView.onDisconnected(deviceLiveData.getDeviceMac());
+                            break;
+                        case DeviceState.DeviceLiveData.STATE_SERVER_ENABLE:
+                            connectView.onServerEnable(deviceLiveData.getDeviceMac(), deviceLiveData.getGatt());
+                            break;
+                        case DeviceState.DeviceLiveData.STATE_CONNECTED:
+                            connectView.onConnected(deviceLiveData.getDeviceMac(), deviceLiveData.getGatt());
+                            break;
+                    }
+                });
     }
 
 
-    public static class ConnectDeviceData extends LiveData<ConnectDeviceData> {
-        private ConnectError errorCode;
-        private DevState devState;
-        private ConnectResult connectBt;
+    public interface ConnectView {
+        void onConnected(String deviceMac, BluetoothGatt gatt);
 
-        public ConnectError getErrorCode() {
-            return errorCode;
-        }
+        void onServerEnable(String deviceMac, BluetoothGatt gatt);
 
-        public void setErrorCode(ConnectError errorCode) {
-            reset();
-            this.errorCode = errorCode;
-            postValue(this);
-        }
+        void onDisconnected(String deviceMac);
 
-        public DevState getDevState() {
-            return devState;
-        }
-
-        public void setDevState(DevState devState) {
-            reset();
-            this.devState = devState;
-            postValue(this);
-        }
-
-        public ConnectResult getConnectBt() {
-            return connectBt;
-        }
-
-        public void setConnectBt(ConnectResult connectBt) {
-            reset();
-            this.connectBt = connectBt;
-            postValue(this);
-        }
-
-        private void reset() {
-            errorCode = null;
-            devState = null;
-            connectBt = null;
-        }
+        void connectError(String deviceMac, int errorCode);
     }
 }

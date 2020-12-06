@@ -1,2 +1,3 @@
-include ':Dispatcher'
-include ':app', ':blesdk', ':ble_common', ':ble_scanner' //, ':sdk'
+//include ':Dispatcher'
+//':blesdk', ':ble_common', ':ble_scanner' //, ':sdk'
+include ':app', 'bluetooth'

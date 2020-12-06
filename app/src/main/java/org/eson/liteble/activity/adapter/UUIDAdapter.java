@@ -1,12 +1,11 @@
 package org.eson.liteble.activity.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.e.ble.util.BLE_UUID_Util;
+import com.shon.bluetooth.util.BleUUIDUtil;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.bean.CharacterBean;
@@ -43,8 +42,8 @@ public class UUIDAdapter extends MyBaseAdapter<CharacterBean> {
         }
 
         String characterUUID = characterBean.getCharacterUUID();
-        String characterName = BLE_UUID_Util.getCharacterNameByUUID(UUID.fromString(characterUUID));
-        String hexString = BLE_UUID_Util.getHexValue(UUID.fromString(characterUUID));
+        String characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID));
+        String hexString = BleUUIDUtil.getHexValue(UUID.fromString(characterUUID));
 
         viewHolder.character_name_text.setText(characterName);
         viewHolder.uuidText.setText(resources.getString(R.string.service_uuid, hexString, characterUUID));

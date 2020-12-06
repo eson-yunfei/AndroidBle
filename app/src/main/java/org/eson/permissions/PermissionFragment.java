@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import org.eson.liteble.util.LogUtil;
+
+import org.eson.log.LogUtils;
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class PermissionFragment extends Fragment {
         if (requestCode != PERMISSIONS_REQUEST_CODE) {
             return;
         }
-        LogUtil.e("onRequestPermissionsResult = ");
+        LogUtils.e("onRequestPermissionsResult = ");
         boolean[] shouldShowRequestPermissionRationale = new boolean[permissions.length];
 
         for (int i = 0; i < permissions.length; i++) {
@@ -58,7 +59,7 @@ public class PermissionFragment extends Fragment {
         ArrayList<Boolean> grantedArray = new ArrayList<>();
         for (int i = 0, size = permissions.length; i < size; i++) {
             boolean granted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
-            LogUtil.e("granted = " + granted);
+            LogUtils.e("granted = " + granted);
             if (granted) {
                 grantedArray.add(granted);
             }

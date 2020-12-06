@@ -1,12 +1,9 @@
 package org.eson.liteble.task;
 
 import android.os.Environment;
-import android.util.Log;
 
-import com.umeng.commonsdk.debug.E;
-
-import org.eson.liteble.util.LogUtil;
 import org.eson.liteble.util.TimeUtils;
+import org.eson.log.LogUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,8 +30,8 @@ class FileWrite {
         appDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/LiteBle";
         filerDir = appDir + "/rssi";
         fileName = filerDir + "/" + TimeUtils.getCurrentTime() + "_" + address + ".csv";
-        LogUtil.e("filerDir " + filerDir);
-        LogUtil.e("fileName " + fileName);
+        LogUtils.e("filerDir " + filerDir);
+        LogUtils.e("fileName " + fileName);
         createFileDirs();
     }
 
@@ -74,7 +71,7 @@ class FileWrite {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        LogUtil.e("create file " + fileName + " ; " + createResult);
+        LogUtils.e("create file " + fileName + " ; " + createResult);
     }
 
 
@@ -101,7 +98,7 @@ class FileWrite {
             bufferedWriter = new BufferedWriter(new FileWriter(mFile, true));
             bufferedWriter.write(info);
             bufferedWriter.flush();
-            LogUtil.e("写入成功 : " + info);
+            LogUtils.e("写入成功 : " + info);
         } catch (Exception e) {
             e.printStackTrace();
         }

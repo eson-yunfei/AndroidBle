@@ -18,7 +18,16 @@
             app:tabIndicatorColor="@color/white"
             app:tabIndicatorHeight="1dp"
             app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/gray"/>
+            app:tabTextColor="@color/gray">
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="scanner"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bonded"/>
+        </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
 

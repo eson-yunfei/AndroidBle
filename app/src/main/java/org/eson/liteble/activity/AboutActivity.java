@@ -17,11 +17,11 @@
 package org.eson.liteble.activity;
 
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 
-import com.e.ble.BuildConfig;
+import com.shon.mvvm.base.ui.BaseBindingActivity;
 
 import org.eson.liteble.R;
-import org.eson.liteble.activity.base.IBaseActivity;
 import org.eson.liteble.databinding.ActivityAboutBinding;
 
 /**
@@ -32,23 +32,18 @@ import org.eson.liteble.databinding.ActivityAboutBinding;
  * @description
  */
 
-public class AboutActivity extends IBaseActivity<ActivityAboutBinding> {
+public class AboutActivity extends BaseBindingActivity<ActivityAboutBinding> {
 
     @Override
-    protected ActivityAboutBinding getViewBing() {
-        return ActivityAboutBinding.inflate(getLayoutInflater());
-    }
-
-
-    @Override
-    protected void onProcess() {
+    public void onProcess(Bundle bundle) {
 
         String appVersion = formatVersion(getVersionName(), getVersionCode());
 //        String sdkVersion = formatVersion(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
 
 
-        viewBinding.appVerTV.setText(getString(R.string.app_version, appVersion));
+        binding.appVerTV.setText(getString(R.string.app_version, appVersion));
 //        viewBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
+
     }
 
 

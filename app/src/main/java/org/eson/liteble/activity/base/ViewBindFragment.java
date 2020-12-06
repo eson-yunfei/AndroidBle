@@ -13,7 +13,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewbinding.ViewBinding;
 
-import org.eson.liteble.util.LogUtil;
+import org.eson.log.LogUtils;
+
 
 /**
  * Auth : xiao.yunfei
@@ -86,7 +87,7 @@ public abstract class ViewBindFragment<VB extends ViewBinding> extends Fragment 
                 navController.navigate(resId);
             }
         } catch (Exception e) {
-            LogUtil.e("navigateNext  error ::::: " + e.getMessage());
+            LogUtils.e("navigateNext  error ::::: " + e.getMessage());
             e.printStackTrace();
         }
 
