@@ -44,11 +44,11 @@ public class AboutActivity extends IBaseActivity<ActivityAboutBinding> {
     protected void onProcess() {
 
         String appVersion = formatVersion(getVersionName(), getVersionCode());
-        String sdkVersion = formatVersion(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
+//        String sdkVersion = formatVersion(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE);
 
 
         viewBinding.appVerTV.setText(getString(R.string.app_version, appVersion));
-        viewBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
+//        viewBinding.sdkVerTV.setText(getString(R.string.sdk_version, sdkVersion));
     }
 
 
