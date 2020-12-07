@@ -29,4 +29,7 @@
     <string name="app_version">APP版本：V%s</string>
     <string name="sdk_version">SDK版本：V%s</string>
     <string name="save_setting">保存</string>
+    <string name="brand">品牌：%s</string>
+    <string name="model">型号：%s</string>
+    <string name="system_version">系统版本：%s</string>
 </resources>

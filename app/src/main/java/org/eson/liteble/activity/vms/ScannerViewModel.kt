@@ -10,7 +10,7 @@ import org.eson.liteble.activity.vms.data.ScannerLiveData
 import java.util.*
 
 /**
- *
+ * 扫描设备
  */
 class ScannerViewModel : ViewModel() {
 
@@ -33,10 +33,10 @@ class ScannerViewModel : ViewModel() {
 
         scannerCompat = BluetoothLeScannerCompat.getScanner()
         val scanCfg = ScanSettings.Builder()
-                .setMatchMode(ScanSettings.MATCH_MODE_STICKY)
-                .setLegacy(false)
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setLegacy(false)
                 .setReportDelay(1000)
+                .setUseHardwareBatchingIfSupported(false)
                 .build()
         val filters: List<ScanFilter> = ArrayList()
         //        ScanFilter filter = new ScanFilter.Builder()

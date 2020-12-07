@@ -35,7 +35,6 @@ import org.eson.liteble.activity.adapter.ScanBLEItem;
 import org.eson.liteble.activity.vms.ConnectViewModel;
 import org.eson.liteble.activity.vms.ScannerViewModel;
 import org.eson.liteble.databinding.FragmentScanDeviceBinding;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class ScanFragment extends BaseBindingFragment<FragmentScanDeviceBinding>
             @NonNull
             @Override
             public AdapterItem<ScanResult> createItem(Object type) {
-                return new ScanBLEItem(getActivity(), bleDevice -> {
+                return new ScanBLEItem(bleDevice -> {
                     BluetoothDevice device = bleDevice.getDevice();
                     showProgress("Connecting...");
                     connectViewModel.connectDevice(device.getAddress(),device.getName());
@@ -99,7 +98,7 @@ public class ScanFragment extends BaseBindingFragment<FragmentScanDeviceBinding>
     }
 
     @Override
-    public void onFindDevices(@NotNull List<ScanResult> scanResultList) {
+    public void onFindDevices(@NonNull List<ScanResult> scanResultList) {
         hideProgress();
         commonRcvAdapter.setData(scanResultList);
         commonRcvAdapter.notifyDataSetChanged();

@@ -105,4 +105,22 @@ public class ByteUtil {
         sb.append("  ]");
 //        LogUtil.e(sb.toString());
     }
+
+    /**
+     * 十六进制打印数组
+     */
+    public static String getFormatHexString(byte[] buffer) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (byte b : buffer) {
+            String intS = Integer.toHexString(b & 0xff);
+            if (intS.length() == 1) {
+                sb.append("  ").append("0").append(intS);
+            } else {
+                sb.append("  ").append(intS);
+            }
+        }
+        sb.append("  ]");
+        return sb.toString();
+    }
 }

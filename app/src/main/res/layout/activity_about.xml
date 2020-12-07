@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2017. xiaoyunfei
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +15,11 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
 
     <androidx.cardview.widget.CardView
@@ -36,7 +36,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@mipmap/ic_launcher" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
                 android:gravity="center"
                 android:text="@string/app_name"
                 android:textColor="@color/colorPrimary"
-                android:textSize="22sp"/>
+                android:textSize="22sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -53,7 +53,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:cardCornerRadius="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,17 +62,61 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/brand_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/brand"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="#aaaaaa" />
+
+            <TextView
+                android:id="@+id/model_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/model"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="#aaaaaa" />
+
+            <TextView
+                android:id="@+id/system_version_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/system_version"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="#aaaaaa" />
+
+
+            <TextView
                 android:id="@+id/appVerTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/app_version"
-                android:textSize="@dimen/text_size"/>
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.3dp"
-                android:background="#aaaaaa"/>
+                android:background="#aaaaaa" />
 
             <TextView
                 android:id="@+id/sdkVerTV"
@@ -79,7 +124,8 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/sdk_version"
-                android:textSize="@dimen/text_size"/>
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

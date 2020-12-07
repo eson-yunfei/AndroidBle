@@ -45,7 +45,7 @@ dependencies {
     //    注意：统计SDK必须依赖基础组件库。所以需要加入对应依赖:
 //    implementation 'com.umeng.sdk:common:1.5.3'
 
-    implementation 'com.umeng.analytics:analytics:6.1.4'
+//    implementation 'com.umeng.analytics:analytics:6.1.4'
     implementation "com.github.eson-yunfei.Android_Utils:permissions:0.1.4"
     implementation "com.github.eson-yunfei.Android_Utils:log:0.1.4"
     implementation "com.github.eson-yunfei.Android_Utils:toast:0.1.4"

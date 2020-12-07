@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 
 import org.eson.liteble.R;
+import org.eson.liteble.util.ByteUtil;
 
 import kale.adapter.item.AdapterItem;
 import no.nordicsemi.android.support.v18.scanner.ScanRecord;
@@ -24,14 +25,14 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
  * @class describe
  */
 public class ScanBLEItem implements AdapterItem<ScanResult> {
-    private ItemClickListener mOnClickListener;
+    private final ItemClickListener mOnClickListener;
     private View rootView;
     private TextView deviceName;
     private TextView deviceMac;
     private TextView scanRet;
     private TextView deviceRssi;
 
-    public ScanBLEItem(Context context, ItemClickListener clickListener) {
+    public ScanBLEItem(ItemClickListener clickListener) {
         mOnClickListener = clickListener;
     }
 
@@ -85,7 +86,7 @@ public class ScanBLEItem implements AdapterItem<ScanResult> {
             int key = array.keyAt(0);
             byte[] b = (byte[]) array.get(key);
 
-//            builder.append(BLEByteUtil.getHexString(b));
+            builder.append(ByteUtil.getFormatHexString(b));
             if (i != array.size() - 1) {
                 builder.append("\n");
             }
