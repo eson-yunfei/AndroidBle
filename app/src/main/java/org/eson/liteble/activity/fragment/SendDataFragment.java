@@ -1,10 +1,15 @@
 package org.eson.liteble.activity.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+
+import com.shon.bluetooth.core.call.WriteCall;
+import com.shon.bluetooth.core.callback.WriteCallback;
+import com.shon.bluetooth.util.ByteUtil;
 
 import org.eson.liteble.activity.base.BaseObserveFragment;
 import org.eson.liteble.databinding.ActivitySendDataBinding;
@@ -29,7 +34,7 @@ public class SendDataFragment extends BaseObserveFragment<ActivitySendDataBindin
     @Override
     protected void initListener() {
 
-//        viewBinding.sendBtn.setOnClickListener(v -> sendData());
+        viewBinding.sendBtn.setOnClickListener(v -> sendData());
     }
 
     @Override
@@ -50,45 +55,42 @@ public class SendDataFragment extends BaseObserveFragment<ActivitySendDataBindin
     }
 
 
-//    private void sendData() {
-//        String data = viewBinding.editText.getText().toString();
-//        if (TextUtils.isEmpty(data)) {
-//            return;
-//        }
-//
-//        if (data.length() % 2 != 0) {
-//            return;
-//        }
-//
-//        byte[] buffer = BLEByteUtil.hexStringToByte(data);
-//
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setAddress(connectMac);
-//        sendMessage.setServiceUUID(UUID.fromString(serviceUUID));
-//        sendMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
-//        sendMessage.setBytes(buffer);
-//
-//
-//        TMessage tMessage = new TMessage();
-//        tMessage.setBytes(buffer);
-//
-//        tMessage.setObject(sendMessage);
-//
-//        Command command = Dispatcher.getInstance().getApi();
-//
-//        SenderCall<String> senderCall = command.sendCmd(tMessage);
-//        senderCall.execute(new OnMsgSendListener<String>() {
-//            @Override
-//            public void onTimeout() {
-//
-//                LogUtil.e("send data time out ");
-//            }
-//
-//            @Override
-//            public void onDataReceived(String s, TMessage tMessage) {
-//
-//            }
-//        });
-//    }
+    private void sendData() {
+        String data = viewBinding.editText.getText().toString();
+        if (TextUtils.isEmpty(data)) {
+            return;
+        }
+
+        if (data.length() % 2 != 0) {
+            return;
+        }
+
+        final byte[] buffer = ByteUtil.hexStringToByte(data);
+
+        new WriteCall(connectMac)
+                .setServiceUUid(serviceUUID)
+                .setCharacteristicUUID(characterUUID)
+                .enqueue(new WriteCallback(connectMac) {
+                    @Override
+                    public byte[] getSendData() {
+                        return buffer;
+                    }
+
+                    @Override
+                    public boolean process(String address, byte[] result) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean removeOnWriteSuccess() {
+                        return true;
+                    }
+
+                    @Override
+                    public void onTimeout() {
+
+                    }
+                });
+    }
 
 }

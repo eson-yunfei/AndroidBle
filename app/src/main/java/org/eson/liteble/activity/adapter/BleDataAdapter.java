@@ -27,6 +27,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.shon.bluetooth.util.BleUUIDUtil;
+import com.shon.bluetooth.util.ByteUtil;
+
 import org.eson.liteble.R;
 import org.eson.liteble.activity.bean.BleDataBean;
 
@@ -46,7 +49,7 @@ public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
 
     public BleDataAdapter(Context context, List<BleDataBean> dataList, String characterName) {
         super(context, dataList);
-//        isUnknownCharacter = TextUtils.equals(characterName, BleUUIDUtil.UNKNOWN_CHARACTER);
+        isUnknownCharacter = TextUtils.equals(characterName, BleUUIDUtil.UNKNOWN_CHARACTER);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
 
     class ViewHolder {
 
-        private TextView mTextView;
+        private final TextView mTextView;
 
         public ViewHolder(View rootView) {
             mTextView = findView(rootView, R.id.data_text);
@@ -86,11 +89,10 @@ public class BleDataAdapter extends MyBaseAdapter<BleDataBean> {
 
 
     public String getDataString(byte[] buffer) {
-//        String text = BLEByteUtil.getHexString(buffer);
-//        if (!isUnknownCharacter) {
-//            text = text + " (  " + BLEByteUtil.byteToCharSequence(buffer) + "  )";
-//        }
-//        return text;
-        return "";
+        String text = ByteUtil.getHexString(buffer);
+        if (!isUnknownCharacter) {
+            text = text + " (  " + ByteUtil.byteToCharSequence(buffer) + "  )";
+        }
+        return text;
     }
 }

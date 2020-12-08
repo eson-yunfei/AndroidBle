@@ -1,5 +1,6 @@
 package org.eson.liteble.activity.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.Nullable;
+
+import com.shon.bluetooth.core.call.Listener;
+import com.shon.bluetooth.core.call.NotifyCall;
+import com.shon.bluetooth.core.call.ReadCall;
+import com.shon.bluetooth.core.callback.NotifyCallback;
+import com.shon.bluetooth.core.callback.ReadCallback;
+import com.shon.bluetooth.util.BleUUIDUtil;
 
 import org.eson.liteble.R;
 import org.eson.liteble.activity.adapter.BleDataAdapter;
@@ -32,8 +40,6 @@ import java.util.UUID;
  */
 public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteristicBinding> implements View.OnClickListener {
 
-
-
     private CharacterBean characterBean;
     private String serviceUUID;
     private String characterUUID;
@@ -41,8 +47,8 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
     private String connectMac;
     private boolean isListenerNotice = false;
 
-    private List<String> descriptors = new ArrayList<>();
-    private List<BleDataBean> bleDataList = new ArrayList<>();
+    private final List<String> descriptors = new ArrayList<>();
+    private final List<BleDataBean> bleDataList = new ArrayList<>();
     private BleDataAdapter adapter;
 
     @Override
@@ -75,7 +81,7 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
         characterBean = serviceBean.getUUIDBeen().get(position);
         serviceUUID = characterBean.getServiceUUID();
         characterUUID = characterBean.getCharacterUUID();
-//        characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID));
+        characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID));
 
         isListenerNotice = characterBean.isListening();
     }
@@ -89,14 +95,11 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
 
     public void startListener() {
 
-//        LittleBleViewModel.getViewModel().observerDataNotify()
-//                .observe(this, notifyMessage -> {
-//                    if (notifyMessage == null) {
-//                        return;
-//                    }
-//                    changeBleData(notifyMessage.getCharacteristicUUID().toString(),
-//                            notifyMessage.getBytes(), notifyMessage.getAddress());
-//                });
+        new Listener(connectMac)
+                .enqueue((address, result) -> {
+                    changeBleData("",result,address);
+                   return true;
+                });
 
     }
 
@@ -106,6 +109,7 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -132,23 +136,21 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
 
     private void readCharacter() {
 
-//        ReadMessage readMessage = new ReadMessage();
-//        readMessage.setAddress(connectMac);
-//        readMessage.setServiceUUID(UUID.fromString(serviceUUID));
-//        readMessage.setCharacteristicUUID(UUID.fromString(characterUUID));
-//        BleTool.getInstance().getController()
-//                .read(readMessage, new OnRead() {
-//                    @Override
-//                    public void onReadMessage(ReadMessage readMessage) {
-//                        changeBleData(readMessage.getCharacteristicUUID().toString()
-//                                , readMessage.getBytes(), readMessage.getAddress());
-//                    }
-//
-//                    @Override
-//                    public void onReadError() {
-//
-//                    }
-//                });
+        new ReadCall(connectMac)
+                .setServiceUUid(serviceUUID)
+                .setCharacteristicUUID(characterUUID)
+                .enqueue(new ReadCallback() {
+                    @Override
+                    public boolean process(String address, byte[] result) {
+                        changeBleData(characterUUID, result, address);
+                        return true;
+                    }
+
+                    @Override
+                    public void onTimeout() {
+
+                    }
+                });
     }
 
     /**
@@ -157,47 +159,38 @@ public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteris
     private void enableNotice() {
 
 
-//        isListenerNotice = !isListenerNotice;
-//        String text = isListenerNotice ? "取消监听" : "开始监听";
-//        viewBinding.notifyBtn.setText(text);
-//        characterBean.setListening(isListenerNotice);
-//        UUID des = null;
-//        if (descriptors.size() == 0) {
-//            des = UUIDFormat.DESC;
-//        } else {
-//            des = UUID.fromString(descriptors.get(0));
-//        }
-//
-//        NotifyState notifyState = new NotifyState();
-//        notifyState.setAddress(connectMac);
-//        notifyState.setServiceUUID(UUID.fromString(serviceUUID));
-//        notifyState.setCharacteristicUUID(UUID.fromString(characterUUID));
-//        notifyState.setDesUUID(des);
-//        notifyState.setEnable(isListenerNotice);
-//
-//        BleTool.getInstance().getController()
-//                .updateNotify(notifyState, new OnWriteDescriptor() {
-//
-//                    @Override
-//                    public void onWriteDescriptorError() {
-//                        LogUtil.e("NotifyState : onWriteDescriptorError ");
-//                    }
-//
-//                    @Override
-//                    public void onWriteDescriptor(NotifyState result) {
-//
-//                        LogUtil.e("NotifyState : " + result.isResult());
-//                        if (result.isResult()) {
-//                            startListener();
-//                        }
-//                    }
-//                });
+
+        isListenerNotice = !isListenerNotice;
+        String text = isListenerNotice ? "取消监听" : "开始监听";
+        viewBinding.notifyBtn.setText(text);
+        characterBean.setListening(isListenerNotice);
+
+        new NotifyCall(connectMac)
+                .setServiceUUid(serviceUUID)
+                .setCharacteristicUUID(characterUUID)
+                .enqueue(new NotifyCallback() {
+                    @Override
+                    public boolean getTargetSate() {
+                        return true;
+                    }
+
+                    @Override
+                    public void onChangeResult(boolean result) {
+                        super.onChangeResult(result);
+                        startListener();
+                    }
+
+                    @Override
+                    public void onTimeout() {
+
+                    }
+                });
 
     }
 
     protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
 
-        BleDataBean bean = new BleDataBean(deviceAddress, UUID.fromString(uuid), buffer);
+        BleDataBean bean = new BleDataBean(deviceAddress,null/* UUID.fromString(uuid)*/, buffer);
         bean.setTime(getCurrentTime());
         bleDataList.add(0, bean);
         if (adapter == null) {

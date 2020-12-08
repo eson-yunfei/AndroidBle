@@ -5,7 +5,10 @@ import android.bluetooth.BluetoothGatt;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 
+import com.shon.bluetooth.BLEManager;
+
 import org.eson.liteble.DeviceState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Auth : xiao_yun_fei
@@ -46,6 +49,11 @@ public class ConnectViewModel extends ViewModel {
                             break;
                     }
                 });
+    }
+
+    public void disConnectDevice(@Nullable String deviceMac) {
+
+        BLEManager.getInstance().disconnectDevice(deviceMac);
     }
 
 

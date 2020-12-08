@@ -26,7 +26,7 @@ class ScannerViewModel : ViewModel() {
     }
 
     fun startScanner() {
-        Handler(Looper.getMainLooper()).postDelayed(30_000) {
+        Handler(Looper.getMainLooper()).postDelayed(10_000) {
             // 10 s  后 停止扫描
             stopScanner()
         }
