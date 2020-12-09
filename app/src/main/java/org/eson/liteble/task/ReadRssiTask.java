@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import com.shon.bluetooth.core.call.ReadRssiCall;
 import com.shon.bluetooth.core.callback.ReadRssiCallback;
 
+import org.eson.log.LogUtils;
+
 /**
  * Auth : xiao.yunfei
  * Date : 2020/6/28 11:57
@@ -55,6 +57,7 @@ public class ReadRssiTask {
                             if (handler == null){
                                 return;
                             }
+                            LogUtils.d("read rssi value = "+ rssi);
                             handler.postDelayed(runnable, 2_000);
                             AsyncTask.execute(() -> {
                                 if (fileWrite != null){

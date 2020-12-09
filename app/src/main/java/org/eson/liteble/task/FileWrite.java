@@ -22,7 +22,7 @@ class FileWrite {
     private StringBuffer mBuffer = new StringBuffer();
     private String appDir = "";
     private String filerDir = "";
-    private String fileName;
+    private final String fileName;
 
     private BufferedWriter bufferedWriter;
 

@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.shon.bluetooth.util.BleUUIDUtil
 import org.eson.liteble.DeviceState.Companion.instance
 import org.eson.liteble.DeviceState.DeviceLiveData
 import org.eson.liteble.activity.bean.CharacterBean

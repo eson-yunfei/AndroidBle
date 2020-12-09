@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class TimeUtils {
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
     public static String getCurrentTime() {
         return simpleDateFormat.format(new Date(System.currentTimeMillis()));

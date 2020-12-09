@@ -70,7 +70,6 @@ class DeviceState private constructor() : ConnectCallback() {
     class DeviceLiveData(val deviceMac: String? = null, val deviceName: String? = null) : LiveData<DeviceLiveData?>() {
 
 
-
         var state = 0
         var errorCode = 0;
         var gatt: BluetoothGatt? = null
@@ -113,20 +112,11 @@ class DeviceState private constructor() : ConnectCallback() {
     }
 
     companion object {
-        private var state: DeviceState? = null
 
         @JvmStatic
-        val instance: DeviceState?
-            get() {
-                if (state == null) {
-                    synchronized(DeviceState::class.java) {
-                        if (state == null) {
-                            state = DeviceState()
-                        }
-                    }
-                }
-                return state
-            }
+        val instance: DeviceState by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            DeviceState()
+        }
     }
 
     init {

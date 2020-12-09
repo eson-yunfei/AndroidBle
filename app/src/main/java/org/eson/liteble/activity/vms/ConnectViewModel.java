@@ -28,9 +28,6 @@ public class ConnectViewModel extends ViewModel {
 
     public void connectDevice(String address, String name) {
         DeviceState deviceState = DeviceState.getInstance();
-        if (deviceState == null) {
-            return;
-        }
         deviceState.connectDevice(address, name)
                 .observe(lifecycleOwner, deviceLiveData -> {
 
