@@ -11,6 +11,7 @@ import org.eson.liteble.activity.bean.ServiceBean
 import org.eson.liteble.activity.vms.ConnectViewModel
 import org.eson.liteble.activity.vms.DeviceControlViewModel
 import org.eson.liteble.databinding.ActivityDetailBinding
+import org.eson.liteble.task.ReadRssiTask
 
 /**
  * Auth : xiao.yunfei
@@ -23,6 +24,7 @@ class ServiceListFragment : BaseBindingFragment<ActivityDetailBinding?>() {
     private lateinit var mDeviceDetailAdapter: DeviceDetailAdapter
     private var connectViewModel: ConnectViewModel? = null
     private var deviceMac: String? = null
+    private var isReadStart = false
     override fun initViewState() {
 
         mDeviceDetailAdapter = DeviceDetailAdapter(activity, mutableListOf())
@@ -41,20 +43,20 @@ class ServiceListFragment : BaseBindingFragment<ActivityDetailBinding?>() {
             connectViewModel?.disConnectDevice(deviceMac)
         }
         binding?.readRssiBtn?.setOnClickListener {
-//            if (isReadStart) {
-//
-//                isReadStart = false;
-//                viewBinding.readRssiBtn.setText("开始读取信号值");
-//                stopReadTimer();
-//
-//            } else {
-//                isReadStart = true;
-//
-//                viewBinding.readRssiBtn.setText("停止读取信号值");
-//                startReadTimer();
-//            }
+            if (isReadStart) {
+
+                isReadStart = false;
+                binding?.readRssiBtn?.text = "开始读取信号值";
+                stopReadTimer();
+
+            } else {
+                isReadStart = true;
+                binding?.readRssiBtn?.text = "停止读取信号值";
+                startReadTimer();
+            }
         }
     }
+
 
     override fun onProcess(savedInstanceState: Bundle?) {
         super.onProcess(savedInstanceState)
@@ -85,4 +87,21 @@ class ServiceListFragment : BaseBindingFragment<ActivityDetailBinding?>() {
             deviceMac = deviceLiveData.deviceMac
         })
     }
+
+    private var readRssiTask: ReadRssiTask? = null
+    private fun startReadTimer() {
+        if (readRssiTask == null) {
+            readRssiTask = ReadRssiTask(deviceMac!!, "")
+        }
+        readRssiTask?.startTask()
+    }
+
+    private fun stopReadTimer() {
+        if (readRssiTask == null) {
+            return
+        }
+        readRssiTask?.stopTask()
+
+    }
+
 }

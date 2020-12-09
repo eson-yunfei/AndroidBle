@@ -17,10 +17,9 @@
 package org.eson.liteble.activity.fragment;
 
 import android.app.ProgressDialog;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 
-import org.eson.liteble.activity.base.BaseObserveFragment;
+import com.shon.mvvm.base.ui.BaseBindingFragment;
+
 import org.eson.liteble.activity.bean.BondedDeviceBean;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
 
@@ -34,23 +33,16 @@ import java.util.List;
  * @description
  */
 
-public class BondedFragment extends BaseObserveFragment<FragmentBondedDeviceBinding> {
+public class BondedFragment extends BaseBindingFragment<FragmentBondedDeviceBinding> {
 
     private ProgressDialog m_pDialog;
     private List<BondedDeviceBean> mDeviceBeanList;
 
     private BondedDeviceBean selectDevice = null;
 
-
-
     @Override
-    protected FragmentBondedDeviceBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
-        return FragmentBondedDeviceBinding.inflate(inflater,container,false);
-    }
-
-    @Override
-    protected void initListener() {
-        viewBinding.bondedDeviceList.setOnItemClickListener((parent, view, position, id) -> {
+    public void initViewListener() {
+        binding.bondedDeviceList.setOnItemClickListener((parent, view, position, id) -> {
 
             selectDevice = mDeviceBeanList.get(position);
             showProgress("正在连接设备：" + selectDevice.getName());
@@ -59,13 +51,6 @@ public class BondedFragment extends BaseObserveFragment<FragmentBondedDeviceBind
 //            BleService.get().connectionDevice(selectDevice.getAddress());
         });
     }
-
-
-    @Override
-    public void onDeviceStateChange(String deviceMac, int currentState) {
-//        onBleStateChange(deviceMac, currentState);
-    }
-
 
     @Override
     public void onResume() {

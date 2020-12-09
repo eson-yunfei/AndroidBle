@@ -1,21 +1,22 @@
 package com.shon.bluetooth;
 
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.text.TextUtils;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.shon.bluetooth.core.Result;
+import com.shon.bluetooth.core.annotation.Constants;
 import com.shon.bluetooth.core.call.BaseCall;
 import com.shon.bluetooth.core.call.ICall;
 import com.shon.bluetooth.core.call.Listener;
 import com.shon.bluetooth.core.call.NotifyCall;
 import com.shon.bluetooth.core.call.ReadCall;
+import com.shon.bluetooth.core.call.ReadRssiCall;
 import com.shon.bluetooth.core.call.WriteCall;
 import com.shon.bluetooth.core.callback.ICallback;
 import com.shon.bluetooth.core.callback.NotifyCallback;
 import com.shon.bluetooth.core.callback.ReadCallback;
+import com.shon.bluetooth.core.callback.ReadRssiCallback;
 import com.shon.bluetooth.core.callback.WriteCallback;
 import com.shon.bluetooth.util.BleLog;
 import com.shon.bluetooth.util.ByteUtil;
@@ -78,6 +79,9 @@ public class DataDispatcher {
         if (tempCall instanceof ReadCall) {
             ((ReadCall) tempCall).startRead();
         }
+        if (tempCall instanceof ReadRssiCall) {
+            ((ReadRssiCall) tempCall).readRssi();
+        }
     }
 
     public void onReceivedResult(Result value) {
@@ -102,11 +106,11 @@ public class DataDispatcher {
             return;
         }
         tempResult = resultDeque.peek();
-        if (tempResult == null){
+        if (tempResult == null) {
             return;
         }
         boolean finish = handlerResult(tempResult);
-        if (finish){
+        if (finish) {
             tempResult = null;
             resultDeque.removeFirst();
             handlerResult();
@@ -120,7 +124,18 @@ public class DataDispatcher {
         String address = result.getAddress();
 
         int type = result.getType();
-        if (type == BluetoothGattCharacteristic.PROPERTY_WRITE) {
+        if (type == Constants.PROPERTY_READ_RSSI) {
+            if (tempCall instanceof ReadRssiCall) {
+                ReadRssiCallback callBack = (ReadRssiCallback) ((ReadRssiCall) tempCall).getCallBack();
+                if (callBack != null) {
+                    callBack.onReadRssi(ByteUtil.cbyte2Int(bytes[0]) * -1);
+
+                }
+            }
+            startSendNext(true);
+            return true;
+        }
+        if (type == Constants.PROPERTY_WRITE) {
             WriteCallback writeCall = getWriteCallByWriteData(address, setValue);
             if (writeCall != null) {
                 boolean isRemove = writeCall.removeOnWriteSuccess();
@@ -167,7 +182,7 @@ public class DataDispatcher {
             }
         }
 
-        if (type == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
+        if (type == Constants.PROPERTY_NOTIFY) {
             for (Listener listener : listeners) {
                 if (!TextUtils.equals(address, listener.getAddress())) {
                     continue;

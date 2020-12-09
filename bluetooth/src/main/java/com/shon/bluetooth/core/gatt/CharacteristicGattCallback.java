@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 
 import com.shon.bluetooth.DataDispatcher;
 import com.shon.bluetooth.core.Result;
+import com.shon.bluetooth.core.annotation.Constants;
 import com.shon.bluetooth.core.callback.WriteCallback;
 import com.shon.bluetooth.util.BleLog;
 import com.shon.bluetooth.util.ByteUtil;
@@ -30,7 +31,7 @@ public class CharacteristicGattCallback  {
         String hexString = ByteUtil.getHexString(value);
         String address = gatt.getDevice().getAddress();
 
-        Result result = new Result(BluetoothGattCharacteristic.PROPERTY_NOTIFY);
+        Result result = new Result(Constants.PROPERTY_NOTIFY);
         result.setAddress(address);
         result.setBytes(value);
         dataDispatcher.onReceivedResult(result);
@@ -46,7 +47,7 @@ public class CharacteristicGattCallback  {
         String uuid = characteristic.getUuid().toString().toLowerCase();
         byte[] value = characteristic.getValue();
 
-        Result result = new Result(BluetoothGattCharacteristic.PROPERTY_READ);
+        Result result = new Result(Constants.PROPERTY_READ);
         result.setAddress(address);
         result.setBytes(value);
         result.setUuid( uuid);
@@ -63,7 +64,7 @@ public class CharacteristicGattCallback  {
         if (value != null){
             String setValue = ByteUtil.getHexString(value);
             BleLog.d("onCharacteristicWrite : "+ setValue);
-            Result result = new Result(BluetoothGattCharacteristic.PROPERTY_WRITE);
+            Result result = new Result(Constants.PROPERTY_WRITE);
             result.setUuid(characteristic.getUuid().toString());
             result.setAddress(address);
             result.setBytes(value);
@@ -79,7 +80,7 @@ public class CharacteristicGattCallback  {
         BleLog.d("CharacteristicGattCallback :: onCharacteristicChanged ");
         String address = gatt.getDevice().getAddress();
         byte[] value = characteristic.getValue();
-        Result result = new Result(BluetoothGattCharacteristic.PROPERTY_NOTIFY);
+        Result result = new Result(Constants.PROPERTY_NOTIFY);
         result.setAddress(address);
         result.setBytes(value);
         dataDispatcher.onReceivedResult(result);

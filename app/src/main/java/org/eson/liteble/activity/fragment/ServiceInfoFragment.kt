@@ -1,36 +1,25 @@
-package org.eson.liteble.activity.fragment;
+package org.eson.liteble.activity.fragment
 
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-
-import androidx.annotation.Nullable;
-
-import com.shon.bluetooth.core.call.Listener;
-import com.shon.bluetooth.core.call.NotifyCall;
-import com.shon.bluetooth.core.call.ReadCall;
-import com.shon.bluetooth.core.callback.NotifyCallback;
-import com.shon.bluetooth.core.callback.ReadCallback;
-import com.shon.bluetooth.util.BleUUIDUtil;
-
-import org.eson.liteble.R;
-import org.eson.liteble.activity.adapter.BleDataAdapter;
-import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.activity.bean.BleDataBean;
-import org.eson.liteble.activity.bean.CharacterBean;
-import org.eson.liteble.activity.bean.DescriptorBean;
-import org.eson.liteble.activity.bean.ServiceBean;
-import org.eson.liteble.databinding.ActivityCharacteristicBinding;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.view.View
+import android.widget.ArrayAdapter
+import androidx.navigation.Navigation
+import com.shon.bluetooth.core.call.Listener
+import com.shon.bluetooth.core.call.NotifyCall
+import com.shon.bluetooth.core.call.ReadCall
+import com.shon.bluetooth.core.callback.NotifyCallback
+import com.shon.bluetooth.core.callback.ReadCallback
+import com.shon.bluetooth.util.BleUUIDUtil
+import com.shon.mvvm.base.ui.BaseBindingFragment
+import org.eson.liteble.R
+import org.eson.liteble.activity.adapter.BleDataAdapter
+import org.eson.liteble.activity.bean.BleDataBean
+import org.eson.liteble.activity.bean.CharacterBean
+import org.eson.liteble.activity.bean.ServiceBean
+import org.eson.liteble.databinding.ActivityCharacteristicBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Auth : xiao.yunfei
@@ -38,220 +27,158 @@ import java.util.UUID;
  * Package name : org.eson.liteble.activity.fragment
  * Des :
  */
-public class ServiceInfoFragment extends BaseObserveFragment<ActivityCharacteristicBinding> implements View.OnClickListener {
-
-    private CharacterBean characterBean;
-    private String serviceUUID;
-    private String characterUUID;
-    private String characterName = "";
-    private String connectMac;
-    private boolean isListenerNotice = false;
-
-    private final List<String> descriptors = new ArrayList<>();
-    private final List<BleDataBean> bleDataList = new ArrayList<>();
-    private BleDataAdapter adapter;
-
-    @Override
-    protected ActivityCharacteristicBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
-        return ActivityCharacteristicBinding.inflate(getLayoutInflater(), container, false);
+class ServiceInfoFragment : BaseBindingFragment<ActivityCharacteristicBinding?>(), View.OnClickListener {
+    private var characterBean: CharacterBean? = null
+    private var serviceUUID: String? = null
+    private var characterUUID: String? = null
+    private var characterName = ""
+    private var connectMac: String? = null
+    private var isListenerNotice = false
+    private val descriptors: MutableList<String> = ArrayList()
+    private val bleDataList: MutableList<BleDataBean> = ArrayList()
+    private var adapter: BleDataAdapter? = null
+    override fun initViewListener() {
+        binding!!.readBtn.setOnClickListener(this)
+        binding!!.writeBtn.setOnClickListener(this)
+        binding!!.notifyBtn.setOnClickListener(this)
     }
 
-    @Override
-    protected void initListener() {
-        viewBinding.readBtn.setOnClickListener(this);
-        viewBinding.writeBtn.setOnClickListener(this);
-        viewBinding.notifyBtn.setOnClickListener(this);
-    }
-
-    @Override
-    public void setArguments(@Nullable Bundle bundle) {
-        super.setArguments(bundle);
-
+    override fun setArguments(bundle: Bundle?) {
+        super.setArguments(bundle)
         if (bundle == null) {
-            return;
+            return
         }
-        ServiceBean serviceBean = bundle.getParcelable("serviceBean");
-
-        int position = bundle.getInt("position");
-
-        connectMac = bundle.getString("address");
+        val serviceBean: ServiceBean = bundle!!.getParcelable("serviceBean")!!
+        val position = bundle.getInt("position")
+        connectMac = bundle.getString("address")
         if (serviceBean == null) {
-            return;
+            return
         }
-        characterBean = serviceBean.getUUIDBeen().get(position);
-        serviceUUID = characterBean.getServiceUUID();
-        characterUUID = characterBean.getCharacterUUID();
-        characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID));
-
-        isListenerNotice = characterBean.isListening();
+        characterBean = serviceBean.uuidBeen[position]
+        serviceUUID = characterBean?.serviceUUID
+        characterUUID = characterBean?.characterUUID
+        characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID))
+        isListenerNotice = characterBean?.isListening!!
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        setData();
+    override fun onResume() {
+        super.onResume()
+        setData()
     }
 
-    public void startListener() {
-
-        new Listener(connectMac)
-                .enqueue((address, result) -> {
-                    changeBleData("",result,address);
-                   return true;
-                });
-
-    }
-
-    @Override
-    public void onDeviceStateChange(String deviceMac, int currentState) {
-
-
+    fun startListener() {
+        Listener(connectMac)
+                .enqueue { address: String?, result: ByteArray? ->
+                    changeBleData("", result, address)
+                    true
+                }
     }
 
     @SuppressLint("NonConstantResourceId")
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.writeBtn:
-
-                Bundle bundle = new Bundle();
-                bundle.putString("serviceUUID", serviceUUID);
-                bundle.putString("characterUUID", characterUUID);
-                bundle.putString("address", connectMac);
-                navigateNext(R.id.action_serviceInfoFragment_to_sendDataFragment, bundle);
-                break;
-            case R.id.readBtn:
-                readCharacter();
-
-                break;
-            case R.id.notifyBtn:
-                enableNotice();
-                break;
-            default:
-                break;
-
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.writeBtn -> {
+                val bundle = Bundle()
+                bundle.putString("serviceUUID", serviceUUID)
+                bundle.putString("characterUUID", characterUUID)
+                bundle.putString("address", connectMac)
+                Navigation.findNavController(binding!!.root)
+                        .navigate(R.id.action_serviceInfoFragment_to_sendDataFragment, bundle)
+            }
+            R.id.readBtn -> readCharacter()
+            R.id.notifyBtn -> enableNotice()
+            else -> {
+            }
         }
     }
 
-    private void readCharacter() {
-
-        new ReadCall(connectMac)
+    private fun readCharacter() {
+        ReadCall(connectMac)
                 .setServiceUUid(serviceUUID)
                 .setCharacteristicUUID(characterUUID)
-                .enqueue(new ReadCallback() {
-                    @Override
-                    public boolean process(String address, byte[] result) {
-                        changeBleData(characterUUID, result, address);
-                        return true;
+                .enqueue(object : ReadCallback() {
+                    override fun process(address: String, result: ByteArray): Boolean {
+                        changeBleData(characterUUID, result, address)
+                        return true
                     }
 
-                    @Override
-                    public void onTimeout() {
-
-                    }
-                });
+                    override fun onTimeout() {}
+                })
     }
 
     /**
      * 启动通知服务
      */
-    private void enableNotice() {
-
-
-
-        isListenerNotice = !isListenerNotice;
-        String text = isListenerNotice ? "取消监听" : "开始监听";
-        viewBinding.notifyBtn.setText(text);
-        characterBean.setListening(isListenerNotice);
-
-        new NotifyCall(connectMac)
+    private fun enableNotice() {
+        isListenerNotice = !isListenerNotice
+        val text = if (isListenerNotice) "取消监听" else "开始监听"
+        binding!!.notifyBtn.text = text
+        characterBean!!.isListening = isListenerNotice
+        NotifyCall(connectMac)
                 .setServiceUUid(serviceUUID)
                 .setCharacteristicUUID(characterUUID)
-                .enqueue(new NotifyCallback() {
-                    @Override
-                    public boolean getTargetSate() {
-                        return true;
+                .enqueue(object : NotifyCallback() {
+                    override fun getTargetSate(): Boolean {
+                        return true
                     }
 
-                    @Override
-                    public void onChangeResult(boolean result) {
-                        super.onChangeResult(result);
-                        startListener();
+                    override fun onChangeResult(result: Boolean) {
+                        super.onChangeResult(result)
+                        startListener()
                     }
 
-                    @Override
-                    public void onTimeout() {
-
-                    }
-                });
-
+                    override fun onTimeout() {}
+                })
     }
 
-    protected void changeBleData(String uuid, byte[] buffer, String deviceAddress) {
-
-        BleDataBean bean = new BleDataBean(deviceAddress,null/* UUID.fromString(uuid)*/, buffer);
-        bean.setTime(getCurrentTime());
-        bleDataList.add(0, bean);
+     fun changeBleData(uuid: String?, buffer: ByteArray?, deviceAddress: String?) {
+        val bean = BleDataBean(deviceAddress, null /* UUID.fromString(uuid)*/, buffer)
+        bean.time = currentTime
+        bleDataList.add(0, bean)
         if (adapter == null) {
-            adapter = new BleDataAdapter(getActivity(), bleDataList, characterName);
-            viewBinding.dataListView.setAdapter(adapter);
+            adapter = BleDataAdapter(activity, bleDataList, characterName)
+            binding!!.dataListView.adapter = adapter
         } else {
-            adapter.notifyDataSetChanged();
+            adapter!!.notifyDataSetChanged()
         }
     }
 
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss ,  SSS", Locale.getDefault());
-
-    private String getCurrentTime() {
-        return simpleDateFormat.format(new Date(System.currentTimeMillis()));
-    }
+    private val simpleDateFormat = SimpleDateFormat("HH:mm:ss ,  SSS", Locale.getDefault())
+    private val currentTime: String
+        private get() = simpleDateFormat.format(Date(System.currentTimeMillis()))
 
     /**
      *
      */
-    private void setData() {
-
-
-        viewBinding.uuidText.setText(characterUUID);
-
-
-        String name = "";
-        if (characterBean.isRead()) {
-            name += "read ";
-            viewBinding.readBtn.setVisibility(View.VISIBLE);
+    private fun setData() {
+        binding!!.uuidText.text = characterUUID
+        var name = ""
+        if (characterBean!!.isRead) {
+            name += "read "
+            binding!!.readBtn.visibility = View.VISIBLE
         }
-        if (characterBean.isWrite()) {
-            name += "write ";
-            viewBinding.writeBtn.setVisibility(View.VISIBLE);
+        if (characterBean!!.isWrite) {
+            name += "write "
+            binding!!.writeBtn.visibility = View.VISIBLE
         }
-        if (characterBean.isNotify()) {
-            name += "notify ";
-            viewBinding.notifyBtn.setVisibility(View.VISIBLE);
+        if (characterBean!!.isNotify) {
+            name += "notify "
+            binding!!.notifyBtn.visibility = View.VISIBLE
         }
-
-        viewBinding.propertiesText.setText(name);
-
-
-        String text = isListenerNotice ? "取消监听" : "开始监听";
-        viewBinding.notifyBtn.setText(text);
-
-
-        List<DescriptorBean> descriptorList = characterBean.getDescriptorBeen();
-        if (descriptorList == null || descriptorList.size() == 0) {
-            viewBinding.descriptorLayout.setVisibility(View.GONE);
-            return;
+        binding!!.propertiesText.text = name
+        val text = if (isListenerNotice) "取消监听" else "开始监听"
+        binding!!.notifyBtn.text = text
+        val descriptorList = characterBean!!.descriptorBeen
+        if (descriptorList == null || descriptorList.size == 0) {
+            binding!!.descriptorLayout.visibility = View.GONE
+            return
         }
-
-        for (DescriptorBean descriptorBean : descriptorList) {
-            String uuid = descriptorBean.getUUID();
-            descriptors.add(uuid);
+        for (descriptorBean in descriptorList) {
+            val uuid = descriptorBean.uuid
+            descriptors.add(uuid)
         }
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, descriptors);
-        viewBinding.descListView.setAdapter(arrayAdapter);
+        val arrayAdapter = ArrayAdapter(activity!!,
+                android.R.layout.simple_list_item_1, android.R.id.text1, descriptors)
+        binding!!.descListView.adapter = arrayAdapter
     }
-
-
 }

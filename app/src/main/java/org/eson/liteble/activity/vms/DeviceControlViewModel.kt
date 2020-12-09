@@ -34,6 +34,11 @@ class DeviceControlViewModel : ViewModel() {
         connectLiveData!!.observe(lifecycleOwner!!, observer)
     }
 
+
+
+
+
+
     private fun loadGattServer(gatt: BluetoothGatt) {
 
         val services = gatt.services

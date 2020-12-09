@@ -1,18 +1,13 @@
-package org.eson.liteble.activity.fragment;
+package org.eson.liteble.activity.fragment
 
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-
-import androidx.annotation.Nullable;
-
-import com.shon.bluetooth.core.call.WriteCall;
-import com.shon.bluetooth.core.callback.WriteCallback;
-import com.shon.bluetooth.util.ByteUtil;
-
-import org.eson.liteble.activity.base.BaseObserveFragment;
-import org.eson.liteble.databinding.ActivitySendDataBinding;
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import com.shon.bluetooth.core.call.WriteCall
+import com.shon.bluetooth.core.callback.WriteCallback
+import com.shon.bluetooth.util.ByteUtil
+import com.shon.mvvm.base.ui.BaseBindingFragment
+import org.eson.liteble.databinding.ActivitySendDataBinding
 
 /**
  * Auth : xiao.yunfei
@@ -20,77 +15,50 @@ import org.eson.liteble.databinding.ActivitySendDataBinding;
  * Package name : org.eson.liteble.activity.fragment
  * Des :
  */
-public class SendDataFragment extends BaseObserveFragment<ActivitySendDataBinding> {
-
-    private String serviceUUID;
-    private String characterUUID;
-    private String connectMac;
-
-    @Override
-    protected ActivitySendDataBinding getViewBinding(LayoutInflater inflater, ViewGroup container) {
-        return ActivitySendDataBinding.inflate(inflater, container, false);
+class SendDataFragment : BaseBindingFragment<ActivitySendDataBinding?>() {
+    private var serviceUUID: String? = null
+    private var characterUUID: String? = null
+    private var connectMac: String? = null
+    override fun initViewListener() {
+        binding!!.sendBtn.setOnClickListener { v: View? -> sendData() }
     }
 
-    @Override
-    protected void initListener() {
-
-        viewBinding.sendBtn.setOnClickListener(v -> sendData());
-    }
-
-    @Override
-    public void setArguments(@Nullable Bundle args) {
-        super.setArguments(args);
+    override fun setArguments(args: Bundle?) {
+        super.setArguments(args)
         if (args == null) {
-            return;
+            return
         }
-        serviceUUID = args.getString("serviceUUID");
-        characterUUID = args.getString("characterUUID");
-        connectMac = args.getString("address");
+        serviceUUID = args.getString("serviceUUID")
+        characterUUID = args.getString("characterUUID")
+        connectMac = args.getString("address")
     }
 
-
-    @Override
-    public void onDeviceStateChange(String deviceMac, int currentState) {
-
-    }
-
-
-    private void sendData() {
-        String data = viewBinding.editText.getText().toString();
+    private fun sendData() {
+        val data = binding!!.editText.text.toString()
         if (TextUtils.isEmpty(data)) {
-            return;
+            return
         }
-
-        if (data.length() % 2 != 0) {
-            return;
+        if (data.length % 2 != 0) {
+            return
         }
-
-        final byte[] buffer = ByteUtil.hexStringToByte(data);
-
-        new WriteCall(connectMac)
+        val buffer = ByteUtil.hexStringToByte(data)
+        WriteCall(connectMac)
                 .setServiceUUid(serviceUUID)
                 .setCharacteristicUUID(characterUUID)
-                .enqueue(new WriteCallback(connectMac) {
-                    @Override
-                    public byte[] getSendData() {
-                        return buffer;
+                .enqueue(object : WriteCallback(connectMac) {
+                    override fun getSendData(): ByteArray {
+                        return buffer
                     }
 
-                    @Override
-                    public boolean process(String address, byte[] result) {
-                        return false;
+                    override fun process(address: String, result: ByteArray): Boolean {
+                        return false
                     }
 
-                    @Override
-                    public boolean removeOnWriteSuccess() {
-                        return true;
+                    override fun removeOnWriteSuccess(): Boolean {
+                        return true
                     }
 
-                    @Override
-                    public void onTimeout() {
-
-                    }
-                });
+                    override fun onTimeout() {}
+                })
     }
-
 }

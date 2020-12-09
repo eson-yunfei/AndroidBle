@@ -2,6 +2,7 @@ package org.eson.liteble.activity.vms
 
 import android.os.Handler
 import android.os.Looper
+import android.os.ParcelUuid
 import androidx.core.os.postDelayed
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -38,13 +39,13 @@ class ScannerViewModel : ViewModel() {
                 .setReportDelay(1000)
                 .setUseHardwareBatchingIfSupported(false)
                 .build()
-        val filters: List<ScanFilter> = ArrayList()
-        //        ScanFilter filter = new ScanFilter.Builder()
+        val filters: MutableList<ScanFilter> = mutableListOf()
+//        val filter = ScanFilter.Builder()
 //                .setServiceUuid(ParcelUuid.fromString("6E401892-B5A3-F393-E0A9-E50E24DCCA9E"))
 //                .setDeviceAddress("F7:CE:C8:F0:77:44")
-//                .build();
+//                .build()
 //
-//        filters.add(filter);
+//        filters.add(filter)
         scannerCompat.startScan(filters, scanCfg, scanCallback)
     }
 

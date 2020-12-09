@@ -23,10 +23,7 @@ public class LiteBle extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
-//        LittleBleViewModel.iniViewModel(this);
         LogUtils.init();
         BLEManager.init(this);
     }
-
-
 }

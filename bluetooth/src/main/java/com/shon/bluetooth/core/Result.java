@@ -13,6 +13,8 @@ public class Result {
     private String address;
     private String uuid;
     private byte[] bytes;
+
+    @ResultType
     private final int type;
 
     public Result(@ResultType int type) {

@@ -40,7 +40,7 @@ public class BLEManager {
     @NonNull
     public static BLEManager getInstance() {
         if (bleManager == null)
-            throw new NullPointerException("BLEManager 还没有初始化，请先调用 BLEManager.init(Context context) 。");
+            throw new NullPointerException("BLEManager 还没有初始化，请先调用 BLEManager.init(context) 。");
         return bleManager;
     }
 

@@ -10,9 +10,10 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(value = RetentionPolicy.SOURCE)
 @IntDef({
-        BluetoothGattCharacteristic.PROPERTY_READ,
-        BluetoothGattCharacteristic.PROPERTY_WRITE,
-        BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+        Constants.PROPERTY_READ,
+        Constants.PROPERTY_WRITE,
+        Constants.PROPERTY_NOTIFY,
+        Constants.PROPERTY_READ_RSSI
 })
 public @interface ResultType {
 }
