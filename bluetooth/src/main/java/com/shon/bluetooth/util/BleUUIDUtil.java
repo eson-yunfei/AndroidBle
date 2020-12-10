@@ -21,7 +21,7 @@ import android.text.TextUtils;
 import java.util.UUID;
 
 /**
- * @package_name org.eson.liteble.util
+ * @package_name org.eson.liteble.common.util
  * @name ${name}
  * <p>
  * Created by xiaoyunfei on 2017/5/15.

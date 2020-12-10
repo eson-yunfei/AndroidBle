@@ -9,4 +9,4 @@
     android:layout_height="match_parent"
     app:defaultNavHost="true"
     app:navGraph="@navigation/connected_device"
-    tools:context=".activity.DeviceActivity" />
+    tools:context=".detail.DeviceActivity" />

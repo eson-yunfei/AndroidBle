@@ -8,7 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!--下段代码就是去除阴影的-->
-        <item name="android:windowContentOverlay">@null</item>
+<!--        <item name="android:windowContentOverlay">@null</item>-->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,5 +20,15 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+
+    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <!-- 是否覆盖在Toolbar之上 -->
+        <item name="overlapAnchor">false</item>
+        <!--overflow menu背景颜色 -->
+<!--        <item name="android:popupBackground">@color/colorPrimary</item>-->
+        <item name="android:dropDownVerticalOffset">4dp</item>
+        <item name="android:dropDownHorizontalOffset">0dp</item>
+    </style>
 
 </resources>

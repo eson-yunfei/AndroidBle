@@ -6,7 +6,7 @@
     app:startDestination="@id/serviceListFragment">
     <fragment
         android:id="@+id/serviceListFragment"
-        android:name="org.eson.liteble.activity.fragment.ServiceListFragment"
+        android:name="org.eson.liteble.detail.fragment.ServiceListFragment"
         android:label="ServiceListFragment"
         tools:layout="@layout/activity_detail">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/serviceInfoFragment"
-        android:name="org.eson.liteble.activity.fragment.ServiceInfoFragment"
+        android:name="org.eson.liteble.detail.fragment.ServiceInfoFragment"
         android:label="ServiceInfoFragment"
         tools:layout="@layout/activity_characteristic">
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/sendDataFragment"
-        android:name="org.eson.liteble.activity.fragment.SendDataFragment"
+        android:name="org.eson.liteble.detail.fragment.SendDataFragment"
         android:label="SendDataFragment"
         tools:layout="@layout/activity_send_data" />
 </navigation>

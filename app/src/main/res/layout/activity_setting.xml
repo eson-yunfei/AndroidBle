@@ -1,117 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="6dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="搜索设备搜索时长："
-            android:textSize="@dimen/text_size" />
-
-        <EditText
-            android:id="@+id/timeOutEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:hint="单位：s"
-            android:inputType="numberSigned"
-            android:maxLength="10"
-            android:textSize="@dimen/text_size" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:background="#cccccc" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="6dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="过滤无名称设备"
-            android:textSize="@dimen/text_size" />
-
-        <Switch
-            android:id="@+id/filter_no_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:background="#cccccc" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="6dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="允许连接多个设备"
-            android:textSize="@dimen/text_size" />
-
-        <Switch
-            android:id="@+id/switchBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/maxSizeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="6dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:text="最大连接设备个数："
-            android:textSize="@dimen/text_size" />
-
-        <EditText
-            android:id="@+id/maxNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:hint="1-5个"
-            android:inputType="number"
-            android:maxLength="10"
-            android:textSize="@dimen/text_size" />
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/saveBtn"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/scan_time_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="@string/save_setting" />
-</LinearLayout>
+        android:layout_marginTop="10dp"
+        android:text="搜索设备搜索时长："
+        android:textColor="#666666"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/scan_time_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:entries="@array/scanner_time"
+        app:layout_constraintBottom_toBottomOf="@id/scan_time_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/scan_time_title" />
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_marginTop="15dp"
+        android:background="#cccccc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scan_time_title" />
+
+
+    <TextView
+        android:id="@+id/filter_empty_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:text="过滤无名称设备"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line1"
+        tools:ignore="HardcodedText" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/filter_no_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        app:layout_constraintBottom_toBottomOf="@id/filter_empty_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/filter_empty_title" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_marginTop="15dp"
+        android:background="#cccccc"
+        app:layout_constraintTop_toBottomOf="@id/filter_no_name" />
+
+
+    <TextView
+        android:id="@+id/link_more_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:text="允许连接多个设备"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2"
+        tools:ignore="HardcodedText" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        app:layout_constraintBottom_toBottomOf="@id/link_more_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/link_more_title" />
+
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_marginTop="15dp"
+        android:background="#cccccc"
+        app:layout_constraintTop_toBottomOf="@id/link_more_title" />
+
+
+    <TextView
+        android:id="@+id/max_link_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="15dp"
+        android:text="最大连接设备个数："
+        android:textSize="@dimen/text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line3"
+        tools:ignore="HardcodedText" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/maxNumber"
+        android:layout_width="wrap_content"
+        android:entries="@array/max_connect_size"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/max_link_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/max_link_title" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/max_link_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="line3,max_link_title,maxNumber" />
+</androidx.constraintlayout.widget.ConstraintLayout>

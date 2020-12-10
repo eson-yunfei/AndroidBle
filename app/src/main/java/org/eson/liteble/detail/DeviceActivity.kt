@@ -1,28 +1,26 @@
-package org.eson.liteble.activity;
+package org.eson.liteble.detail
 
-import android.os.Bundle;
+import android.os.Bundle
+import androidx.activity.viewModels
+import com.shon.mvvm.base.ui.BaseBindingActivity
+import dagger.hilt.android.AndroidEntryPoint
+import org.eson.liteble.databinding.ActivityDeviceBinding
+import org.eson.liteble.detail.viewmodel.DeviceControlViewModel
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+@AndroidEntryPoint
+class DeviceActivity : BaseBindingActivity<ActivityDeviceBinding?>() {
 
-import com.shon.mvvm.base.ui.BaseBindingActivity;
+    private val deviceControlViewModel: DeviceControlViewModel by viewModels()
 
-import org.eson.liteble.activity.vms.DeviceControlViewModel;
-import org.eson.liteble.databinding.ActivityDeviceBinding;
-import org.jetbrains.annotations.Nullable;
+    private var connectDeviceAddress: String? = null
 
-public class DeviceActivity extends BaseBindingActivity<ActivityDeviceBinding> {
+    override fun onProcess(bundle: Bundle?) {
+        connectDeviceAddress = intent.getStringExtra("connectBt")
+        deviceControlViewModel.setConnectDevice(connectDeviceAddress)
 
-    private DeviceControlViewModel deviceControlViewModel;
-    private String connectDeviceAddress;
+    }
+}
 
-
-    @Override
-    public void onProcess(@Nullable Bundle bundle) {
-        deviceControlViewModel = ViewModelProviders.of(this).get(DeviceControlViewModel.class);
-
-        connectDeviceAddress = (String) getIntent().getStringExtra("connectBt");
-        deviceControlViewModel.setConnectDevice(connectDeviceAddress);
 //        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.connected_device_view);
 //
 //        if (navHostFragment == null) {
@@ -31,12 +29,8 @@ public class DeviceActivity extends BaseBindingActivity<ActivityDeviceBinding> {
 //        NavController controller = navHostFragment.getNavController();
 //        NavGraph graph = controller.getGraph();
 //        NavArgument argument = new NavArgument.Builder()
-////                .setDefaultValue(connectBt)
+//                .setDefaultValue(connectBt)
 //                .build();
 //        graph.addArgument("connectBt", argument);
 //
 //        controller.setGraph(graph);
-    }
-
-
-}

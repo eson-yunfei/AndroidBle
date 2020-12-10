@@ -12,17 +12,18 @@
         android:layout_height="wrap_content">
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
+            android:background="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            app:tabIndicatorColor="@color/white"
-            app:tabIndicatorHeight="1dp"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextColor="@color/gray">
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabIndicatorHeight="2dp"
+            app:tabIndicatorFullWidth="false"
+            app:tabSelectedTextColor="@color/colorPrimaryDark"
+            app:tabTextColor="#999999">
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="scanner"/>
+                android:text="ALL"/>
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
