@@ -35,10 +35,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding?>() {
 
     private var lastSelectTabIndex = 0;
     override fun initViewState() {
-        val mActionBar = supportActionBar
-        if (mActionBar != null) {
-            mActionBar.elevation = 0f
-        }
+//        val mActionBar = supportActionBar
+//        if (mActionBar != null) {
+//            mActionBar.elevation = 0f
+//        }
         mScanFragment = ScanFragment()
         mDevicesFragment = BondedFragment()
 
