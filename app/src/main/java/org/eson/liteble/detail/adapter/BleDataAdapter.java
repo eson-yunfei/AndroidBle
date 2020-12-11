@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.shon.bluetooth.util.BleUUIDUtil;
+import org.eson.liteble.common.util.BleUUIDUtil;
 import com.shon.bluetooth.util.ByteUtil;
 
 import org.eson.liteble.R;

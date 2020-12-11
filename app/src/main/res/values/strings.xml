@@ -2,7 +2,8 @@
     <string name="app_name">LiteBle</string>
     <string name="action_settings">设置</string>
 
-    <string name="service_uuid" formatted="false">UUID: 0x%s  \nfull:  %s</string>
+    <string name="service_uuid_info" formatted="false">UUID: 0x%s  ( %s ) \nfull:  %s</string>
+    <string name="character_uuid" formatted="false">UUID: 0x%s ( %s )</string>
     <string name="image_next">arrow</string>
     <string name="text_type">类型：</string>
     <string name="text_read_data">读数据</string>
@@ -10,17 +11,6 @@
     <string name="text_start_listener_data">开始监听</string>
     <string name="text_scan_device">搜索设备</string>
 
-    <!--<string name="exchange_txt_hint">-->
-    <!--<Data>-->
-    <!--<font color="#ff0000">-->
-    <!--<b>%1$s</b>-->
-    <!--</font>-->
-    <!--:-->
-    <!--<font color="#00ff00">-->
-    <!--<b>%2$s</b>-->
-    <!--</font>-->
-    <!--</Data></string>-->
-    <!-- Menu items -->
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>

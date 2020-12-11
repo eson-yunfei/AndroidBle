@@ -14,7 +14,7 @@
  *     limitations under the License.
  */
 
-package com.shon.bluetooth.util;
+package org.eson.liteble.common.util;
 
 import android.text.TextUtils;
 

@@ -10,7 +10,7 @@ import com.shon.bluetooth.core.call.NotifyCall
 import com.shon.bluetooth.core.call.ReadCall
 import com.shon.bluetooth.core.callback.NotifyCallback
 import com.shon.bluetooth.core.callback.ReadCallback
-import com.shon.bluetooth.util.BleUUIDUtil
+import org.eson.liteble.common.util.BleUUIDUtil
 import com.shon.mvvm.base.ui.BaseBindingFragment
 import org.eson.liteble.R
 import org.eson.liteble.detail.bean.BleDataBean

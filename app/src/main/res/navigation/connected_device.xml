@@ -3,16 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/connected_device"
-    app:startDestination="@id/serviceListFragment">
-    <fragment
-        android:id="@+id/serviceListFragment"
-        android:name="org.eson.liteble.detail.fragment.ServiceListFragment"
-        android:label="ServiceListFragment"
-        tools:layout="@layout/activity_detail">
-        <action
-            android:id="@+id/action_serviceListFragment_to_serviceInfoFragment"
-            app:destination="@id/serviceInfoFragment" />
-    </fragment>
+    app:startDestination="@id/serviceInfoFragment">
+    <!--    <fragment-->
+    <!--        android:id="@+id/serviceListFragment"-->
+    <!--        android:name="org.eson.liteble.detail.fragment.ServiceListFragment"-->
+    <!--        android:label="ServiceListFragment"-->
+    <!--        tools:layout="@layout/activity_detail">-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_serviceListFragment_to_serviceInfoFragment"-->
+    <!--            app:destination="@id/serviceInfoFragment"-->
+    <!--            app:enterAnim="@anim/fragment_fade_enter"-->
+    <!--            app:exitAnim="@anim/fragment_fade_exit" />-->
+    <!--    </fragment>-->
     <fragment
         android:id="@+id/serviceInfoFragment"
         android:name="org.eson.liteble.detail.fragment.ServiceInfoFragment"
@@ -20,7 +22,9 @@
         tools:layout="@layout/activity_characteristic">
         <action
             android:id="@+id/action_serviceInfoFragment_to_sendDataFragment"
-            app:destination="@id/sendDataFragment" />
+            app:destination="@id/sendDataFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit" />
     </fragment>
     <fragment
         android:id="@+id/sendDataFragment"
