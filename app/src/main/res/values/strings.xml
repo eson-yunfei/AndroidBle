@@ -3,7 +3,7 @@
     <string name="action_settings">设置</string>
 
     <string name="service_uuid_info" formatted="false">UUID: 0x%s  ( %s ) \nfull:  %s</string>
-    <string name="character_uuid" formatted="false">UUID: 0x%s ( %s )</string>
+    <string name="character_uuid" formatted="false">UUID: 0x%s\n( %s )</string>
     <string name="image_next">arrow</string>
     <string name="text_type">类型：</string>
     <string name="text_read_data">读数据</string>

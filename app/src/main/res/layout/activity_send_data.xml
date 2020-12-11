@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/fab_margin"
-        android:text="输入要发送的数据，格式：01 ab ff; "
-        android:textSize="@dimen/text_size"/>
+        android:padding="16dp"
+        android:typeface="serif"
+        android:textStyle="bold"
+        android:text="输入要发送的16进制数据\n格式为：01 ab ff（不需要空格）"
+        android:textColor="#666666"
+        android:textSize="@dimen/text_size"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edit_text"
-        android:labelFor="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:labelFor="@+id/edit_text"
+        android:hint="AB0102AB"
         android:padding="@dimen/fab_margin"
-        android:textSize="@dimen/text_size"/>
-
+        android:textSize="@dimen/text_size"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/sendBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="send"
-        android:textSize="@dimen/text_size"/>
+        android:textSize="@dimen/text_size" />
 </LinearLayout>

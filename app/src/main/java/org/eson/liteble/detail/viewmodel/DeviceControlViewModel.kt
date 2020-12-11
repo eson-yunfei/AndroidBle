@@ -54,19 +54,19 @@ constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewMode
 
                 val characterBeanList = characteristicList.map { bleGattCharacteristic ->
 
-                    val characterBean = CharacterBean()
-                    characterBean.characterUUID = bleGattCharacteristic.uuid.toString()
-                    characterBean.serviceUUID = serviceUUID
+                    val characterBean = CharacterBean(gatt.device.address,gatt.device.name
+                    ,bleGattCharacteristic.uuid.toString(),serviceUUID)
+
                     ////用于区分特性用途（读、写、通知）
                     val properties = bleGattCharacteristic.properties
                     if ((properties and PROPERTY_READ) != 0) {
-                        characterBean.isRead = true
+                        characterBean.read = true
                     }
                     if ((properties and PROPERTY_WRITE) != 0) {
-                        characterBean.isWrite = true
+                        characterBean.write = true
                     }
                     if ((properties and PROPERTY_NOTIFY) != 0) {
-                        characterBean.isNotify = true
+                        characterBean.notify = true
                     }
                     val descriptors = bleGattCharacteristic.descriptors
                     descriptors?.let { descriptorList ->

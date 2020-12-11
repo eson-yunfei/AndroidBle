@@ -2,11 +2,13 @@ package org.eson.liteble.detail.fragment
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import com.shon.bluetooth.core.call.WriteCall
 import com.shon.bluetooth.core.callback.WriteCallback
 import com.shon.bluetooth.util.ByteUtil
-import com.shon.mvvm.base.ui.BaseBindingFragment
 import org.eson.liteble.databinding.ActivitySendDataBinding
 
 /**
@@ -15,12 +17,23 @@ import org.eson.liteble.databinding.ActivitySendDataBinding
  * Package name : org.eson.liteble.activity.fragment
  * Des :
  */
-class SendDataFragment : BaseBindingFragment<ActivitySendDataBinding?>() {
+class SendDataFragment : DialogFragment() {
+    private lateinit var binding: ActivitySendDataBinding
     private var serviceUUID: String? = null
     private var characterUUID: String? = null
     private var connectMac: String? = null
-    override fun initViewListener() {
-        binding!!.sendBtn.setOnClickListener { v: View? -> sendData() }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = ActivitySendDataBinding.inflate(inflater,container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewListener()
+    }
+    private fun initViewListener() {
+        binding.sendBtn.setOnClickListener { v: View? -> sendData() }
     }
 
     override fun setArguments(args: Bundle?) {

@@ -8,14 +8,44 @@
     android:paddingRight="10dp">
 
     <ImageView
-        android:id="@+id/arrow_image"
+        android:id="@+id/notification_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/image_next"
-        android:src="@mipmap/icon_next"
+        android:padding="5dp"
+        android:src="@mipmap/ic_operation_start_notifications_normal"
+        android:tint="#aaaaaa"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseAppTint" />
+
+
+    <ImageView
+        android:id="@+id/read_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"
+        android:src="@mipmap/ic_operation_read_normal"
+        android:tint="#aaaaaa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/notification_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseAppTint" />
+
+    <ImageView
+        android:id="@+id/send_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"
+        android:src="@mipmap/ic_operation_send_normal"
+        android:tint="#aaaaaa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/read_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseAppTint" />
+
 
     <TextView
         android:id="@+id/character_name_text"
@@ -27,7 +57,7 @@
         android:textSize="@dimen/text_size"
         android:textStyle="italic"
         android:typeface="serif"
-        app:layout_constraintEnd_toStartOf="@id/arrow_image"
+        app:layout_constraintEnd_toStartOf="@id/send_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
@@ -43,10 +73,18 @@
         android:textSize="10sp"
         android:textStyle="italic"
         android:typeface="serif"
-        app:layout_constraintEnd_toStartOf="@id/arrow_image"
+        app:layout_constraintEnd_toStartOf="@id/send_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/character_name_text"
         tools:ignore="SmallSp" />
 
+    <TextView
+        android:id="@+id/read_result"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/character_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/send_image"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
