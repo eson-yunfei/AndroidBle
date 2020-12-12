@@ -9,7 +9,6 @@ import org.eson.log.LogUtils
 class ScannerLiveData : LiveData<ScannerLiveData>() {
 
     private val scanResultList = mutableListOf<ScanResult>()
-
     fun getScanResultList(): MutableList<ScanResult> {
         scanResultList.sortByDescending {
             it.rssi

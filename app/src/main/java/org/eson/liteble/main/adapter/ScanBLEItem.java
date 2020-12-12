@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import org.eson.liteble.R;
 import org.eson.liteble.common.util.ByteUtil;
+import org.eson.log.LogUtils;
+import org.eson.test.band.TimeTest;
 
 import kale.adapter.item.AdapterItem;
 import no.nordicsemi.android.support.v18.scanner.ScanRecord;
@@ -70,6 +72,10 @@ public class ScanBLEItem implements AdapterItem<ScanResult> {
         rootView.setOnClickListener(v -> mOnClickListener.onItemClick(device));
 
 
+//        LogUtils.d("device.isLegacy() = "+ device.isLegacy());
+//        LogUtils.d("device.isConnectable() = "+ device.isConnectable());
+        TimeTest.test(device.getTimestampNanos());
+
         ScanRecord scanRecord = device.getScanRecord();
         if (scanRecord == null) {
             return;
@@ -82,15 +88,18 @@ public class ScanBLEItem implements AdapterItem<ScanResult> {
         StringBuilder builder = new StringBuilder();
         scanRet.setVisibility(View.VISIBLE);
         for (int i = 0; i < array.size(); i++) {
-            int key = array.keyAt(0);
-            byte[] b = (byte[]) array.get(key);
+            int key = array.keyAt(i);
+            byte[] b = array.get(key);
 
             builder.append(ByteUtil.getFormatHexString(b));
+            String s = com.shon.bluetooth.util.ByteUtil.byteToCharSequenceUTF(b);
+            LogUtils.d("s == "+ s);
             if (i != array.size() - 1) {
                 builder.append("\n");
             }
         }
         scanRet.setText(builder.toString());
+
 
 
     }

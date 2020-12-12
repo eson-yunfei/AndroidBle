@@ -46,6 +46,18 @@ public class ByteUtil {
         }
         return sendString;
     }
+    public static String byteToCharSequenceUTF(byte[] buffer) {
+        if (buffer == null || buffer.length == 0) {
+            return "";
+        }
+        String sendString = "";
+        try {
+            sendString = new String(buffer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sendString;
+    }
 
     /**
      * 把16进制字符串转换成字节数组 *     @param hex * @return

@@ -30,6 +30,10 @@ import java.util.UUID;
 
 public class BleUUIDUtil {
 
+    private static final int COMPANY_ID_MICROSOFT = 0x0006;
+    private static final int COMPANY_ID_APPLE = 0x004C;
+    private static final int COMPANY_ID_NORDIC_SEMI = 0x0059;
+
     public static final String UUID_FORMAT = "0000%04x-0000-1000-8000-00805f9b34fb";
 
     public static final String UNKNOWN_SERVICE = "Unknown Service";
@@ -39,6 +43,8 @@ public class BleUUIDUtil {
         public static final int Generic_Access = 0x1800;
         public static final int Generic_Attribute = 0x1801;
         public static final int Device_Information = 0x180A;
+        public static final int Nordic_Service = 0x1530;
+
     }
 
 
@@ -51,16 +57,21 @@ public class BleUUIDUtil {
         public static final int Firmware_Revision_String = 0x2A26;
         public static final int Hardware_Revision_String = 0x2A27;
         public static final int Manufacturer_Name_String = 0x2A29;
+
+        public static final int DFU_Control_Point = 0x1531;
+        public static final int DFU_Packet = 0x1532;
+        public static final int DFU_Status_Report = 0x1533;
+        public static final int DFU_Revision = 0x1534;
     }
 
 
     public static String getServiceNameByUUID(UUID uuid) {
         int serviceID = getValue(uuid);
-        UUID uuid1 = makeUUID(serviceID);
+//        UUID uuid1 = makeUUID(serviceID);
 
-        if (!TextUtils.equals(uuid.toString(), uuid1.toString())) {
-            return UNKNOWN_SERVICE;
-        }
+//        if (!TextUtils.equals(uuid.toString(), uuid1.toString())) {
+//            return UNKNOWN_SERVICE;
+//        }
         switch (serviceID) {
             case GattService.Generic_Access:
                 return "Generic Access";
@@ -68,6 +79,8 @@ public class BleUUIDUtil {
                 return "Generic Attribute";
             case GattService.Device_Information:
                 return "Device Information";
+            case GattService.Nordic_Service:
+                return "Nordic (DFU) Service";
             default:
                 return UNKNOWN_SERVICE;
         }
@@ -76,11 +89,11 @@ public class BleUUIDUtil {
 
     public static String getCharacterNameByUUID(UUID characterUUID) {
         int characterID = getValue(characterUUID);
-        UUID uuid1 = makeUUID(characterID);
-
-        if (!TextUtils.equals(characterUUID.toString(), uuid1.toString())) {
-            return UNKNOWN_CHARACTER;
-        }
+//        UUID uuid1 = makeUUID(characterID);
+//
+//        if (!TextUtils.equals(characterUUID.toString(), uuid1.toString())) {
+//            return UNKNOWN_CHARACTER;
+//        }
 
         switch (characterID) {
             case GattCharacteristics.Device_Name:
@@ -97,6 +110,15 @@ public class BleUUIDUtil {
                 return "Hardware Revision String";
             case GattCharacteristics.Manufacturer_Name_String:
                 return "Manufacturer Name String";
+
+            case GattCharacteristics.DFU_Control_Point:
+                return "DFU Control Point";
+            case GattCharacteristics.DFU_Packet:
+                return "DFU Packet";
+            case GattCharacteristics.DFU_Status_Report:
+                return "DFU Status Report";
+            case GattCharacteristics.DFU_Revision:
+                return "DFU Revision";
             default:
                 return UNKNOWN_CHARACTER;
         }
