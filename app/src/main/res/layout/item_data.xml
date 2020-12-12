@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2017. xiaoyunfei
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +15,16 @@
   -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/data_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:paddingLeft="5dp"
-          android:textSize="12dp"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/data_text"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:maxLines="3"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp"
+    android:paddingStart="10dp"
+    android:textSize="12sp"
+    android:typeface="serif"
+    android:text="1111"
+    android:textStyle="bold"
+    tools:ignore="HardcodedText,MissingPrefix,RtlSymmetry" />

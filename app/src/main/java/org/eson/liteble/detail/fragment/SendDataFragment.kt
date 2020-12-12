@@ -10,6 +10,8 @@ import com.shon.bluetooth.core.call.WriteCall
 import com.shon.bluetooth.core.callback.WriteCallback
 import com.shon.bluetooth.util.ByteUtil
 import org.eson.liteble.databinding.ActivitySendDataBinding
+import org.eson.test.band.BleCmd
+import org.eson.toast.ToastUtils
 
 /**
  * Auth : xiao.yunfei
@@ -47,11 +49,14 @@ class SendDataFragment : DialogFragment() {
     }
 
     private fun sendData() {
-        val data = binding!!.editText.text.toString()
-        if (TextUtils.isEmpty(data)) {
+        val data :String?= binding.editText.text.toString()
+
+        if (TextUtils.isEmpty(data)){
             return
         }
+        data?:return
         if (data.length % 2 != 0) {
+            ToastUtils.showShort(requireActivity(),"请检查数据长度")
             return
         }
         val buffer = ByteUtil.hexStringToByte(data)
@@ -74,4 +79,6 @@ class SendDataFragment : DialogFragment() {
                     override fun onTimeout() {}
                 })
     }
+
+
 }

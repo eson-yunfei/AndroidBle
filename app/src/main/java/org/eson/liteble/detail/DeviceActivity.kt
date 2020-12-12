@@ -14,6 +14,7 @@ import org.eson.liteble.common.DeviceState
 import org.eson.liteble.databinding.ActivityDetailBinding
 import org.eson.liteble.detail.adapter.ServiceUuidItem
 import org.eson.liteble.detail.bean.ServiceBean
+import org.eson.liteble.detail.fragment.DeviceLogDialogFragment
 import org.eson.liteble.detail.task.ReadRssiTask
 import org.eson.liteble.detail.viewmodel.ConnectViewModel
 import org.eson.liteble.detail.viewmodel.DeviceControlViewModel
@@ -30,6 +31,7 @@ class DeviceActivity : BaseBindingActivity<ActivityDetailBinding?>() {
     private var deviceMac: String? = null
     private var isReadStart = false
     private var menuDeviceState: MenuItem? = null
+    private var logDialogFragment:DeviceLogDialogFragment? = null
 
     override fun initViewState() {
         supportActionBar?.setHomeButtonEnabled(true)
@@ -80,7 +82,21 @@ class DeviceActivity : BaseBindingActivity<ActivityDetailBinding?>() {
         if (item.itemId == R.id.device_state) {
             connectViewModel?.disConnectDevice(deviceMac)
         }
+        if (item.itemId == R.id.device_log){
+            showLogDialog()
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showLogDialog() {
+
+        if (logDialogFragment == null) {
+            logDialogFragment = DeviceLogDialogFragment()
+        }
+        if (logDialogFragment?.isHidden == false) {
+            logDialogFragment?.show(supportFragmentManager, "")
+        }
+
     }
 
     override fun onProcess(bundle: Bundle?) {

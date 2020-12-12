@@ -3,12 +3,46 @@ package org.eson.liteble.common
 import android.bluetooth.BluetoothGatt
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.shon.bluetooth.core.Connect
 import com.shon.bluetooth.core.ConnectCallback
+import org.eson.liteble.detail.bean.BleDataBean
 import java.util.*
 
 class DeviceState private constructor() : ConnectCallback() {
     private val connectDevice: MutableList<DeviceLiveData>
+
+    private val dataList: MutableList<BleDataBean>
+
+     val dataListLiveData: MutableLiveData<List<BleDataBean>>
+
+
+    companion object {
+
+        @JvmStatic
+        val instance: DeviceState by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            DeviceState()
+        }
+    }
+
+    init {
+        connectDevice = ArrayList()
+        dataList = mutableListOf()
+        dataListLiveData = MutableLiveData()
+    }
+
+
+    @Synchronized
+    fun addData(dataBean: BleDataBean) {
+        if (dataList.size >= 500) {
+            dataList.removeAt(dataList.size - 1)
+        }
+
+        dataList.add(0, dataBean)
+
+        dataListLiveData.postValue(dataList)
+
+    }
 
     fun getDeviceLiveData(address: String): DeviceLiveData? {
         return connectDevice.find {
@@ -111,15 +145,5 @@ class DeviceState private constructor() : ConnectCallback() {
         }
     }
 
-    companion object {
 
-        @JvmStatic
-        val instance: DeviceState by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-            DeviceState()
-        }
-    }
-
-    init {
-        connectDevice = ArrayList()
-    }
 }

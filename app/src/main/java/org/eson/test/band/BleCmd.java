@@ -1,9 +1,12 @@
-//package org.eson.test.band;
+package org.eson.test.band;
+
+import java.util.Calendar;
+
 //
 ///**
 // * 蓝牙命令
 // */
-//public class BleCmd {
+public class BleCmd {
 //
 //
 //    /**
@@ -128,17 +131,29 @@
 //        // String.format("$B%03d%03d%03d", height, weight, stepLen).getBytes();
 //    }
 //
-//    public byte[] getSyncTime(int year, int month, int day, int hour, int minute, int second) {
-//        int tYear = year % 100;
-//        String format = String.format("$T%02d%02d%02d%02d%02d%02d", tYear, month, day, hour, minute, second);
-//        return format.getBytes();
-//    }
+    public static byte[] syncSystemTime(){
+        Calendar calendar = Calendar.getInstance();
+        return getSyncTime(calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH+1),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                calendar.get(Calendar.SECOND));
+    }
+
+    public static byte[] getSyncTime(int year, int month, int day, int hour, int minute, int second) {
+        int tYear = year % 100;
+        String format = String.format("$T%02d%02d%02d%02d%02d%02d", tYear, month, day, hour, minute, second);
+        return format.getBytes();
+    }
 //
 //    /**
 //     * 同步屏幕时间
 //     */
-//    public byte[] getSyncScreenTime(int second) {
-//        return String.format("$S%02d", second).getBytes();
+//    public static byte[] getSyncScreenTime(int second) {
+//        String formatString = String.format("$S%02d", second);
+//        System.out.println("formatString = " + formatString);
+//        return formatString.getBytes();
 //    }
 //
 //    /**
@@ -202,4 +217,4 @@
 //
 //    private BleCmd() {
 //    }
-//}
+}

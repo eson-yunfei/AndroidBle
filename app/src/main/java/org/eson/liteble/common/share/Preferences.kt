@@ -4,18 +4,34 @@ import android.content.Context
 import android.content.SharedPreferences
 import kotlin.reflect.KProperty
 
-abstract class Preferences<T> constructor(context: Context,private val key: String, private val default: T) {
+/**
+ * 对 String 做了一个扩展函数
+ */
+//internal fun <T> String.preferences(context: Context, default: T): T {
+//    val result: T by Preferences(context, this, default)
+//    return result
+//}
 
-    abstract fun getShareName(): String
+
+@Suppress("UNCHECKED_CAST")
+open class Preferences<T> constructor(context: Context, private val key: String, private val default: T) {
+
+    open fun getShareName(): String? = null
 
     private val preferences: SharedPreferences by lazy {
-        context.applicationContext.getSharedPreferences(getShareName(), Context.MODE_PRIVATE)
+        context.applicationContext.getSharedPreferences(getShareName() ?: key, Context.MODE_PRIVATE)
     }
 
+    /**
+     * 委托
+     */
     open operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return getSharedPreferences(key, default)
     }
 
+    /**
+     * 委托
+     */
     open operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         putSharedPreferences(key, value)
     }

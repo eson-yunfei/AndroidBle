@@ -54,7 +54,11 @@ public class DataDispatcher {
         BleLog.d("startSendNext ++++" + isFinish + " ;   call = " + tempCall);
         if (isFinish) {
             tempCall = null;
-            callDeque.removeFirst();
+            try {
+                callDeque.removeFirst();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
         }
         if (tempCall != null) {

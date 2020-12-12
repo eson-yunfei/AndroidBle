@@ -12,9 +12,11 @@ import com.shon.bluetooth.core.callback.ReadCallback
 import com.shon.bluetooth.util.ByteUtil
 import kale.adapter.item.AdapterItem
 import org.eson.liteble.R
+import org.eson.liteble.common.DeviceState
 import org.eson.liteble.common.util.BleUUIDUtil
 import org.eson.liteble.databinding.ItemUuidBinding
 import org.eson.liteble.detail.DeviceActivity
+import org.eson.liteble.detail.bean.BleDataBean
 import org.eson.liteble.detail.bean.CharacterBean
 import org.eson.liteble.detail.fragment.SendDataFragment
 import org.eson.log.LogUtils
@@ -85,7 +87,6 @@ class CharacterItem : AdapterItem<CharacterBean> {
                 .setCharacteristicUUID(characterBean.characterUUID)
                 .enqueue(object : ReadCallback() {
                     override fun process(address: String, result: ByteArray): Boolean {
-//                        changeBleData(characterUUID, result, address)
                         if (address == characterBean.address) {
 
                             val text = ByteUtil.getHexString(result)+ " (" + ByteUtil.byteToCharSequence(result) + ")"
@@ -126,7 +127,9 @@ class CharacterItem : AdapterItem<CharacterBean> {
 
         Listener(characterBean.address)
                 .enqueue { address: String?, result: ByteArray? ->
-//                    changeBleData("", result, address)
+                    result?: false
+                    val bleDataBean = BleDataBean(address!!, characterBean.characterUUID!!,result!!)
+                    DeviceState.instance.addData(bleDataBean)
                     true
                 }
     }

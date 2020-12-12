@@ -8,8 +8,14 @@
         android:checkable="false"
         android:orderInCategory="1"
         android:icon="@drawable/ic_bluetooth_connected"
-        android:iconTint="@android:color/white"
         app:showAsAction="ifRoom"
         android:title="" />
 
+    <item
+        android:id="@+id/device_log"
+        android:checkable="false"
+        android:orderInCategory="1"
+        android:icon="@mipmap/ic_menu_logger_light"
+        app:showAsAction="ifRoom"
+        android:title="" />
 </menu>

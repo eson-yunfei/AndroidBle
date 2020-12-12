@@ -8,7 +8,6 @@ import org.eson.log.LogUtils
 
 class ScannerLiveData : LiveData<ScannerLiveData>() {
 
-
     private val scanResultList = mutableListOf<ScanResult>()
 
     fun getScanResultList(): MutableList<ScanResult> {
@@ -23,7 +22,7 @@ class ScannerLiveData : LiveData<ScannerLiveData>() {
     }
 
     fun onScannerResult(results: List<ScanResult>) {
-        val nonNullNameList = results.filter {
+         results.filter {
             //过滤名称为 null 的设备
             LogUtils.d("results = $it")
             if (ConfigPreferences.filterNoName) {
@@ -31,20 +30,7 @@ class ScannerLiveData : LiveData<ScannerLiveData>() {
             } else {
                 true
             }
-        }
-
-        if (nonNullNameList.isEmpty()) {
-            return
-        }
-
-        if (scanResultList.isEmpty()) {
-            //首次全部添加数据
-            scanResultList.addAll(nonNullNameList)
-
-            postValue(this)
-            return
-        }
-        nonNullNameList.forEach { result ->
+        }.forEach { result ->
             val index = scanResultList.indexOfFirst {
                 TextUtils.equals(it.device.address, result.device.address)
             }
@@ -54,7 +40,9 @@ class ScannerLiveData : LiveData<ScannerLiveData>() {
                 scanResultList[index] = result
             }
         }
+
         postValue(this)
+
     }
 
 
