@@ -15,7 +15,6 @@
  */
 package org.eson.liteble.main.fragment
 
-import android.bluetooth.BluetoothGatt
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -29,8 +28,6 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import org.eson.liteble.R
 import org.eson.liteble.databinding.FragmentScanDeviceBinding
 import org.eson.liteble.detail.DeviceActivity
-import org.eson.liteble.detail.viewmodel.ConnectViewModel
-import org.eson.liteble.detail.viewmodel.ConnectViewModel.ConnectView
 import org.eson.liteble.main.MainActivity
 import org.eson.liteble.main.ScannerViewModel
 import org.eson.liteble.main.ScannerViewModel.ScannerView
@@ -39,41 +36,34 @@ import java.util.*
 
 /**
  * Created by xiaoyunfei on 2017/5/5.
- *
- *
  * update on 2020/12/06
- *
- *
  * 扫描设备界面
  */
 @AndroidEntryPoint
-class ScanFragment : BaseBindingFragment<FragmentScanDeviceBinding?>(), ScannerView, ConnectView {
+class ScanFragment : BaseBindingFragment<FragmentScanDeviceBinding?>(), ScannerView {
     private val scannerViewModel: ScannerViewModel by viewModels()
-    private var connectViewModel: ConnectViewModel? = null
     private lateinit var commonRcvAdapter: CommonRcvAdapter<ScanResult>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        connectViewModel = defaultViewModelProviderFactory.create(ConnectViewModel::class.java)
-    }
-
 
     override fun onPause() {
         super.onPause()
         hideProgress()
     }
+
     override fun initViewState() {
         if (binding == null) {
             return
         }
         val layoutManager = LinearLayoutManager(activity)
-        binding!!.listview.layoutManager = layoutManager
+        binding?.listview?.layoutManager = layoutManager
         commonRcvAdapter = object : CommonRcvAdapter<ScanResult>(ArrayList()) {
             override fun createItem(type: Any): AdapterItem<ScanResult> {
                 return ScanBLEItem { bleDevice: ScanResult ->
                     val device = bleDevice.device
-                    showProgress("Connecting...")
-                    connectViewModel!!.connectDevice(device.address, device.name)
+                    scannerViewModel.stopScanner()
+
+                    val intent = Intent(activity, DeviceActivity::class.java)
+                    intent.putExtra("connectBt", device)
+                    startActivity(intent)
                 }
             }
         }
@@ -82,13 +72,12 @@ class ScanFragment : BaseBindingFragment<FragmentScanDeviceBinding?>(), ScannerV
 
     override fun onProcess(savedInstanceState: Bundle?) {
         scannerViewModel.attachView(this, this)
-        connectViewModel!!.attachView(this, this)
     }
 
     override fun onFindDevices(scanResultList: MutableList<ScanResult>) {
         hideProgress()
-        commonRcvAdapter!!.data = scanResultList
-        commonRcvAdapter!!.notifyDataSetChanged()
+        commonRcvAdapter.data = scanResultList
+        commonRcvAdapter.notifyDataSetChanged()
     }
 
     override fun onFinishScanner() {
@@ -116,24 +105,8 @@ class ScanFragment : BaseBindingFragment<FragmentScanDeviceBinding?>(), ScannerV
 
     fun startScanner() {
         showProgress(getString(R.string.text_scan_device))
-        commonRcvAdapter!!.data = ArrayList()
-        commonRcvAdapter!!.notifyDataSetChanged()
-        scannerViewModel!!.startScanner()
-    }
-
-    override fun onConnected(deviceMac: String, gatt: BluetoothGatt) {}
-    override fun onServerEnable(deviceMac: String, gatt: BluetoothGatt) {
-        hideProgress()
-        val intent = Intent(activity, DeviceActivity::class.java)
-        intent.putExtra("connectBt", deviceMac)
-        startActivity(intent)
-    }
-
-    override fun onDisconnected(deviceMac: String) {
-        hideProgress()
-    }
-
-    override fun connectError(deviceMac: String, errorCode: Int) {
-        hideProgress()
+        commonRcvAdapter.data = ArrayList()
+        commonRcvAdapter.notifyDataSetChanged()
+        scannerViewModel.startScanner()
     }
 }

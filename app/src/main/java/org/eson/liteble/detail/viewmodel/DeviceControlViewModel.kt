@@ -5,9 +5,9 @@ import android.bluetooth.BluetoothGattCharacteristic.*
 import android.bluetooth.BluetoothGattService
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
-import org.eson.liteble.common.DeviceState.Companion.instance
-import org.eson.liteble.common.DeviceState.DeviceLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import org.eson.liteble.detail.bean.CharacterBean
 import org.eson.liteble.detail.bean.DescriptorBean
 import org.eson.liteble.detail.bean.ServiceBean
@@ -16,27 +16,9 @@ import org.eson.liteble.detail.bean.ServiceBean
 class DeviceControlViewModel @ViewModelInject
 constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
-    private var connectLiveData: DeviceLiveData? = null
     val mutableLiveData = MutableLiveData<List<ServiceBean>>()
-    fun setConnectDevice(connectAddress: String?) {
-        val instance = instance ?: return
-        connectLiveData = instance.getDeviceLiveData(connectAddress!!)
-        if (connectLiveData == null) {
-            return
-        }
-        val gatt = connectLiveData!!.gatt ?: return
-        loadGattServer(gatt)
-    }
 
-    fun observerDeviceLiveData(lifecycleOwner: LifecycleOwner?, observer: Observer<DeviceLiveData?>) {
-        if (connectLiveData == null) {
-            return
-        }
-        connectLiveData!!.observe(lifecycleOwner!!, observer)
-    }
-
-
-    private fun loadGattServer(gatt: BluetoothGatt) {
+     fun loadGattServer(gatt: BluetoothGatt) {
 
         val services = gatt.services
         if (services == null || services.isEmpty()) {

@@ -84,12 +84,12 @@ public class ByteUtil {
         for (byte b : buffer) {
             String intS = Integer.toHexString(b & 0xff);
             if (intS.length() == 1) {
-                sb.append("  ").append("0").append(intS);
+                sb.append(" ").append("0").append(intS);
             } else {
-                sb.append("  ").append(intS);
+                sb.append(" ").append(intS);
             }
         }
-        sb.append("  ]");
+        sb.append(" ]");
 //        LogUtil.e(sb.toString());
     }
 
@@ -100,9 +100,9 @@ public class ByteUtil {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (byte b : buffer) {
-            sb.append("  ").append(b & 0xff);
+            sb.append(" ").append(b & 0xff);
         }
-        sb.append("  ]");
+        sb.append(" ]");
 //        LogUtil.e(sb.toString());
     }
 
@@ -115,12 +115,12 @@ public class ByteUtil {
         for (byte b : buffer) {
             String intS = Integer.toHexString(b & 0xff);
             if (intS.length() == 1) {
-                sb.append("  ").append("0").append(intS);
+                sb.append(" ").append("0").append(intS);
             } else {
-                sb.append("  ").append(intS);
+                sb.append(" ").append(intS);
             }
         }
-        sb.append("  ]");
+        sb.append(" ]");
         return sb.toString();
     }
 }

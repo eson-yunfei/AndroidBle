@@ -27,7 +27,7 @@ class CharacterItem : AdapterItem<CharacterBean> {
     override fun getLayoutResId(): Int = R.layout.item_uuid
     private lateinit var characterBean: CharacterBean
 
-    private var sendDataFragment:SendDataFragment?= null
+    private var sendDataFragment: SendDataFragment? = null
     override fun bindViews(root: View) {
         itemUuidBinding = ItemUuidBinding.bind(root)
     }
@@ -41,16 +41,16 @@ class CharacterItem : AdapterItem<CharacterBean> {
 
         itemUuidBinding.sendImage.setOnClickListener {
             val data = Bundle()
-            data.putString("serviceUUID",characterBean.serviceUUID)
-            data.putString("characterUUID",characterBean.characterUUID)
-            data.putString("address",characterBean.address)
-            if (sendDataFragment == null){
-
+            data.putString("serviceUUID", characterBean.serviceUUID)
+            data.putString("characterUUID", characterBean.characterUUID)
+            data.putString("address", characterBean.address)
+            if (sendDataFragment == null) {
                 sendDataFragment = SendDataFragment()
-                sendDataFragment?.arguments = data
-                sendDataFragment?.show((itemUuidBinding.root.context as DeviceActivity).supportFragmentManager,"")
             }
-
+            if (sendDataFragment?.isHidden == false){
+                sendDataFragment?.arguments = data
+                sendDataFragment?.show((itemUuidBinding.root.context as DeviceActivity).supportFragmentManager, "")
+            }
         }
     }
 
@@ -81,7 +81,7 @@ class CharacterItem : AdapterItem<CharacterBean> {
         }
     }
 
-    private fun readDeviceInfo(){
+    private fun readDeviceInfo() {
         ReadCall(characterBean.address)
                 .setServiceUUid(characterBean.serviceUUID)
                 .setCharacteristicUUID(characterBean.characterUUID)
@@ -89,7 +89,7 @@ class CharacterItem : AdapterItem<CharacterBean> {
                     override fun process(address: String, result: ByteArray): Boolean {
                         if (address == characterBean.address) {
 
-                            val text = ByteUtil.getHexString(result)+ " (" + ByteUtil.byteToCharSequence(result) + ")"
+                            val text = ByteUtil.getHexString(result) + " (" + ByteUtil.byteToCharSequence(result) + ")"
                             LogUtils.d("on Read info result = $text")
                             itemUuidBinding.readResult.visibility = View.VISIBLE
                             itemUuidBinding.readResult.text = text
@@ -102,7 +102,7 @@ class CharacterItem : AdapterItem<CharacterBean> {
                 })
     }
 
-    private fun startListenNotification(){
+    private fun startListenNotification() {
 
         NotifyCall(characterBean.address)
                 .setServiceUUid(characterBean.serviceUUID)
@@ -127,8 +127,8 @@ class CharacterItem : AdapterItem<CharacterBean> {
 
         Listener(characterBean.address)
                 .enqueue { address: String?, result: ByteArray? ->
-                    result?: false
-                    val bleDataBean = BleDataBean(address!!, characterBean.characterUUID!!,result!!)
+                    result ?: false
+                    val bleDataBean = BleDataBean(address!!, characterBean.characterUUID!!, result!!)
                     DeviceState.instance.addData(bleDataBean)
                     true
                 }

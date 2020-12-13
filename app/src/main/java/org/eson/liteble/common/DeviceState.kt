@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.shon.bluetooth.core.Connect
 import com.shon.bluetooth.core.ConnectCallback
 import org.eson.liteble.detail.bean.BleDataBean
+import org.eson.log.LogUtils
 import java.util.*
 
 class DeviceState private constructor() : ConnectCallback() {
@@ -14,8 +15,7 @@ class DeviceState private constructor() : ConnectCallback() {
 
     private val dataList: MutableList<BleDataBean>
 
-     val dataListLiveData: MutableLiveData<List<BleDataBean>>
-
+    val dataListLiveData: MutableLiveData<List<BleDataBean>>
 
     companion object {
 
@@ -51,18 +51,19 @@ class DeviceState private constructor() : ConnectCallback() {
     }
 
     fun connectDevice(address: String?, name: String?): DeviceLiveData {
-        for (deviceLiveData in connectDevice) {
-            if (TextUtils.equals(deviceLiveData.deviceMac, address)) {
-                return deviceLiveData
-            }
+
+        var saveDeviceLiveData = connectDevice.find {
+            TextUtils.equals(it.deviceMac, address)
         }
-        val deviceLiveData = DeviceLiveData(address, name)
-        connectDevice.add(deviceLiveData)
+        if (saveDeviceLiveData == null){
+            saveDeviceLiveData = DeviceLiveData(address, name)
+            connectDevice.add(saveDeviceLiveData)
+        }
         Connect(address)
                 .setTimeout(5000)
                 .setReTryTimes(2)
                 .enqueue(instance)
-        return deviceLiveData
+        return saveDeviceLiveData
     }
 
     override fun onConnectSuccess(address: String, gatt: BluetoothGatt) {
@@ -93,6 +94,7 @@ class DeviceState private constructor() : ConnectCallback() {
     }
 
     override fun onDisconnected(address: String) {
+        LogUtils.d("------->>> $address  is disconnect ")
         for (deviceLiveData in connectDevice) {
             if (!TextUtils.equals(deviceLiveData.deviceMac, address)) {
                 continue

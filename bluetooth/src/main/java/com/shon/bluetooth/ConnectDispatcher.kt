@@ -30,15 +30,25 @@ class ConnectDispatcher internal constructor() {
      */
     fun onDeviceError(address: String?, status: Int) {
         handler.post { connectedDevices.onDeviceConnectError(address!!, status) }
-        connect ?: return
-        if (!TextUtils.equals(address, connect!!.address)) return
-        if (connect!!.reTryTimes <= 0) {
-            handler.post { connect!!.connectCallback.onConnectError(address, status) }
-            startNextConnect(true)
-            return
+        connect?.let {
+
+            try {
+                if (!TextUtils.equals(address,it.address)){
+                    return
+                }
+                if (it.reTryTimes<=0){
+                    handler.post { it.connectCallback?.onConnectError(address,status) }
+                    startNextConnect(true)
+                    return
+                }
+
+                it.reTryTimes = it.reTryTimes - 1
+                connectDevice()
+
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
-        connect!!.reTryTimes = connect!!.reTryTimes - 1
-        connectDevice()
     }
 
     /**

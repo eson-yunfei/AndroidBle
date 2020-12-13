@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UseAppTint" />
+        tools:ignore="ContentDescription,UseAppTint" />
 
 
     <ImageView
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/notification_image"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UseAppTint" />
+        tools:ignore="ContentDescription,UseAppTint" />
 
     <ImageView
         android:id="@+id/send_image"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/read_image"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UseAppTint" />
+        tools:ignore="ContentDescription,UseAppTint" />
 
 
     <TextView

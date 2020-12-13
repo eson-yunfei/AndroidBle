@@ -1,19 +1,13 @@
-package org.eson.liteble.main.adapter;
+package org.eson.liteble.main.adapter
 
-import android.annotation.SuppressLint;
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.TextView;
-
-
-import org.eson.liteble.R;
-import org.eson.liteble.common.util.ByteUtil;
-import org.eson.log.LogUtils;
-import org.eson.test.band.TimeTest;
-
-import kale.adapter.item.AdapterItem;
-import no.nordicsemi.android.support.v18.scanner.ScanRecord;
-import no.nordicsemi.android.support.v18.scanner.ScanResult;
+import android.annotation.SuppressLint
+import android.view.View
+import androidx.core.util.isEmpty
+import kale.adapter.item.AdapterItem
+import no.nordicsemi.android.support.v18.scanner.ScanResult
+import org.eson.liteble.R
+import org.eson.liteble.common.util.ByteUtil
+import org.eson.liteble.databinding.ItemScanDeviceBinding
 
 /**
  * @name AndroidBle
@@ -21,90 +15,53 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
  * @class describe
  * @anthor xujianbo E-mail: xuarbo@qq.com
  * @time 2017/2/22 15:40
- * @change
+ * @change  update on 2020/12/13 by xiao yun fei
  * @chang time
  * @class describe
  */
-public class ScanBLEItem implements AdapterItem<ScanResult> {
-    private final ItemClickListener mOnClickListener;
-    private View rootView;
-    private TextView deviceName;
-    private TextView deviceMac;
-    private TextView scanRet;
-    private TextView deviceRssi;
+class ScanBLEItem(private val mOnClickListener: (ScanResult)->Unit) : AdapterItem<ScanResult> {
 
-    public ScanBLEItem(ItemClickListener clickListener) {
-        mOnClickListener = clickListener;
+    private lateinit var binding: ItemScanDeviceBinding
+    override fun getLayoutResId(): Int = R.layout.item_scan_device
+    override fun bindViews(view: View) {
+        binding = ItemScanDeviceBinding.bind(view)
     }
 
-    @Override
-    public int getLayoutResId() {
-        return R.layout.item_scan_device;
-    }
-
-    @Override
-    public void bindViews(View view) {
-        rootView = view;
-        this.scanRet = view.findViewById(R.id.scanRet);
-        this.deviceName = view.findViewById(R.id.deviceName);
-        this.deviceMac = view.findViewById(R.id.deviceMac);
-        this.deviceRssi = view.findViewById(R.id.deviceRssi);
-    }
-
-    @Override
-    public void setViews() {
-
-    }
+    override fun setViews() {}
 
     @SuppressLint("SetTextI18n")
-    @Override
-    public void handleData(ScanResult device, final int position) {
-
-        String name = device.getDevice().getName();
-        String mac = device.getDevice().getAddress();
-
-        deviceRssi.setText("RSSI：" + device.getRssi());
-        deviceName.setText(name);
-        deviceMac.setText(mac);
-
-        scanRet.setVisibility(View.INVISIBLE);
-
-        rootView.setOnClickListener(v -> mOnClickListener.onItemClick(device));
+    override fun handleData(device: ScanResult, position: Int) {
+        val name = device.device.name
+        val mac = device.device.address
+        binding.deviceRssi.text = "${device.rssi}"
+        binding.deviceName.text = name
+        binding.deviceMac.text = mac
+        binding.scanRet.visibility = View.GONE
+        binding.root.setOnClickListener { mOnClickListener.invoke(device) }
 
 
 //        LogUtils.d("device.isLegacy() = "+ device.isLegacy());
 //        LogUtils.d("device.isConnectable() = "+ device.isConnectable());
-        TimeTest.test(device.getTimestampNanos());
-
-        ScanRecord scanRecord = device.getScanRecord();
-        if (scanRecord == null) {
-            return;
+//        TimeTest.test(device.timestampNanos)
+        val scanRecord = device.scanRecord ?: return
+        val array = scanRecord.manufacturerSpecificData
+        array?:return
+        if (array.isEmpty()){
+            return
         }
-        SparseArray<byte[]> array = scanRecord.getManufacturerSpecificData();
-        if (array == null || array.size() == 0) {
-            return;
-        }
+        val builder = StringBuilder()
 
-        StringBuilder builder = new StringBuilder();
-        scanRet.setVisibility(View.VISIBLE);
-        for (int i = 0; i < array.size(); i++) {
-            int key = array.keyAt(i);
-            byte[] b = array.get(key);
-
-            builder.append(ByteUtil.getFormatHexString(b));
-            String s = com.shon.bluetooth.util.ByteUtil.byteToCharSequenceUTF(b);
-            LogUtils.d("s == "+ s);
+        for (i in 0 until array.size()) {
+            val key = array.keyAt(i)
+            val b = array[key]
+            builder.append(ByteUtil.getFormatHexString(b))
+//            val s = com.shon.bluetooth.util.ByteUtil.byteToCharSequenceUTF(b)
+//            LogUtils.d("s == $s")
             if (i != array.size() - 1) {
-                builder.append("\n");
+                builder.append("\n")
             }
         }
-        scanRet.setText(builder.toString());
-
-
-
-    }
-
-    public interface ItemClickListener {
-        void onItemClick(ScanResult bleDevice);
+        binding.scanRet.visibility = View.VISIBLE
+        binding.scanRet.text = builder.toString()
     }
 }

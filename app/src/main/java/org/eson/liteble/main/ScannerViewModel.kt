@@ -8,13 +8,10 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import no.nordicsemi.android.support.v18.scanner.*
 import org.eson.liteble.common.share.ConfigPreferences
-import java.util.*
 
 /**
  * 扫描设备
  */
-
-
 class ScannerViewModel @ViewModelInject
 constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), LifecycleObserver {
 
@@ -23,18 +20,22 @@ constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewMode
     private  var scannerCompat: BluetoothLeScannerCompat? = null
     private lateinit var scannerView: ScannerView
 
+    private var handler:Handler? = null
     fun attachView(lifecycleOwner: LifecycleOwner, scannerView: ScannerView) {
         this.scannerView = scannerView
         lifecycleOwner.lifecycle.addObserver(this)
-        scannerResultLiveData.observe(lifecycleOwner) {
-            it
+        //监听 ScannerLiveData
+        scannerResultLiveData.observe(lifecycleOwner, Observer {
             scannerView.onFindDevices(it.getScanResultList())
-        }
+        })
     }
 
     fun startScanner() {
-        Handler(Looper.getMainLooper()).postDelayed(ConfigPreferences.scannerTime.toLong()) {
-            // 10 s  后 停止扫描
+        if (handler == null){
+            handler = Handler(Looper.getMainLooper())
+        }
+        handler!!.postDelayed(ConfigPreferences.scannerTime.toLong()) {
+            //  根据设置的扫描时长，然后 停止扫描
             stopScanner()
         }
 
@@ -60,10 +61,14 @@ constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewMode
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onLifeOwnerPause() {
-        scannerCompat?.stopScan(scanCallback)
+       stopScanner()
     }
 
     fun stopScanner() {
+        if (handler != null){
+            handler!!.removeCallbacksAndMessages(null)
+            handler = null
+        }
         scannerCompat?.stopScan(scanCallback)
         scannerView.onFinishScanner()
     }

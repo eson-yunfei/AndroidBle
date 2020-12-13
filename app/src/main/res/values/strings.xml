@@ -9,7 +9,7 @@
     <string name="text_read_data">读数据</string>
     <string name="text_write_data">写数据</string>
     <string name="text_start_listener_data">开始监听</string>
-    <string name="text_scan_device">搜索设备</string>
+    <string name="text_scan_device">扫描设备</string>
 
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>

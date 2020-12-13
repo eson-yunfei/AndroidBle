@@ -20,40 +20,40 @@
 
         <TextView
             android:id="@+id/deviceName"
+            style="@style/ItemTitle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minLines="1"
             android:text="deviceName"
-            android:textColor="#333333"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:textSize="14sp"
             android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toStartOf="@id/deviceRssi"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
 
 
         <TextView
+            style="@style/ItemContent"
             android:id="@+id/deviceMac"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:textSize="12sp"
             android:layout_marginTop="6dp"
             android:text="deviceMac"
             android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toStartOf="@id/deviceRssi"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/deviceName" />
+            app:layout_constraintTop_toBottomOf="@id/deviceName"
+            tools:ignore="HardcodedText" />
 
 
         <TextView
             android:id="@+id/scanRet"
+            style="@style/ItemContent"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:visibility="invisible"
             android:text="[00 00 00]"
             android:maxLines="3"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:layout_marginEnd="10dp"
             app:layout_constraintEnd_toStartOf="@id/deviceRssi"
             app:layout_constraintStart_toStartOf="parent"

@@ -23,13 +23,14 @@ class DataItem : AdapterItem<BleDataBean> {
         bleDataBean?:return
 
         val time = bleDataBean.time + " :"
+        val deviceMac = "\n${bleDataBean.deviceAddress}"
         val uuid = "\n${bleDataBean.uuid}\n"
         val dataString: String = getDataString(bleDataBean.buffer)
 
 
-        val spannableStringBuilder = SpannableStringBuilder("$time$uuid${dataString.trimIndent()}")
+        val spannableStringBuilder = SpannableStringBuilder("$time $deviceMac $uuid${dataString.trimIndent()}")
 
-        spannableStringBuilder.setSpan(ForegroundColorSpan(Color.BLACK),
+        spannableStringBuilder.setSpan(ForegroundColorSpan(Color.parseColor("#666666")),
                 0, time.length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
 
         itemDataBinding.dataText.text = spannableStringBuilder

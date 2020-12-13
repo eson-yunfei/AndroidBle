@@ -35,10 +35,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding?>() {
 
     private var lastSelectTabIndex = 0;
     override fun initViewState() {
-//        val mActionBar = supportActionBar
-//        if (mActionBar != null) {
-//            mActionBar.elevation = 0f
-//        }
         mScanFragment = ScanFragment()
         mDevicesFragment = BondedFragment()
 
@@ -141,10 +137,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding?>() {
         }
         if (id == R.id.menu_scan) {
             if (menuRefresh!!.isVisible) {
-                mScanFragment!!.stopScanner()
+                mScanFragment.stopScanner()
                 reSetMenu()
             } else {
-                mScanFragment!!.startScanner()
+                mScanFragment.startScanner()
                 menuRefresh!!.isVisible = true
                 menuRefresh!!.setActionView(R.layout.action_bar_progress)
                 menuScan!!.title = "Scanning"
