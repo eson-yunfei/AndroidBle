@@ -29,14 +29,14 @@ import org.eson.toast.ToastUtils
 @AndroidEntryPoint
 class MainActivity : BaseBindingActivity<ActivityMainBinding?>() {
     private lateinit var mScanFragment: ScanFragment
-    private lateinit var mDevicesFragment: BondedFragment
+//    private lateinit var mDevicesFragment: BondedFragment
     private var menuRefresh: MenuItem? = null
     private var menuScan: MenuItem? = null
 
     private var lastSelectTabIndex = 0;
     override fun initViewState() {
         mScanFragment = ScanFragment()
-        mDevicesFragment = BondedFragment()
+//        mDevicesFragment = BondedFragment()
 
 
         supportFragmentManager.commitNow {
@@ -98,12 +98,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding?>() {
             0 -> supportFragmentManager.commitNow {
                 replace(R.id.containerLayout, mScanFragment)
             }
-            1 -> {
-                supportFragmentManager.commitNow {
-                    replace(R.id.containerLayout, mDevicesFragment)
-                }
-                menuScan!!.isVisible = false
-            }
+//            1 -> {
+//                supportFragmentManager.commitNow {
+//                    replace(R.id.containerLayout, mDevicesFragment)
+//                }
+//                menuScan!!.isVisible = false
+//            }
         }
     }
 

@@ -17,10 +17,21 @@
 package org.eson.liteble.main.fragment;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.shon.mvvm.base.ui.BaseBindingFragment;
 
+import org.eson.liteble.common.DeviceState;
 import org.eson.liteble.databinding.FragmentBondedDeviceBinding;
+import org.eson.liteble.main.adapter.BondItem;
+
+import java.util.List;
+
+import kale.adapter.CommonAdapter;
+import kale.adapter.item.AdapterItem;
 
 /**
  * @package_name org.eson.liteble.activity.fragment
@@ -34,6 +45,7 @@ public class BondedFragment extends BaseBindingFragment<FragmentBondedDeviceBind
 
     private ProgressDialog m_pDialog;
 
+
     @Override
     public void initViewListener() {
         binding.bondedDeviceList.setOnItemClickListener((parent, view, position, id) -> {
@@ -42,6 +54,19 @@ public class BondedFragment extends BaseBindingFragment<FragmentBondedDeviceBind
     }
 
 
+    @Override
+    public void onProcess(@Nullable Bundle savedInstanceState) {
+        super.onProcess(savedInstanceState);
+        List<DeviceState.DeviceLiveData> connectDevice = DeviceState.Companion.getConnectDevice(DeviceState.Companion.getInstance());
+        CommonAdapter<DeviceState.DeviceLiveData> deviceLiveDataCommonAdapter  = new CommonAdapter<DeviceState.DeviceLiveData>(connectDevice,1) {
+            @NonNull
+            @Override
+            public AdapterItem<DeviceState.DeviceLiveData> createItem(Object type) {
+                return new BondItem();
+            }
+        };
+        binding.bondedDeviceList.setAdapter(deviceLiveDataCommonAdapter);
+    }
 
     /**
      * 显示等待框

@@ -12,7 +12,6 @@ import java.util.*
 
 class DeviceState private constructor() : ConnectCallback() {
     private val connectDevice: MutableList<DeviceLiveData>
-
     private val dataList: MutableList<BleDataBean>
 
     val dataListLiveData: MutableLiveData<List<BleDataBean>>
@@ -22,6 +21,10 @@ class DeviceState private constructor() : ConnectCallback() {
         @JvmStatic
         val instance: DeviceState by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             DeviceState()
+        }
+
+        fun getConnectDevice(deviceState: DeviceState):MutableList<DeviceLiveData>{
+            return deviceState.connectDevice
         }
     }
 
@@ -44,18 +47,13 @@ class DeviceState private constructor() : ConnectCallback() {
 
     }
 
-    fun getDeviceLiveData(address: String): DeviceLiveData? {
-        return connectDevice.find {
-            TextUtils.equals(it.deviceMac, address)
-        }
-    }
 
     fun connectDevice(address: String?, name: String?): DeviceLiveData {
 
         var saveDeviceLiveData = connectDevice.find {
             TextUtils.equals(it.deviceMac, address)
         }
-        if (saveDeviceLiveData == null){
+        if (saveDeviceLiveData == null) {
             saveDeviceLiveData = DeviceLiveData(address, name)
             connectDevice.add(saveDeviceLiveData)
         }

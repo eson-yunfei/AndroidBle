@@ -147,6 +147,11 @@ class DeviceActivity : BaseBindingActivity<ActivityDetailBinding?>(), ConnectVie
         setActionMenuState(0)
         connectViewModel.connectDevice()
     }
+
+    override fun onStop() {
+        super.onStop()
+        connectViewModel.disConnectDevice()
+    }
     private fun setAdapter(serviceBeanList: List<ServiceBean>) {
 
         mDeviceDetailAdapter.data = serviceBeanList
