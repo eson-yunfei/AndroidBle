@@ -6,7 +6,6 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shon.mvvm.base.ui.BaseBindingActivity
-import dagger.hilt.android.AndroidEntryPoint
 import kale.adapter.CommonRcvAdapter
 import kale.adapter.item.AdapterItem
 import org.eson.liteble.R
@@ -19,7 +18,6 @@ import org.eson.liteble.detail.task.ReadRssiTask
 import org.eson.liteble.detail.viewmodel.ConnectViewModel
 import org.eson.liteble.detail.viewmodel.DeviceControlViewModel
 
-@AndroidEntryPoint
 class DeviceActivity : BaseBindingActivity<ActivityDetailBinding?>() {
 
     private val deviceControlViewModel: DeviceControlViewModel by viewModels()

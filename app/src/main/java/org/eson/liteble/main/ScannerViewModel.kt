@@ -3,8 +3,6 @@ package org.eson.liteble.main
 import android.os.Handler
 import android.os.Looper
 import androidx.core.os.postDelayed
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import no.nordicsemi.android.support.v18.scanner.*
 import org.eson.liteble.common.share.ConfigPreferences
@@ -15,8 +13,8 @@ import java.util.*
  */
 
 
-class ScannerViewModel @ViewModelInject
-constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(), LifecycleObserver {
+class ScannerViewModel
+constructor(private val savedStateHandle: SavedStateHandle) : ViewModel(), LifecycleObserver {
 
     private val scannerResultLiveData = ScannerLiveData()
 

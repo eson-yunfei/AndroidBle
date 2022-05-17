@@ -3,7 +3,6 @@ package org.eson.liteble
 import android.content.Context
 import androidx.multidex.MultiDexApplication
 import com.shon.bluetooth.BLEManager
-import dagger.hilt.android.HiltAndroidApp
 import org.eson.log.LogUtils
 
 /**
@@ -16,7 +15,6 @@ import org.eson.log.LogUtils
  * @chang 2020/12/06
  * @class describe
  */
-@HiltAndroidApp
 class LiteBle : MultiDexApplication() {
 
     companion object{

@@ -3,8 +3,6 @@ package org.eson.liteble.detail.viewmodel
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic.*
 import android.bluetooth.BluetoothGattService
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import org.eson.liteble.common.DeviceState.Companion.instance
 import org.eson.liteble.common.DeviceState.DeviceLiveData
@@ -13,8 +11,8 @@ import org.eson.liteble.detail.bean.DescriptorBean
 import org.eson.liteble.detail.bean.ServiceBean
 
 
-class DeviceControlViewModel @ViewModelInject
-constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class DeviceControlViewModel
+constructor( private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private var connectLiveData: DeviceLiveData? = null
     val mutableLiveData = MutableLiveData<List<ServiceBean>>()

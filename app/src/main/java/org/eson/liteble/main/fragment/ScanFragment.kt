@@ -22,7 +22,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.shon.mvvm.base.ui.BaseBindingFragment
-import dagger.hilt.android.AndroidEntryPoint
 import kale.adapter.CommonRcvAdapter
 import kale.adapter.item.AdapterItem
 import no.nordicsemi.android.support.v18.scanner.ScanResult
@@ -46,7 +45,6 @@ import java.util.*
  *
  * 扫描设备界面
  */
-@AndroidEntryPoint
 class ScanFragment : BaseBindingFragment<FragmentScanDeviceBinding?>(), ScannerView, ConnectView {
     private val scannerViewModel: ScannerViewModel by viewModels()
     private var connectViewModel: ConnectViewModel? = null
@@ -92,7 +90,7 @@ class ScanFragment : BaseBindingFragment<FragmentScanDeviceBinding?>(), ScannerV
     }
 
     override fun onFinishScanner() {
-        (requireActivity() as MainActivity).reSetMenu()
+//        (requireActivity() as MainActivity).reSetMenu()
     }
 
     /**

@@ -65,6 +65,7 @@ class CharacterItem : AdapterItem<CharacterBean> {
         val characterName = BleUUIDUtil.getCharacterNameByUUID(UUID.fromString(characterUUID))
         val hexString = BleUUIDUtil.getHexValue(UUID.fromString(characterUUID))
 
+        LogUtils.d("characterUUID = $characterUUID")
         val resources = itemUuidBinding.root.context.resources
         itemUuidBinding.characterNameText.text = characterName
         itemUuidBinding.characterText.text = resources.getString(R.string.character_uuid,
