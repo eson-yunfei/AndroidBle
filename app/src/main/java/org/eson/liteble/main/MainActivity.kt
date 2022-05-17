@@ -1,6 +1,12 @@
 package org.eson.liteble.main
 
+import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import org.eson.liteble.main.composable.HomeScreen
 
 /**
  * 主界面
@@ -10,6 +16,19 @@ import androidx.activity.ComponentActivity
  * 3、菜单功能
  */
 class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+
+            val navController = rememberNavController()
+            NavHost(navController = navController, startDestination = "Home") {
+                composable("Home") { HomeScreen() }
+                composable("detail/{deviceAddress}") {}
+            }
+
+        }
+    }
 //    private lateinit var mScanFragment: ScanFragment
 //    private lateinit var mDevicesFragment: BondedFragment
 //    private var menuRefresh: MenuItem? = null
