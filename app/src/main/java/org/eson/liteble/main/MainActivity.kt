@@ -3,9 +3,18 @@ package org.eson.liteble.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.shon.bluetooth.util.BleLog
+import no.nordicsemi.android.support.v18.scanner.ScanResult
+import org.eson.liteble.main.composable.DetailScreen
 import org.eson.liteble.main.composable.HomeScreen
 
 /**
@@ -16,15 +25,34 @@ import org.eson.liteble.main.composable.HomeScreen
  * 3、菜单功能
  */
 class MainActivity : ComponentActivity() {
-
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            val scanViewModel: ScanViewModel = viewModel()
+            val permissionState =
+                rememberMultiplePermissionsState(permissions = getPermissionList())
             val navController = rememberNavController()
+            val rememberList = remember {
+                mutableListOf<ScanResult>()
+            }
+            scanViewModel.scanResult.observe(this){
+                BleLog.d("it  = ${it.size}")
+                rememberList.clear()
+                rememberList.addAll(it)
+            }
             NavHost(navController = navController, startDestination = "Home") {
-                composable("Home") { HomeScreen() }
-                composable("detail/{deviceAddress}") {}
+                composable("Home") {
+                    HomeScreen(navController,rememberList) {
+                        BleLog.d("pre  FeatureCheckBlePermission ")
+                        featureCheckBlePermission(permissionState) {
+                            scanViewModel.startScanner()
+                        }
+                    }
+                }
+                composable("Detail") {
+                    DetailScreen()
+                }
             }
 
         }

@@ -65,10 +65,7 @@ dependencies {
 
     //adapter
     implementation 'com.github.tianzhijiexian:CommonAdapter:1.2.4'
-    //    注意：统计SDK必须依赖基础组件库。所以需要加入对应依赖:
-//    implementation 'com.umeng.sdk:common:1.5.3'
 
-//    implementation 'com.umeng.analytics:analytics:6.1.4'
     implementation "com.github.eson-yunfei.Android_Utils:permissions:0.1.6"
     implementation "com.github.eson-yunfei.Android_Utils:log:0.1.4"
     implementation "com.github.eson-yunfei.Android_Utils:toast:0.1.4"
@@ -84,11 +81,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
 
-
+    implementation "com.google.accompanist:accompanist-permissions:0.24.7-alpha"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-alpha01'
     implementation 'androidx.activity:activity-compose:1.4.0'
