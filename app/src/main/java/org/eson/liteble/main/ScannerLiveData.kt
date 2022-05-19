@@ -1,5 +1,6 @@
 package org.eson.liteble.main
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import no.nordicsemi.android.support.v18.scanner.ScanResult
@@ -20,6 +21,7 @@ class ScannerLiveData : LiveData<ScannerLiveData>() {
         scanResultList.clear()
     }
 
+    @SuppressLint("MissingPermission")
     fun onScannerResult(results: List<ScanResult>) {
          results.filter {
             //过滤名称为 null 的设备

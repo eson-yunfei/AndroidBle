@@ -1,7 +1,6 @@
 package org.eson.liteble.main.composable
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,42 +18,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.shon.bluetooth.util.BleLog
 import no.nordicsemi.android.support.v18.scanner.ScanResult
+import org.eson.liteble.main.filterNoName
+import org.eson.liteble.main.sortByRssi
 
 @Composable
-fun HomeScreen(navController: NavHostController?,
-               scannerList:MutableList<ScanResult>,
-               scanClick: () -> Unit) {
+fun HomeScreen(
+    scannerList: MutableList<ScanResult>,
+    scanClick: () -> Unit,
+    itemClick:(scanResult: ScanResult)->Unit
+) {
 
     Scaffold(
         topBar = {
-            HomeTopBar(scanClick) {
-
-            }
+            HomeTopBar(scanClick)
         }
     ) {
 
-        BleLog.d("scanner List = $scannerList")
-        LazyColumn {
-            items(scannerList) { scanItem ->
-                DeviceItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            Log.d("HomeScreen", " click navController = $navController")
+        Column {
 
-                            navController?.navigate("Detail")
-                        }, scanItem
-                )
+            SettingLayout()
+            LazyColumn {
+                items(scannerList) { scanItem ->
+                    DeviceItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                itemClick.invoke(scanItem)
+                            }, scanItem
+                    )
+                }
             }
         }
+
     }
 }
 
 @Composable
-fun HomeTopBar(scanClick: () -> Unit, settingClick: () -> Unit) {
+fun HomeTopBar(scanClick: () -> Unit) {
     TopAppBar(title = {
         Text(text = "Lite Ble", color = Color.White)
     }, actions = {
@@ -66,14 +67,6 @@ fun HomeTopBar(scanClick: () -> Unit, settingClick: () -> Unit) {
         }) {
             Text(text = "Scan", color = Color.White)
         }
-        Icon(
-            imageVector = Icons.Filled.Settings,
-            contentDescription = "设置",
-            tint = Color.White,
-            modifier = Modifier.wrapContentSize().clickable {
-                settingClick.invoke()
-            }
-        )
     })
 }
 
@@ -102,19 +95,52 @@ fun DeviceItem(modifier: Modifier, scanResult: ScanResult) {
                 )
             )
         }
-        Icon(
-            imageVector = Icons.Filled.Bluetooth,
-            contentDescription = "蓝牙",
-            modifier = Modifier
-                .wrapContentSize()
-                .align(Alignment.CenterVertically)
-        )
+        Text(text = "Rssi:${scanResult.rssi}")
     }
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
+@Composable
+fun SettingLayout() {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+    ) {
+        Row() {
+            Row(
+                Modifier
+                    .wrapContentSize()
+                    .wrapContentHeight()) {
+                Checkbox(checked = filterNoName.value, onCheckedChange = {
+                    filterNoName.value = it
+                })
+                Text(text = "不显示无名称设备", modifier = Modifier.align(Alignment.CenterVertically))
+            }
+
+            Row(
+                Modifier
+                    .wrapContentSize()
+                    .wrapContentHeight()) {
+                Checkbox(checked = sortByRssi.value, onCheckedChange = {
+                    sortByRssi.value = it
+                })
+                Text(text = "RSSI 排序", modifier = Modifier.align(Alignment.CenterVertically))
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun PreSettingLayout() {
+
+    SettingLayout()
+}
+
 @Preview
 @Composable
 fun PreHomeTopBar() {
-    HomeTopBar({}, {})
+    HomeTopBar {}
 }
