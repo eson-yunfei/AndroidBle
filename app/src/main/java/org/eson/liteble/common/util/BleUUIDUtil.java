@@ -16,8 +16,6 @@
 
 package org.eson.liteble.common.util;
 
-import android.text.TextUtils;
-
 import java.util.UUID;
 
 /**
@@ -67,11 +65,6 @@ public class BleUUIDUtil {
 
     public static String getServiceNameByUUID(UUID uuid) {
         int serviceID = getValue(uuid);
-//        UUID uuid1 = makeUUID(serviceID);
-
-//        if (!TextUtils.equals(uuid.toString(), uuid1.toString())) {
-//            return UNKNOWN_SERVICE;
-//        }
         switch (serviceID) {
             case GattService.Generic_Access:
                 return "Generic Access";
@@ -89,11 +82,6 @@ public class BleUUIDUtil {
 
     public static String getCharacterNameByUUID(UUID characterUUID) {
         int characterID = getValue(characterUUID);
-//        UUID uuid1 = makeUUID(characterID);
-//
-//        if (!TextUtils.equals(characterUUID.toString(), uuid1.toString())) {
-//            return UNKNOWN_CHARACTER;
-//        }
 
         switch (characterID) {
             case GattCharacteristics.Device_Name:
