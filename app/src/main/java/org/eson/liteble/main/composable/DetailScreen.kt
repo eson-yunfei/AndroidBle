@@ -88,6 +88,9 @@ fun DetailScreen(backClick: () -> Unit) {
 
         }
 
+        SendDataDialog(onSendClick = {}) {
+
+        }
 
     }
 }
@@ -206,7 +209,7 @@ fun ServiceTopLayout(serviceUUid: UUID) {
 fun CharacteristicsItem(
     gatt: BluetoothGatt,
     gattService: BluetoothGattService,
-    characteristics: BluetoothGattCharacteristic
+    characteristics: BluetoothGattCharacteristic,
 ) {
     val connectViewModel: ConnectViewModel = viewModel()
     val characterUUID: UUID = characteristics.uuid!!

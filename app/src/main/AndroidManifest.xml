@@ -38,17 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".detail.DeviceActivity"
-            android:label="详情" />
-        <activity
-            android:name=".setting.SettingActivity"
-            android:label="Setting" />
-        <activity
-            android:name=".setting.AboutActivity"
-            android:label="About" />
-
     </application>
 
 </manifest>
