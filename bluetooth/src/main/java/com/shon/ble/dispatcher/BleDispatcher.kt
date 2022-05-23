@@ -1,9 +1,11 @@
 package com.shon.ble.dispatcher
 
+import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothManager
 import com.shon.ble.util.BleLog
 import com.shon.ble.call.*
+import com.shon.ble.call.callback.ReadCallback
 import com.shon.ble.call.callback.SendCallback
 import com.shon.ble.call.executor.*
 import com.shon.ble.getGattCharacteristic
@@ -12,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 internal class BleDispatcher internal constructor(private val manager: BluetoothManager) {
     private val channel = Channel<BleCall<*>>(Channel.Factory.UNLIMITED)
@@ -48,6 +52,7 @@ internal class BleDispatcher internal constructor(private val manager: Bluetooth
                         val execute = MTUExecutor(address, call.gatt, call.mtu).execute()
                         call.getCallBack().onResult(execute)
                     }
+                    is DiscoverCall -> discoverService(call)
                     is EnableNotifyCall -> enableNotifyService(call)
                     is ReadDataCall -> readData(call)
                     is WriteDataCall -> {
@@ -71,12 +76,23 @@ internal class BleDispatcher internal constructor(private val manager: Bluetooth
         call.getCallBack().onResult(execute)
     }
 
+
+    private suspend fun discoverService(call: DiscoverCall) {
+        val address = call.address
+        val gatt = call.gatt
+        val discoverResult = executeDiscoverCall(address, gatt)
+        call.getCallBack().onResult(discoverResult)
+    }
+
+
     private suspend fun readData(call: ReadDataCall) {
         val gattCharacteristic = call.getCharacteristic()
-        val readExecutor = ReadExecutor(call.address, call.gatt, gattCharacteristic)
-        val readData = readExecutor.execute()
         val callBack = call.getCallBack()
-        callBack.onResult(readData)
+        gattCharacteristic ?: return
+        val executeReadCallResult = executeReadCall(call.address, call.gatt, gattCharacteristic) {
+            callBack.onExecute()
+        }
+        callBack.onResult(executeReadCallResult)
     }
 
     private suspend fun writeData(call: WriteDataCall): Boolean? {

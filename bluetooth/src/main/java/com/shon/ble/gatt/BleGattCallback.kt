@@ -1,32 +1,19 @@
 package com.shon.ble.gatt
 
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
-import com.shon.ble.util.BleLog
-import com.shon.ble.util.ByteUtil
 import com.shon.ble.BleManager
 import com.shon.ble.call.data.*
-import com.shon.ble.gatt.callback.DiscoverServiceCallback
+import com.shon.ble.util.BleLog
+import com.shon.ble.util.ByteUtil
 import org.greenrobot.eventbus.EventBus
 
 internal class BleGattCallback private constructor() : BluetoothGattCallback() {
 
     companion object {
         val bleGattCallback: BleGattCallback by lazy { BleGattCallback() }
-    }
-
-    private var discoverServiceCallback: DiscoverServiceCallback? = null
-    fun clearDiscoverCallback() {
-        discoverServiceCallback = null
-    }
-
-    @SuppressLint("MissingPermission")
-    fun discoverService(gatt: BluetoothGatt?, callback: DiscoverServiceCallback) {
-        discoverServiceCallback = callback
-        gatt?.discoverServices()
     }
 
 
@@ -40,8 +27,8 @@ internal class BleGattCallback private constructor() : BluetoothGattCallback() {
     }
 
     override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-
-        discoverServiceCallback?.onServicesDiscovered(gatt, status)
+        val discoverMessage = DiscoverMessage(gatt, status)
+        EventBus.getDefault().post(discoverMessage)
     }
 
 

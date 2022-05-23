@@ -48,3 +48,8 @@ internal data class MTUDataMessage(
     val mtu: Int,
     val status: Int = 10000
 )
+
+internal data class DiscoverMessage(
+    val gatt: BluetoothGatt?,
+    val status: Int,
+)
