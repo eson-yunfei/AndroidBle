@@ -64,12 +64,12 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 
     //adapter
-    implementation 'com.github.tianzhijiexian:CommonAdapter:1.2.4'
+//    implementation 'com.github.tianzhijiexian:CommonAdapter:1.2.4'
 
-    implementation "com.github.eson-yunfei.Android_Utils:permissions:0.1.6"
+//    implementation "com.github.eson-yunfei.Android_Utils:permissions:0.1.6"
     implementation "com.github.eson-yunfei.Android_Utils:log:0.1.4"
     implementation "com.github.eson-yunfei.Android_Utils:toast:0.1.4"
-    implementation "com.github.eson-yunfei.AndroidMvvm:mvvm:0.0.5"
+//    implementation "com.github.eson-yunfei.AndroidMvvm:mvvm:0.0.5"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.7.0'

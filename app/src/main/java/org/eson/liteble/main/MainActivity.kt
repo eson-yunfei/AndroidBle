@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.shon.bluetooth.util.BleLog
+import com.shon.ble.util.BleLog
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import org.eson.liteble.main.composable.DetailScreen
 import org.eson.liteble.main.composable.HomeScreen

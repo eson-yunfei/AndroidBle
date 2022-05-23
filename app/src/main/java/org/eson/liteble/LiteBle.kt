@@ -2,7 +2,7 @@ package org.eson.liteble
 
 import android.content.Context
 import androidx.multidex.MultiDexApplication
-import com.shon.bluetooth.BLEManager
+import com.shon.ble.BleManager
 import org.eson.log.LogUtils
 
 /**
@@ -29,6 +29,6 @@ class LiteBle : MultiDexApplication() {
         LogUtils.init()
 
         //初始化 Ble
-        BLEManager.init(this)
+        BleManager.initBleManager(this)
     }
 }

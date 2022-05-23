@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shon.bluetooth.util.BleLog
+import com.shon.ble.util.BleLog
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import org.eson.liteble.main.filterNoName
 import org.eson.liteble.main.sortByRssi

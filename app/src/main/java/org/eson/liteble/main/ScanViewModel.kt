@@ -6,7 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.shon.bluetooth.util.BleLog
+import com.shon.ble.util.BleLog
 import no.nordicsemi.android.support.v18.scanner.*
 
 

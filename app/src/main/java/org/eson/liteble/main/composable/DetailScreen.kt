@@ -88,8 +88,12 @@ fun DetailScreen(backClick: () -> Unit) {
 
         }
 
-        SendDataDialog(onSendClick = {}) {
-
+        if (connectViewModel.showSendDataDialog.value){
+            SendDataDialog(onSendClick = {
+                connectViewModel.showSendDataDialog.value = false
+            }) {
+                connectViewModel.showSendDataDialog.value = false
+            }
         }
 
     }
@@ -270,6 +274,7 @@ fun CharacteristicsItem(
                 IconButton(onClick = {
                     MainScope().launch {
                         val readInfo = connectViewModel.readInfo(
+                            gatt,
                             gattService.uuid.toString(),
                             characteristics.uuid.toString()
                         )
