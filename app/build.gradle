@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
     defaultConfig {
         applicationId "org.eson.liteble"
         minSdkVersion 24

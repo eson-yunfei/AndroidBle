@@ -59,7 +59,7 @@ suspend fun suspendDiscoverService(address: String, gatt: BluetoothGatt): Boolea
 
 suspend fun suspendReadInfo(
     address: String, bluetoothGatt: BluetoothGatt, serviceUUid: String,
-    characteristic: String
+    characteristic: String, execute: () -> Unit = {}
 ): ByteArray? {
     return suspendCoroutine { coroutine ->
 
@@ -68,6 +68,7 @@ suspend fun suspendReadInfo(
             UUID.fromString(characteristic)
         ).enqueue(object : ReadCallback {
             override fun onExecute() {
+                execute.invoke()
             }
 
             override fun onResult(value: ByteArray?) {

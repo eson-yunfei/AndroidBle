@@ -1,6 +1,5 @@
 package org.eson.liteble
 
-import android.content.Context
 import androidx.multidex.MultiDexApplication
 import com.shon.ble.BleManager
 import org.eson.log.LogUtils
@@ -17,14 +16,10 @@ import org.eson.log.LogUtils
  */
 class LiteBle : MultiDexApplication() {
 
-    companion object{
-         lateinit var context: Context
-    }
 
     override fun onCreate() {
         super.onCreate()
 
-        context = this
         //初始化 log
         LogUtils.init()
 

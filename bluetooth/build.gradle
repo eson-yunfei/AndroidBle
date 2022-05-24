@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 def version_code = 1
 def version_name = "1.0"
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 24
