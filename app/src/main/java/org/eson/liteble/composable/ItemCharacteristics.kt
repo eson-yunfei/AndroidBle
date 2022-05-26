@@ -31,7 +31,9 @@ import java.util.*
 fun ItemCharacteristics(
     gatt: BluetoothGatt,
     gattService: BluetoothGattService,
-    characteristics: BluetoothGattCharacteristic
+    characteristics: BluetoothGattCharacteristic,
+    onWriteClick: () -> Unit,
+    onNotify: () -> Unit
 ) {
     val resultInfo = remember {
         mutableStateOf<String?>(null)
@@ -59,11 +61,8 @@ fun ItemCharacteristics(
                     resultInfo.value = readInfoResult
                 }
             },
-            writeAction = {
-
-            }) {
-
-        }
+            writeAction = onWriteClick, notifyAction = onNotify
+        )
     }
 
 }

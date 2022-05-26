@@ -13,7 +13,7 @@ internal class DiscoverExecutor(
     private val gatt: BluetoothGatt,
     private val discoverCallback: DiscoverCallback
 ) :
-    BaseExecutor<DiscoverCallback, DiscoverMessage>(discoverCallback) {
+    BaseExecutor< DiscoverMessage>(discoverCallback) {
     @SuppressLint("MissingPermission")
     override fun execute() {
         super.execute()

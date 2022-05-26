@@ -21,8 +21,14 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.eson.liteble.data.AppCommonData
+import org.eson.liteble.data.SendCharacteristicsBean
+import org.eson.liteble.ext.ActionExt
 import org.eson.liteble.utils.BleUUIDUtil
 import org.eson.liteble.viewmodels.ConnectViewModel
 import java.util.*
@@ -81,11 +87,14 @@ fun DetailScreen(backClick: () -> Unit) {
 
         }
 
-        if (connectViewModel.showSendDataDialog.value) {
-            SendDataDialog(onSendClick = {
-                connectViewModel.showSendDataDialog.value = false
+        if (AppCommonData.sendDataCharacteristic.value != null) {
+            SendDataDialog(onSendClick = { data ->
+                AppCommonData.sendDataCharacteristic.value?.let {
+                    ActionExt.writeData(it.gatt, it.serviceUUID, it.characteristics, data)
+                    AppCommonData.sendDataCharacteristic.value = null
+                }
             }) {
-                connectViewModel.showSendDataDialog.value = false
+                AppCommonData.sendDataCharacteristic.value = null
             }
         }
 
@@ -132,7 +141,18 @@ fun GattServiceItem(gatt: BluetoothGatt, gattService: BluetoothGattService) {
                     ) {
 
                         list.forEach {
-                            ItemCharacteristics(gatt, gattService, it)
+                            ItemCharacteristics(gatt, gattService, it, {
+                                val sendCharacteristicsBean =
+                                    SendCharacteristicsBean(gatt, gattService.uuid, it.uuid)
+                                AppCommonData.sendDataCharacteristic.value = sendCharacteristicsBean
+                            }) {
+                                MainScope().launch {
+                                    ActionExt.enableNotify(
+                                        gatt,
+                                        gattService.uuid, it.uuid
+                                    )
+                                }
+                            }
                         }
                     }
                 }

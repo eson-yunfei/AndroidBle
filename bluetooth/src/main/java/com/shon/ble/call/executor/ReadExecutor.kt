@@ -16,12 +16,11 @@ internal class ReadExecutor(
     private val gatt: BluetoothGatt,
     private val gattCharacteristic: BluetoothGattCharacteristic,
     private val readCallback: ReadCallback
-) : BaseExecutor<ReadCallback, ReadDataMessage>(readCallback) {
+) : BaseExecutor<ReadDataMessage>(readCallback) {
 
     @SuppressLint("MissingPermission")
     override fun execute() {
         super.execute()
-        readCallback.onExecute()
         gatt.readCharacteristic(gattCharacteristic)
     }
 

@@ -17,7 +17,8 @@ class ConnectViewModel : ViewModel() {
     val connectedState: MutableState<String> = mutableStateOf("DisConnect")
     val connectedGatt: MutableState<BluetoothGatt?> = mutableStateOf(null)
     val showLogWindow: MutableState<Boolean> = mutableStateOf(false)
-    val showSendDataDialog:MutableState<Boolean> = mutableStateOf(false)
+
+
     fun startConnectDevice() {
 
         BleLog.d("startConnectDevice ===============")

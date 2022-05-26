@@ -1,21 +1,17 @@
 package com.shon.ble.dispatcher
 
-import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothManager
-import com.shon.ble.util.BleLog
 import com.shon.ble.call.*
-import com.shon.ble.call.callback.ReadCallback
-import com.shon.ble.call.callback.SendCallback
-import com.shon.ble.call.executor.*
+import com.shon.ble.call.executor.ConnExecutor
+import com.shon.ble.call.executor.MTUExecutor
 import com.shon.ble.getGattCharacteristic
+import com.shon.ble.util.BleLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 internal class BleDispatcher internal constructor(private val manager: BluetoothManager) {
     private val channel = Channel<BleCall<*>>(Channel.Factory.UNLIMITED)
@@ -67,12 +63,11 @@ internal class BleDispatcher internal constructor(private val manager: Bluetooth
 
     private suspend fun enableNotifyService(call: EnableNotifyCall) {
         val gattCharacteristic = call.getCharacteristic()
-        val execute = EnableNotifyExecutor(
-            call.gatt,
+        gattCharacteristic ?: return
+        val execute = executeEnableNotification(
             call.address,
-            call.descriptor,
-            gattCharacteristic
-        ).execute()
+            call.gatt, call.descriptor, gattCharacteristic
+        )
         call.getCallBack().onResult(execute)
     }
 
@@ -90,16 +85,15 @@ internal class BleDispatcher internal constructor(private val manager: Bluetooth
         val callBack = call.getCallBack()
         gattCharacteristic ?: return
         val executeReadCallResult = executeReadCall(call.address, call.gatt, gattCharacteristic) {
-            callBack.onExecute()
+            callBack.onExecuted()
         }
         callBack.onResult(executeReadCallResult)
     }
 
     private suspend fun writeData(call: WriteDataCall): Boolean? {
         val characteristic = call.getCharacteristic()
-        val callBack: SendCallback<Any> = call.getCallBack() as SendCallback<Any>
-        return WriterExecutor(call.address, call.gatt, characteristic, callBack)
-            .execute()
+        characteristic ?: return false
+        return executeWriteCall(call.address, call.gatt, characteristic, call.getCallBack())
     }
 
     private fun BaseTransCall<*>.getCharacteristic(): BluetoothGattCharacteristic? {

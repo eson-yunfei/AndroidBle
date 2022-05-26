@@ -2,6 +2,7 @@ package org.eson.liteble
 
 import androidx.multidex.MultiDexApplication
 import com.shon.ble.BleManager
+import org.eson.liteble.data.BleDataListenerImpl
 import org.eson.log.LogUtils
 
 /**
@@ -25,5 +26,6 @@ class LiteBle : MultiDexApplication() {
 
         //初始化 Ble
         BleManager.initBleManager(this)
+        BleManager.getManager().setDataListener(BleDataListenerImpl.dataListener)
     }
 }

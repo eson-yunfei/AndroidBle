@@ -2,12 +2,8 @@ package com.shon.extble
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
-import com.shon.ble.call.ConnectorCall
-import com.shon.ble.call.DiscoverCall
-import com.shon.ble.call.ReadDataCall
-import com.shon.ble.call.callback.ConnectCallback
-import com.shon.ble.call.callback.DiscoverCallback
-import com.shon.ble.call.callback.ReadCallback
+import com.shon.ble.call.*
+import com.shon.ble.call.callback.*
 import com.shon.ble.data.ConnectResult
 import com.shon.ble.util.BleLog
 import java.util.*
@@ -57,6 +53,20 @@ suspend fun suspendDiscoverService(address: String, gatt: BluetoothGatt): Boolea
     }
 }
 
+suspend fun suspendEnableNotification(
+    address: String, gatt: BluetoothGatt, serviceUUid: UUID,
+    characteristic: UUID
+): Boolean {
+    return suspendCoroutine { coroutine ->
+        EnableNotifyCall(address, gatt, serviceUUid, characteristic).enqueue(object :
+            EnableNotifyCallback {
+            override fun onResult(value: Boolean?) {
+                coroutine.resume(value!!)
+            }
+        })
+    }
+}
+
 suspend fun suspendReadInfo(
     address: String, bluetoothGatt: BluetoothGatt, serviceUUid: String,
     characteristic: String, execute: () -> Unit = {}
@@ -67,14 +77,46 @@ suspend fun suspendReadInfo(
             address, bluetoothGatt, UUID.fromString(serviceUUid),
             UUID.fromString(characteristic)
         ).enqueue(object : ReadCallback {
-            override fun onExecute() {
-                execute.invoke()
-            }
 
             override fun onResult(value: ByteArray?) {
                 coroutine.resume(value)
             }
 
+            override fun onExecuted() {
+                execute.invoke()
+            }
+
         })
     }
 }
+
+//
+//suspend fun suspendCommonWriteInfo(
+//    address: String, gatt: BluetoothGatt,
+//    serviceUUid: UUID, characteristic: UUID,
+//    sendData: String,
+//): ByteArray {
+//    return suspendCoroutine { coroutine ->
+//        WriteDataCall(address, gatt, serviceUUid, characteristic).enqueue(object :
+//            SendCallback<ByteArray>() {
+//            override fun onResult(value: ByteArray?) {
+//                value?.let {
+//                    coroutine.resume(it)
+//                }
+//
+//            }
+//
+//            override fun getSendData(): String {
+//                return sendData
+//            }
+//
+//            override fun onProcess(data: ByteArray): ByteArray? {
+//                return data
+//            }
+//
+//            override fun onExecuted() {
+//            }
+//
+//        })
+//    }
+//}

@@ -7,7 +7,11 @@ abstract class SendCallback<T> : BleCallback<T> {
 
     open fun needResult(): Boolean = true
 
-    abstract fun onProcess(data: ByteArray): T?
+    abstract fun onProcess(data: ByteArray): ByteArray?
 
+    open fun convertResult(result: ByteArray): T? {
+        return null
+    }
 
+    open fun onSendResult(sendResult: Boolean) {}
 }

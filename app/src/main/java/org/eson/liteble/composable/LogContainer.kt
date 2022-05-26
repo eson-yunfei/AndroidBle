@@ -3,8 +3,10 @@ package org.eson.liteble.composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -21,8 +23,13 @@ fun LogContainer() {
             .height(200.dp)
             .fillMaxWidth()
     ) {
+        val listState = rememberLazyListState()
+        LaunchedEffect(AppCommonData.messageList.size) {
+            listState.animateScrollToItem(AppCommonData.messageList.size)
+        }
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp), //item 间距
+            state = listState
         ) {
             items(AppCommonData.messageList) { item: LogMessageBean ->
                 ItemLog(createTime = item.createTime, title = item.title, content = item.content)

@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("ConstantLocale")
-private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault())
 
 
 fun getCurrentTime(): String {
