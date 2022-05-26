@@ -5,6 +5,7 @@ import com.shon.ble.call.WriteDataCall
 import com.shon.ble.util.ByteUtil
 import com.shon.extble.suspendEnableNotification
 import com.shon.extble.suspendReadInfo
+import org.eson.liteble.TestHistoricalData
 import org.eson.liteble.data.AppCommonData
 import org.eson.liteble.logger.LogMessageBean
 import java.util.*
@@ -52,6 +53,17 @@ object ActionExt {
         return null
     }
 
+
+    fun testWritData(
+        gatt: BluetoothGatt,
+        serviceUUID: UUID,
+        characterUUID: UUID
+    ) {
+        val address = gatt.device.address
+        WriteDataCall(address, gatt, serviceUUID, characterUUID).enqueue(
+            TestHistoricalData()
+        )
+    }
 
     fun writeData(
         gatt: BluetoothGatt,

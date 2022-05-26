@@ -87,11 +87,9 @@ internal suspend fun <T> executeWriteCall(
                         sendDataCallback.onSendResult(true)
                     }
                 }
-
                 override fun onExecuted() {
                     sendDataCallback.onExecuted()
                 }
-
             })
 
         writerExecutor.execute()

@@ -1,30 +1,29 @@
 package org.eson.liteble.composable
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.shon.ble.util.BleLog
+import com.shon.ble.util.ByteUtil
 import no.nordicsemi.android.support.v18.scanner.ScanResult
-import org.eson.liteble.data.AppCommonData
 
+@SuppressLint("MissingPermission")
 @Composable
 fun HomeScreen(
     scannerList: MutableList<ScanResult>,
     scanClick: () -> Unit,
-    itemClick:(scanResult: ScanResult)->Unit
+    itemClick: (scanResult: ScanResult) -> Unit
 ) {
 
     Scaffold(
@@ -35,16 +34,31 @@ fun HomeScreen(
 
         Column {
 
-            SettingLayout()
-            LazyColumn {
+            ScanSettingLayout()
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp, 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp), //item 间距
+            ) {
                 items(scannerList) { scanItem ->
-                    DeviceItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                itemClick.invoke(scanItem)
-                            }, scanItem
-                    )
+                    val device = scanItem.device
+                    val data =
+                        scanItem.scanRecord?.getManufacturerSpecificData(1)
+
+                    val value = when (data) {
+                        null -> null
+                        else -> {
+                            ByteUtil.getHexString(data)
+                        }
+                    }
+                    ItemScanResult(
+                        address = device.address,
+                        rssi = scanItem.rssi,
+                        name = device.name,
+                        value = value
+                    ) {
+                        itemClick.invoke(scanItem)
+                    }
+
                 }
             }
         }
@@ -67,74 +81,6 @@ fun HomeTopBar(scanClick: () -> Unit) {
     })
 }
 
-@SuppressLint("MissingPermission")
-@Composable
-fun DeviceItem(modifier: Modifier, scanResult: ScanResult) {
-    Row(
-        modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 16.dp)
-            .background(Color.White)
-    ) {
-        Column(Modifier.weight(weight = 1f)) {
-            Text(
-                text = scanResult.device.name ?: "未命名",
-                style = TextStyle(
-                    color = Color(0xbb000000),
-                    fontSize = 18.sp, fontWeight = FontWeight.Bold
-                )
-            )
-
-            Text(
-                text = scanResult.device.address,
-                style = TextStyle(
-                    color = Color(0x99333333)
-                )
-            )
-        }
-        Text(text = "Rssi:${scanResult.rssi}")
-    }
-}
-
-
-@SuppressLint("StateFlowValueCalledInComposition")
-@Composable
-fun SettingLayout() {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .background(Color.LightGray)
-    ) {
-        Row() {
-            Row(
-                Modifier
-                    .wrapContentSize()
-                    .wrapContentHeight()) {
-                Checkbox(checked = AppCommonData.filterNoName.value, onCheckedChange = {
-                    AppCommonData. filterNoName.value = it
-                })
-                Text(text = "不显示无名称设备", modifier = Modifier.align(Alignment.CenterVertically))
-            }
-
-            Row(
-                Modifier
-                    .wrapContentSize()
-                    .wrapContentHeight()) {
-                Checkbox(checked = AppCommonData.sortByRssi.value, onCheckedChange = {
-                    AppCommonData.sortByRssi.value = it
-                })
-                Text(text = "RSSI 排序", modifier = Modifier.align(Alignment.CenterVertically))
-            }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun PreSettingLayout() {
-
-    SettingLayout()
-}
 
 @Preview
 @Composable

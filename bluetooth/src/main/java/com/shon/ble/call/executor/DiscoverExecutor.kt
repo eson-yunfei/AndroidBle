@@ -8,12 +8,14 @@ import com.shon.ble.call.data.DiscoverMessage
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
+/**
+ * 发现服务
+ */
 internal class DiscoverExecutor(
     private val address: String,
     private val gatt: BluetoothGatt,
     private val discoverCallback: DiscoverCallback
-) :
-    BaseExecutor< DiscoverMessage>(discoverCallback) {
+) : BaseExecutor< DiscoverMessage>(discoverCallback) {
     @SuppressLint("MissingPermission")
     override fun execute() {
         super.execute()

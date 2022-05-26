@@ -45,7 +45,7 @@ internal class BleDispatcher internal constructor(private val manager: Bluetooth
                         connectCallback.onResult(async.await())
                     }
                     is MTUCall -> {
-                        val execute = MTUExecutor(address, call.gatt, call.mtu).execute()
+                        val execute = MTUExecutor(call.gatt, call.mtu).execute()
                         call.getCallBack().onResult(execute)
                     }
                     is DiscoverCall -> discoverService(call)

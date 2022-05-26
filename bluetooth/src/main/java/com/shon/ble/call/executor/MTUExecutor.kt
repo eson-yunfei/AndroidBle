@@ -7,7 +7,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 internal class MTUExecutor(
-    private val address: String,
     private val gatt: BluetoothGatt?,
     private val mtu: Int
 ) : IEventBus<Boolean, MTUDataMessage>() {

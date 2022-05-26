@@ -11,6 +11,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
+/**
+ * 启用 notify
+ */
 internal class EnableNotifyExecutor(
     private val address: String,
     private val gatt: BluetoothGatt,
