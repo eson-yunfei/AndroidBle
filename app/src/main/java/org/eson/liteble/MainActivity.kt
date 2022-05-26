@@ -13,8 +13,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.shon.ble.util.BleLog
 import no.nordicsemi.android.support.v18.scanner.ScanResult
-import org.eson.liteble.composable.DetailScreen
-import org.eson.liteble.composable.HomeScreen
+import org.eson.liteble.composable.detail.DetailScreen
+import org.eson.liteble.composable.home.HomeScreen
 import org.eson.liteble.data.AppCommonData
 import org.eson.liteble.ext.featureCheckBlePermission
 import org.eson.liteble.ext.getPermissionList

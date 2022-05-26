@@ -1,4 +1,4 @@
-package org.eson.liteble.composable
+package org.eson.liteble.composable.detail
 
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic

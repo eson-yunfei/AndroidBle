@@ -1,4 +1,4 @@
-package org.eson.liteble.composable
+package org.eson.liteble.composable.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*

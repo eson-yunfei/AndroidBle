@@ -1,4 +1,4 @@
-package org.eson.liteble.composable
+package org.eson.liteble.composable.detail
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt

@@ -1,4 +1,4 @@
-package org.eson.liteble.composable
+package org.eson.liteble.composable.detail
 
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.OutlinedTextField
