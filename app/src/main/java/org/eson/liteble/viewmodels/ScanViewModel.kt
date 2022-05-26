@@ -2,6 +2,8 @@ package org.eson.liteble.viewmodels
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shon.ble.util.BleLog
@@ -12,8 +14,10 @@ import org.eson.liteble.data.SortType
 class ScanViewModel : ViewModel() {
     private var scannerCompat: BluetoothLeScannerCompat? = null
     val scanResult: MutableLiveData<MutableList<ScanResult>> = MutableLiveData(mutableListOf())
+    val scanState:MutableState<Boolean> = mutableStateOf(false)
 
     fun startScanner() {
+        scanState.value = true
         scannerCompat ?: kotlin.run {
             BleLog.d("startScanner")
             scannerCompat = BluetoothLeScannerCompat.getScanner()
@@ -22,6 +26,7 @@ class ScanViewModel : ViewModel() {
     }
 
     fun stopScanner() {
+        scanState.value = false
         BleLog.d("stopScanner")
         scannerCompat?.stopScan(scanCallback)
         scannerCompat = null

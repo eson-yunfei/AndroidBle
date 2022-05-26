@@ -16,9 +16,6 @@ object AppCommonData {
     //低信号阀值
     val lowRssiThreshold: MutableState<Int> = mutableStateOf(-80)
 
-//    //rssi 排序
-    val sortByRssi: MutableState<Boolean> = mutableStateOf(true)
-
     //rssi 排序,默认升序
     val rssiSortType: MutableState<SortType> = mutableStateOf(SortType.ASC)
 

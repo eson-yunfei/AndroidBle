@@ -47,9 +47,13 @@ class MainActivity : ComponentActivity() {
             }
             NavHost(navController = navController, startDestination = "Home") {
                 composable("Home") {
-                    HomeScreen(rememberList, scanClick = {
+                    HomeScreen(scanViewModel.scanState.value, rememberList, scanClick = {
                         featureCheckBlePermission(permissionState) {
-                            scanViewModel.startScanner()
+                            if (it) {
+                                scanViewModel.startScanner()
+                            } else {
+                                scanViewModel.stopScanner()
+                            }
                         }
                     }, itemClick = {
                         scanViewModel.stopScanner()
