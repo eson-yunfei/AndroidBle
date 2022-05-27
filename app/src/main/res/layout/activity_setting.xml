@@ -10,11 +10,10 @@
 
     <TextView
         android:id="@+id/scan_time_title"
+        style="@style/ItemTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:text="搜索设备搜索时长："
-        android:textColor="#666666"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,8 +23,8 @@
         android:id="@+id/scan_time_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
         android:entries="@array/scanner_time"
+        android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="@id/scan_time_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/scan_time_title" />
@@ -34,7 +33,7 @@
         android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:background="#cccccc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,10 +43,10 @@
     <TextView
         android:id="@+id/filter_empty_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:text="过滤无名称设备"
+        style="@style/ItemTitle"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line1"
@@ -66,7 +65,7 @@
         android:id="@+id/line2"
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:background="#cccccc"
         app:layout_constraintTop_toBottomOf="@id/filter_no_name" />
 
@@ -76,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:text="允许连接多个设备"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,12 +91,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/link_more_title" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/max_link_switch_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="line2,link_more_title,switchBtn" />
 
     <View
         android:id="@+id/line3"
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:background="#cccccc"
         app:layout_constraintTop_toBottomOf="@id/link_more_title" />
 
@@ -107,7 +112,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:text="最大连接设备个数："
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,8 +122,8 @@
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/maxNumber"
         android:layout_width="wrap_content"
-        android:entries="@array/max_connect_size"
         android:layout_height="wrap_content"
+        android:entries="@array/max_connect_size"
         app:layout_constraintBottom_toBottomOf="@id/max_link_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/max_link_title" />

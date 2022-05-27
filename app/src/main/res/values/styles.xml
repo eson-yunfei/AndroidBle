@@ -8,27 +8,44 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!--下段代码就是去除阴影的-->
-<!--        <item name="android:windowContentOverlay">@null</item>-->
+        <!--        <item name="android:windowContentOverlay">@null</item>-->
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
-<!--    <style name="AppTheme.NoActionBar">-->
-<!--        <item name="windowActionBar">false</item>-->
-<!--        <item name="windowNoTitle">true</item>-->
-<!--    </style>-->
+    <!--    <style name="AppTheme.NoActionBar">-->
+    <!--        <item name="windowActionBar">false</item>-->
+    <!--        <item name="windowNoTitle">true</item>-->
+    <!--    </style>-->
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-<!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>-->
+    <!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>-->
 
 
     <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
         <!-- 是否覆盖在Toolbar之上 -->
         <item name="overlapAnchor">false</item>
         <!--overflow menu背景颜色 -->
-<!--        <item name="android:popupBackground">@color/colorPrimary</item>-->
+        <!--        <item name="android:popupBackground">@color/colorPrimary</item>-->
         <item name="android:dropDownVerticalOffset">4dp</item>
         <item name="android:dropDownHorizontalOffset">0dp</item>
     </style>
 
+    <style name="BaseTextStyle">
+        <item name="android:typeface">serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ItemTitle" parent="BaseTextStyle">
+        <item name="android:textColor">@color/color_66</item>
+        <item name="android:lines">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ItemContent" parent="BaseTextStyle">
+        <item name="android:textColor">@color/color_69</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <color name="color_69">#999999</color>
 </resources>
