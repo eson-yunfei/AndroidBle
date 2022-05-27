@@ -18,6 +18,7 @@ import org.eson.liteble.composable.home.HomeScreen
 import org.eson.liteble.data.AppCommonData
 import org.eson.liteble.ext.featureCheckBlePermission
 import org.eson.liteble.ext.getPermissionList
+import org.eson.liteble.viewmodels.ConnectViewModel
 import org.eson.liteble.viewmodels.ScanViewModel
 
 /**
@@ -34,6 +35,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val scanViewModel: ScanViewModel = viewModel()
+            val connectViewModel: ConnectViewModel = viewModel()
+
             val permissionState =
                 rememberMultiplePermissionsState(permissions = getPermissionList())
             val navController = rememberNavController()
@@ -57,12 +60,14 @@ class MainActivity : ComponentActivity() {
                         }
                     }, itemClick = {
                         scanViewModel.stopScanner()
-                        navController.navigate("Detail")
                         AppCommonData.selectDevice.value = it
+                        navController.navigate("Detail")
+
+                       connectViewModel.startConnectDevice()
                     })
                 }
                 composable("Detail") {
-                    DetailScreen(backClick = {
+                    DetailScreen(connectViewModel,backClick = {
                         navController.popBackStack()
                     })
                 }

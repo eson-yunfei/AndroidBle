@@ -35,33 +35,19 @@ import java.util.*
 
 @SuppressLint("MissingPermission")
 @Composable
-fun DetailScreen(backClick: () -> Unit) {
-    val connectViewModel: ConnectViewModel = viewModel()
+fun DetailScreen(connectViewModel: ConnectViewModel,backClick: () -> Unit) {
 
-    connectViewModel.startConnectDevice()
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        backClick.invoke()
-                    }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "返回")
-                    }
+            DetailTopBar(
+                name = AppCommonData.selectDevice.value?.device?.name,
+                connectSate =connectViewModel.connectResultState.value,
+                backClick = {
+                    connectViewModel.disconnect()
+                    backClick.invoke()
                 },
-                title = {
-                    Text(text = AppCommonData.selectDevice.value?.device?.name ?: "设备详情")
-                },
-                actions = {
-                    Text(text = connectViewModel.connectedState.value)
-                    IconButton(onClick = {
-                        connectViewModel.showLogWindow.value = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.LibraryBooks, contentDescription = "log",
-                            tint = Color.White
-                        )
-                    }
+                onStateClick = {
+                    connectViewModel.changeConnectState()
                 })
         }
     ) {
