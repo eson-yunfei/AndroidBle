@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,7 +20,8 @@ fun DetailTopBar(
     name: String?,
     connectSate: ConnectResult,
     backClick: () -> Unit,
-    onStateClick: () -> Unit
+    onStateClick: () -> Unit,
+    imageButtonClick: () -> Unit
 ) {
     TopAppBar(
         navigationIcon = {
@@ -54,7 +56,15 @@ fun DetailTopBar(
                     )
                 )
             }
-
+            IconButton(onClick = {
+                imageButtonClick.invoke()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.BugReport,
+                    contentDescription = "log",
+                    tint = Color.White
+                )
+            }
         }
     )
 }
@@ -76,5 +86,5 @@ fun PreviewDetailTop() {
         name = "BLE_E1",
         connectSate = ConnectResult.Connecting(""),
         backClick = {},
-        onStateClick = {})
+        onStateClick = {}, imageButtonClick = {})
 }

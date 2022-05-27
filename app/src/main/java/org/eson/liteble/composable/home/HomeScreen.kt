@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.shon.ble.util.BleLog
 import com.shon.ble.util.ByteUtil
 import no.nordicsemi.android.support.v18.scanner.ScanResult
+import org.eson.liteble.data.AppCommonData
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -60,6 +64,10 @@ fun HomeScreen(
             }
         }
 
+        if (AppCommonData.showAboutState.value) {
+            AppInfoDialog()
+        }
+
     }
 }
 
@@ -82,6 +90,16 @@ fun HomeTopBar(scanning: Boolean, scanClick: (Boolean) -> Unit) {
             scanClick.invoke(!scanning)
         }) {
             Text(text = if (scanning) "Stop Scan" else "Start Scan", color = Color.White)
+        }
+
+        IconButton(onClick = {
+            AppCommonData.showAboutState.value = true
+        }) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "About",
+                tint = Color.White
+            )
         }
     })
 }

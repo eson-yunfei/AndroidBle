@@ -1,9 +1,8 @@
 package org.eson.liteble.composable.detail
 
-import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattService
 import android.text.TextUtils
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -17,58 +16,55 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eson.liteble.R
-import org.eson.liteble.ext.ActionExt
 import org.eson.liteble.utils.BleUUIDUtil
 import java.util.*
 
 @Composable
 fun ItemCharacteristics(
-    gatt: BluetoothGatt,
-    gattService: BluetoothGattService,
-    characteristics: BluetoothGattCharacteristic,
-    onWriteClick: () -> Unit,
-    onNotify: () -> Unit
+    characteristicsUUID: String,
+    getCharacteristicsProperties: (characteristics: String) -> Int,
+    onReadInfo: suspend (characteristics: String) -> String?,
+    onWriteClick: (characteristics: String) -> Unit,
+    onNotify: (characteristics: String) -> Unit
 ) {
-    val resultInfo = remember {
-        mutableStateOf<String?>(null)
-    }
+    val resultInfo = remember { mutableStateOf<String?>(null) }
     Row {
         CharacteristicsInfo(
-            characterUUID = characteristics.uuid,
+            characterUUIDString = characteristicsUUID,
             result = resultInfo.value,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
                 .wrapContentHeight(),
-
-            )
+        )
         CharacteristicsActions(
-            properties = characteristics.properties,
+            properties = getCharacteristicsProperties(characteristicsUUID),
             readAction = {
                 MainScope().launch {
-                    val readInfoResult =
-                        ActionExt.readInfo(
-                            gatt,
-                            gattService.uuid.toString(),
-                            characteristics.uuid.toString()
-                        )
+                    val readInfoResult = onReadInfo.invoke(characteristicsUUID)
                     resultInfo.value = readInfoResult
                 }
             },
-            writeAction = onWriteClick, notifyAction = onNotify
+            writeAction = {
+                onWriteClick.invoke(characteristicsUUID)
+            }, notifyAction = {
+                onNotify.invoke(characteristicsUUID)
+            }
         )
     }
 
 }
 
 @Composable
-fun CharacteristicsInfo(modifier: Modifier, characterUUID: UUID, result: String? = null) {
+fun CharacteristicsInfo(modifier: Modifier, characterUUIDString: String, result: String? = null) {
+    val characterUUID = UUID.fromString(characterUUIDString)
     val characterName = BleUUIDUtil.getCharacterNameByUUID(characterUUID)
     val hexString = BleUUIDUtil.getHexValue(characterUUID)
     Column(modifier = modifier) {
@@ -76,54 +72,44 @@ fun CharacteristicsInfo(modifier: Modifier, characterUUID: UUID, result: String?
             text = characterName,
             style = TextStyle(
                 color = Color(0xff666666),
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 fontFamily = FontFamily.Serif,
+                fontWeight = FontWeight.Bold
             )
         )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(5.dp)
-        )
+        Spacer(modifier = Modifier.requiredHeight(2.dp))
 
         Text(
             text = "Hex : $hexString",
             style = TextStyle(
-                color = Color(0xff666666),
-                fontSize = 12.sp,
+                color = Color(0xff777777),
+                fontSize = 14.sp,
                 fontFamily = FontFamily.Serif,
-                fontStyle = FontStyle.Italic
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Bold
             )
         )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp)
-        )
+        Spacer(modifier = Modifier.requiredHeight(2.dp))
         Text(
-            text = "Full: $characterUUID",
+            text = characterUUIDString,
             style = TextStyle(
-                color = Color(0xff666666),
-                fontSize = 12.sp,
+                color = Color(0xff777777),
+                fontSize = 11.sp,
                 fontFamily = FontFamily.Serif,
             )
         )
 
         if (!TextUtils.isEmpty(result)) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp)
-            )
             Text(
                 text = result!!,
                 style = TextStyle(
-                    color = Color(0xff666666),
-                    fontSize = 12.sp,
+                    color = Color(0xff999999),
+                    fontSize = 11.sp,
                     fontFamily = FontFamily.Serif,
                     fontStyle = FontStyle.Italic
                 )
             )
+            Spacer(modifier = Modifier.requiredHeight(2.dp))
         }
     }
 }
@@ -170,11 +156,15 @@ fun CharacteristicsActions(
 @Preview
 @Composable
 fun PreviewCharacteristicsInfo() {
-    CharacteristicsInfo(
-        modifier = Modifier.fillMaxWidth(),
-        characterUUID = UUID.fromString("00002a27-0000-1000-8000-00805f9b34fb"),
-        result = "aaaa"
-    )
+    Box(modifier = Modifier
+        .background(Color.White)
+        .padding(16.dp, 16.dp)) {
+        CharacteristicsInfo(
+            modifier = Modifier.fillMaxWidth(),
+            characterUUIDString = "00002a27-0000-1000-8000-00805f9b34fb",
+            result = "aaaa"
+        )
+    }
 }
 
 

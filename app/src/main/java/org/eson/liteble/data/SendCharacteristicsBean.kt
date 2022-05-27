@@ -5,6 +5,6 @@ import java.util.*
 
 data class SendCharacteristicsBean(
     val gatt: BluetoothGatt,
-    val serviceUUID: UUID,
-    val characteristics: UUID
+    val serviceUUID: String,
+    val characteristics: String
 )

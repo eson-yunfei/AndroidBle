@@ -2,52 +2,43 @@ package org.eson.liteble.composable.detail
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.LibraryBooks
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.eson.liteble.data.AppCommonData
 import org.eson.liteble.data.SendCharacteristicsBean
-import org.eson.liteble.ext.ActionExt
-import org.eson.liteble.utils.BleUUIDUtil
 import org.eson.liteble.viewmodels.ConnectViewModel
-import java.util.*
 
 @SuppressLint("MissingPermission")
 @Composable
-fun DetailScreen(connectViewModel: ConnectViewModel,backClick: () -> Unit) {
+fun DetailScreen(connectViewModel: ConnectViewModel, backClick: () -> Unit) {
 
     Scaffold(
         topBar = {
             DetailTopBar(
                 name = AppCommonData.selectDevice.value?.device?.name,
-                connectSate =connectViewModel.connectResultState.value,
+                connectSate = connectViewModel.connectResultState.value,
                 backClick = {
                     connectViewModel.disconnect()
                     backClick.invoke()
+                    AppCommonData.clearMessageList()
                 },
                 onStateClick = {
                     connectViewModel.changeConnectState()
+                }, imageButtonClick = {
+                    connectViewModel.showLogWindow.value = !connectViewModel.showLogWindow.value
                 })
         }
     ) {
@@ -58,7 +49,7 @@ fun DetailScreen(connectViewModel: ConnectViewModel,backClick: () -> Unit) {
                 .fillMaxHeight()
         ) {
             Box(Modifier.weight(weight = 1f, fill = true)) {
-                GattInfoLayout(gatt = connectViewModel.connectedGatt.value)
+                GattInfoLayout(connectViewModel, gatt = connectViewModel.connectedGatt.value)
             }
             if (connectViewModel.showLogWindow.value) {
                 Box(
@@ -76,7 +67,7 @@ fun DetailScreen(connectViewModel: ConnectViewModel,backClick: () -> Unit) {
         if (AppCommonData.sendDataCharacteristic.value != null) {
             SendDataDialog(onSendClick = { data ->
                 AppCommonData.sendDataCharacteristic.value?.let {
-                    ActionExt.writeData(it.gatt, it.serviceUUID, it.characteristics, data)
+                    connectViewModel.writeData(it.gatt, it.serviceUUID, it.characteristics, data)
                     AppCommonData.sendDataCharacteristic.value = null
                 }
             }) {
@@ -88,118 +79,59 @@ fun DetailScreen(connectViewModel: ConnectViewModel,backClick: () -> Unit) {
 }
 
 @Composable
-fun GattInfoLayout(gatt: BluetoothGatt?) {
-    gatt?.let {
+fun GattInfoLayout(connectViewModel: ConnectViewModel, gatt: BluetoothGatt?) {
+    gatt?.let { blueGatt ->
         LazyColumn(
             contentPadding = PaddingValues(8.dp, 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp), //item 间距
         ) {
             items(gatt.services) { gattService: BluetoothGattService ->
-                GattServiceItem(gatt = gatt, gattService = gattService)
-            }
-        }
-    }
-}
 
-@Composable
-fun GattServiceItem(gatt: BluetoothGatt, gattService: BluetoothGattService) {
-    val uuid = gattService.uuid
+                val serviceUUIDString = gattService.uuid.toString()
+                val characteristicUUIDString = getCharacteristicUUIDString(gattService)
+                ItemGattService(serviceUUIDString,
+                    characteristicUUIDString,
+                    getCharacteristicsProperties = {
+                        return@ItemGattService getCharacteristicsProperties(gattService, it)
+                    },
+                    onReadData = {
+                        return@ItemGattService connectViewModel.readInfo(
+                            blueGatt,
+                            serviceUUIDString,
+                            it
+                        )
+                    }, onWriteClick = {
 
-    Card(modifier = Modifier.fillMaxWidth()) {
+                        AppCommonData.sendDataCharacteristic.value = SendCharacteristicsBean(
+                            blueGatt, serviceUUIDString, it
+                        )
+                    }, onNotify = {
 
-
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            ServiceTopLayout(serviceUUid = uuid)
-            gattService.characteristics?.let { list ->
-
-                if (list.isNotEmpty()) {
-
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .background(color = Color(0xffefefef))
-                            .padding(16.dp, 10.dp)
-                    ) {
-
-                        list.forEach {
-                            ItemCharacteristics(gatt, gattService, it, {
-                                val sendCharacteristicsBean =
-                                    SendCharacteristicsBean(gatt, gattService.uuid, it.uuid)
-                                AppCommonData.sendDataCharacteristic.value = sendCharacteristicsBean
-                            }) {
-                                MainScope().launch {
-                                    ActionExt.enableNotify(
-                                        gatt,
-                                        gattService.uuid, it.uuid
-                                    )
-                                }
-                            }
+                        MainScope().launch {
+                            connectViewModel.enableNotify(
+                                blueGatt,
+                                serviceUUIDString, it
+                            )
                         }
-                    }
-                }
-
+                    })
             }
-
-
         }
     }
-
 }
 
 
-@Composable
-fun ServiceTopLayout(serviceUUid: UUID) {
-    val serviceName = BleUUIDUtil.getServiceNameByUUID(serviceUUid)
-    val shortUUID = BleUUIDUtil.getHexValue(serviceUUid)
-
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(16.dp, 10.dp)
-    ) {
-        Text(
-            text = serviceName, style = TextStyle(
-                color = Color(0xff666666),
-                fontSize = 16.sp,
-                fontStyle = FontStyle.Italic,
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Bold
-            )
-        )
-        Spacer(
-            modifier = Modifier
-                .height(3.dp)
-        )
-        Row(Modifier.wrapContentHeight()) {
-            Text(
-                text = shortUUID, style = TextStyle(
-                    color = Color(0xff666666),
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-
-            Text(
-                text = "(${serviceUUid})", style = TextStyle(
-                    color = Color(0xff999999),
-                    fontSize = 10.sp,
-                    fontStyle = FontStyle.Italic,
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.align(Alignment.Bottom)
-            )
-
-        }
-
+fun getCharacteristicsProperties(gattService: BluetoothGattService, characteristics: String): Int {
+    val predicate: (BluetoothGattCharacteristic) -> Boolean = {
+        it.uuid.toString()
+            .toLowerCase(Locale.current) == characteristics.toLowerCase(Locale.current)
     }
-
-
+    val gattCharacteristic = gattService.characteristics.find(predicate)
+    return gattCharacteristic!!.properties
 }
+
+fun getCharacteristicUUIDString(gattService: BluetoothGattService): MutableList<String> {
+    return gattService.characteristics.map {
+        it.uuid.toString()
+    }.toMutableList()
+}
+

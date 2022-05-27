@@ -7,6 +7,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import org.eson.liteble.logger.LogMessageBean
 
 object AppCommonData {
+    val showAboutState:MutableState<Boolean> = mutableStateOf(false)
     //隐藏无名称设备，默认隐藏
     val hideNoNameState: MutableState<Boolean> = mutableStateOf(true)
 
