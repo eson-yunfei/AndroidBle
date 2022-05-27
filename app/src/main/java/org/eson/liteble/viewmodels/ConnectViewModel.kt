@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shon.ble.BleManager
-import com.shon.ble.call.WriteDataCall
 import com.shon.ble.data.ConnectResult
 import com.shon.ble.gatt.BleConnectStateListener
 import com.shon.ble.util.BleLog
@@ -15,10 +14,9 @@ import com.shon.ble.util.ByteUtil
 import com.shon.extble.suspendConnectAndDiscoverService
 import com.shon.extble.suspendEnableNotification
 import com.shon.extble.suspendReadInfo
+import com.shon.extble.suspendWriteWithoutCallback
 import kotlinx.coroutines.launch
-import org.eson.liteble.TestHistoricalData
 import org.eson.liteble.data.AppCommonData
-import org.eson.liteble.ext.WriteDataCallback
 import org.eson.liteble.logger.LogMessageBean
 import java.util.*
 
@@ -99,11 +97,15 @@ class ConnectViewModel : ViewModel() {
         serviceUUID: String,
         characterUUID: String
     ): Boolean {
+        BleLog.d("enableNotify ==========>>>>")
+        BleLog.d("serviceUUID = $serviceUUID")
+        BleLog.d("characterUUID = $characterUUID")
         return when (AppCommonData.selectDevice.value) {
             null -> false
             else -> {
+
                 val address = gatt.device.address
-                val enableNotification =
+                val enableNotificationResult =
                     suspendEnableNotification(
                         address,
                         gatt,
@@ -114,7 +116,8 @@ class ConnectViewModel : ViewModel() {
                 val logMessageBean =
                     LogMessageBean(address, "Enable Notification ($address)", content)
                 AppCommonData.addMessageList(logMessageBean)
-                enableNotification
+                BleLog.d("enableNotification = $enableNotificationResult")
+                enableNotificationResult
             }
         }
     }
@@ -145,17 +148,6 @@ class ConnectViewModel : ViewModel() {
     }
 
 
-    fun testWritData(
-        gatt: BluetoothGatt,
-        serviceUUID: UUID,
-        characterUUID: UUID
-    ) {
-        val address = gatt.device.address
-        WriteDataCall(address, gatt, serviceUUID, characterUUID).enqueue(
-            TestHistoricalData()
-        )
-    }
-
     fun writeData(
         gatt: BluetoothGatt,
         serviceUUID: String,
@@ -163,27 +155,19 @@ class ConnectViewModel : ViewModel() {
         sendData: String
     ) {
         val address = gatt.device.address
-        WriteDataCall(
-            address,
-            gatt,
-            UUID.fromString(serviceUUID),
-            UUID.fromString(characterUUID)
-        ).enqueue(
-            object : WriteDataCallback(sendData) {
-                override fun onSendResult(sendResult: Boolean) {
-                    val content = "data: $sendData"
-                    val logMessageBean =
-                        LogMessageBean(address, "Send Data Result $sendResult)", content)
-                    AppCommonData.addMessageList(logMessageBean)
-                }
-
-                override fun onExecuted() {
+        viewModelScope.launch {
+            val writeResult =
+                suspendWriteWithoutCallback(address, gatt, serviceUUID, characterUUID, sendData) {
                     val content = "UUID: $characterUUID \nstart send: $sendData"
                     val logMessageBean = LogMessageBean(address, "Send Data ($address)", content)
                     AppCommonData.addMessageList(logMessageBean)
                 }
-            }
-        )
+
+            val content = "data: $sendData"
+            val logMessageBean =
+                LogMessageBean(address, "Send Data Result : $writeResult", content)
+            AppCommonData.addMessageList(logMessageBean)
+        }
     }
 
 }

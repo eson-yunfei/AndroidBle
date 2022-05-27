@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
@@ -52,14 +50,7 @@ fun DetailScreen(connectViewModel: ConnectViewModel, backClick: () -> Unit) {
                 GattInfoLayout(connectViewModel, gatt = connectViewModel.connectedGatt.value)
             }
             if (connectViewModel.showLogWindow.value) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(color = Color.Black)
-                ) {
-                    LogContainer()
-                }
+                LogContainer()
             }
 
         }

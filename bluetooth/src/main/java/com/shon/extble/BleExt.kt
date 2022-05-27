@@ -14,6 +14,7 @@ suspend fun suspendConnectDevice(address: String): ConnectResult {
     return suspendCoroutine { coroutine ->
         ConnectorCall(address).enqueue(object : ConnectCallback() {
             override fun onResult(value: ConnectResult?) {
+                BleLog.d("suspendConnectDevice onResult : value = $value")
                 value?.let {
                     coroutine.resume(it)
                 }
@@ -61,6 +62,7 @@ suspend fun suspendEnableNotification(
         EnableNotifyCall(address, gatt, serviceUUid, characteristic).enqueue(object :
             EnableNotifyCallback {
             override fun onResult(value: Boolean?) {
+                BleLog.d("EnableNotifyCall onResult value = $value")
                 coroutine.resume(value!!)
             }
         })
@@ -90,33 +92,40 @@ suspend fun suspendReadInfo(
     }
 }
 
-//
-//suspend fun suspendCommonWriteInfo(
-//    address: String, gatt: BluetoothGatt,
-//    serviceUUid: UUID, characteristic: UUID,
-//    sendData: String,
-//): ByteArray {
-//    return suspendCoroutine { coroutine ->
-//        WriteDataCall(address, gatt, serviceUUid, characteristic).enqueue(object :
-//            SendCallback<ByteArray>() {
-//            override fun onResult(value: ByteArray?) {
-//                value?.let {
-//                    coroutine.resume(it)
-//                }
-//
-//            }
-//
-//            override fun getSendData(): String {
-//                return sendData
-//            }
-//
-//            override fun onProcess(data: ByteArray): ByteArray? {
-//                return data
-//            }
-//
-//            override fun onExecuted() {
-//            }
-//
-//        })
-//    }
-//}
+
+suspend fun suspendWriteWithoutCallback(
+    address: String, bluetoothGatt: BluetoothGatt, serviceUUid: String,
+    characteristic: String, sendData: String,
+    execute: () -> Unit = {}
+): Boolean {
+    return suspendCoroutine { coroutine ->
+        WriteDataCall(
+            address, bluetoothGatt, UUID.fromString(serviceUUid),
+            UUID.fromString(characteristic)
+        ).enqueue(object : SendCallback<Boolean>() {
+            override fun onResult(value: Boolean?) {
+
+            }
+            override fun onSendResult(sendResult: Boolean) {
+                BleLog.d("suspendWriteWithoutCallback : sendResult = $sendResult")
+                coroutine.resume(sendResult)
+            }
+            override fun onExecuted() {
+                execute.invoke()
+            }
+
+            override fun needResult(): Boolean {
+                return false
+            }
+
+            override fun getSendData(): String {
+                return sendData
+            }
+
+            override fun onProcess(data: ByteArray): ByteArray? {
+                return null
+            }
+
+        })
+    }
+}

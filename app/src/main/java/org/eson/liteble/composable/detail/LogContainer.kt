@@ -1,9 +1,11 @@
 package org.eson.liteble.composable.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,8 +22,14 @@ import org.eson.liteble.logger.LogMessageBean
 fun LogContainer() {
     Box(
         modifier = Modifier
-            .height(200.dp)
+            .height(300.dp)
             .fillMaxWidth()
+            .background(
+                Color(0x77000000),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            )
+            .padding(10.dp, 8.dp)
+
     ) {
         val listState = rememberLazyListState()
         LaunchedEffect(AppCommonData.messageList.size) {
@@ -73,7 +81,9 @@ fun PreviewLogContainer() {
     val logMessageBean2 = LogMessageBean(address, "Read Result ($address)", result)
     AppCommonData.addMessageList(logMessageBean2)
 
-    LogContainer()
+    Column(Modifier.background(Color.White)) {
+        LogContainer()
+    }
 }
 
 @Preview
